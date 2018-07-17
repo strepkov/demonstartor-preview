@@ -2,14 +2,14 @@ package controller04;
 
 component ConeRunner {
     port
-        in Q fr,
-        in Q fl,
-        in Q slf,
-        in Q srf,
-        in Q slb,
-        in Q srb,
-        in Q x,
-        out Q steering,
+        in Q(-200m:200m) fr,
+        in Q(-200m:200m) fl,
+        in Q(-200m:200m) slf,
+        in Q(-200m:200m) srf,
+        in Q(-200m:200m) slb,
+        in Q(-200m:200m) srb,
+        in Q(-200m:200m) x,
+        out Q(-180:180) steering,
         out B status;
 
     implementation Math{
@@ -49,7 +49,7 @@ component ConeRunner {
         end
         
         // Stop after passing the last cone
-        if (x > 32)
+        if (x > 30)
             status = 1;
         end
     }
