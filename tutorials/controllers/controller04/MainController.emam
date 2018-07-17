@@ -5,20 +5,20 @@ import ConeRunner;
 
 component MainController{
     ports 
-        in Q(-200m:200m) fl,
-        in Q(-200m:200m) fr,
-        in Q(-200m:200m) slf,
-        in Q(-200m:200m) slb,
-        in Q(-200m:200m) srf,
-        in Q(-200m:200m) srb,
-        in Q(-200m:200m) bl,
-        in Q(-200m:200m) br,
+        in Q(-200m:200m) frontLeftSensor,
+        in Q(-200m:200m) frontRightSensor,
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) frontRightSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in Q(-200m:200m) backRightSideSensor,
+        in Q(-200m:200m) backLeftSensor,
+        in Q(-200m:200m) backRightSensor,
 
         in Q time,
         in Q(0km/h:250km/h) velocity,
 
-        in Q(-200m:200m) x,
-        in Q(-200m:200m) y,
+        in Q(-200m:200m) xPosition,
+        in Q(-200m:200m) yPosition,
 
         out Q(-2m/s^2:2m/s^2) acceleration,
         out Q(-180:180) steering,
@@ -32,13 +32,13 @@ component MainController{
 
     instance ConeRunner coneRunner;
 
-    connect fl->coneRunner.fl;
-    connect fr->coneRunner.fr;
-    connect slf->coneRunner.slf;
-    connect srf->coneRunner.srf;
-    connect slb->coneRunner.slb;
-    connect srb->coneRunner.srb;
-    connect x->coneRunner.x;
+    connect frontLeftSensor->coneRunner.frontLeftSensor;
+    connect frontRightSensor->coneRunner.frontRightSensor;
+    connect frontLeftSideSensor->coneRunner.frontLeftSideSensor;
+    connect frontRightSideSensor->coneRunner.frontRightSideSensor;
+    connect backLeftSideSensor->coneRunner.backLeftSideSensor;
+    connect backRightSideSensor->coneRunner.backRightSideSensor;
+    connect xPosition->coneRunner.xPosition;
     connect coneRunner.status->status; 
     connect coneRunner.steering->steering;
 }
