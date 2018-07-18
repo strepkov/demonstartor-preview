@@ -32,7 +32,8 @@
     <div>
         <!-- <button onclick="appendTestModel()">Append test file</button> -->
         <button onclick="appendTestTutorial3()">Append tutorial 3</button>
-        <button onclick="appendTestTutorial4()">Append tutorial 4</button>
+        <!-- <button onclick="appendTestTutorial4()">Append tutorial 4</button> -->
+        <button onclick="clearAllFiles()">Delete all files</button>
         <!-- <button onclick="showContent()">Show Content</button> -->
         <button onclick="readAllFiles()">Read, pack and send files</button>
         <!-- <button onclick="packData()">Pack and Send</button> -->
@@ -49,6 +50,49 @@
     </div>
 
     <script>
+
+        function clearAllFiles() {
+
+            var dirRoot = '/';
+            var apiFs = document.getElementById("ide").contentWindow.api.fs;
+
+            apiFs.readdir(dirRoot, function (err, dir) {
+
+                if (err) throw err;
+
+                // (function(){
+                //     return new Promise((resolve, reject) => {
+
+                //     // TODO: relocate file deletion here
+                //     resolve();
+                // });
+
+                // })();
+
+                dir.forEach(function (item) {
+                    // The folder(item) has to be a root directory for a model
+                    if (item.mime == "folder" && !(item.name).includes(".")) {
+
+                        apiFs.readdir(item.fullPath, function (err, dirInternal) {
+
+                            if (err) throw err;
+                            dirInternal.forEach(function (file) {
+
+                                apiFs.rmfile(file.fullPath, () => { });
+                            });
+                        });
+
+                        setTimeout(function () {
+                            // recursive does not work!!!
+                            apiFs.rmdir(item.fullPath, { recursive: true }, function (err) {
+                                if (err) return console.error(err);
+                                console.log("The directory is deleted");
+                            });
+                        }, 100);
+                    }
+                });
+            });
+        }
 
         function showSelectedTutorial(){
 
