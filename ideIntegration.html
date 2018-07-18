@@ -30,14 +30,23 @@
         </div>
     </div>
     <div>
+            
+            <table>
+                <tr>
+                    <th><button onclick="appendTestTutorial3()">1a Step : Parking tutorial</button></th>
+                    <th rowspan="2"><button onclick="showTutorial()">2 Step : Show tutorial/simulator</button></th>
+                    <th rowspan="2"><button onclick="readAllFiles()">3 Step : Read, pack and send files</button></th>
+                </tr>
+                <tr>
+                    <td><button onclick="appendTestTutorial4()">1b Step : Elk-Test tutorial</button></td>
+                </tr>
+            </table>
+            
         <!-- <button onclick="appendTestModel()">Append test file</button> -->
-        <button onclick="appendTestTutorial3()">Parking tutorial</button>
-        <button onclick="appendTestTutorial4()">Elk-Test tutorial</button>
         <!-- <button onclick="clearAllFiles()">Delete all files</button> -->
         <!-- <button onclick="showContent()">Show Content</button> -->
-        <button onclick="readAllFiles()">Read, pack and send files</button>
         <!-- <button onclick="packData()">Pack and Send</button> -->
-        <button onclick="showTutorial()">Show tutorial/simulator</button>
+        
         <!-- <div style="width:200px;">
             <select id="tutorialSelect" onchange="showSelectedTutorial()">
               <option value="0">Tutorial0</option>
