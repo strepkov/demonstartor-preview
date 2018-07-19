@@ -1,5 +1,5 @@
 define(function(require, exports, module) {
-    return function(caption, extension, noWorker) {
+    return function(caption, extension) {
         var captionLowerCase = caption.toLowerCase();
         var pluginName = "language." + captionLowerCase;
         var pluginPath = "plugins/se.rwth.language." + captionLowerCase;
@@ -79,7 +79,7 @@ define(function(require, exports, module) {
                     extensions: extension
                 });
 
-                if(!noWorker) Language.registerLanguageHandler(pluginPath + "/worker/worker", onHandlerRegistered, plugin);
+                Language.registerLanguageHandler(pluginPath + "/worker/worker", onHandlerRegistered, plugin);
             }
 
             function onPluginLoad(error) {
