@@ -380,6 +380,8 @@
         function sendData(){
             if(packCounter < 2){
                 console.log("Error during archiving process! Please try again.");
+                document.getElementById("indexSimulator").contentWindow.document
+                    .getElementById("notready").innerHTML = "Please, send again! Error during packing!";
                 packCounter = 0;
                 return;
             }
