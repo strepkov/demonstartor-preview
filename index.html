@@ -204,53 +204,37 @@
 			var tireBackLeft = new THREE.Object3D();
 
 			// Add the cone on the track
-
 			var coneLoader = new THREE.ObjectLoader();
-			var obj = [];
+			var objectsOnTrack = [];
+			var modelObject = 'models/cone.json';
 
+			function addObjectsOnTrack(modelJSON,x,y,z){
+				coneLoader.load(modelJSON, function ( object ) {
+					objectsOnTrack.push(object);
+					scene.add(object);
+					object.position.x = x;
+					object.position.y = y;
+					object.position.z = z;
+				}, onProgress, onError );	
+			}
+			
+			// now we can read objects from configuration and add them
 			function showCones(){
-
-				// The cone near the car
-			coneLoader.load('models/cone.json', function ( object ) {
-				
-				obj.push(object);
-				scene.add( object );
-				object.position.x = 4;
-				object.position.y = 0.3;
-				object.position.z = -97;
-
-				obj.push(object.clone());
-				scene.add(obj[1]);
-				obj[1].position.x -=6;
-
-				obj.push(object.clone());
-				scene.add(obj[2]);		// 1, -75
-				object.position.x = 1;
-				object.position.y = 0.3;
-				object.position.z = -75;
-
-				obj.push(object.clone()); 	// 1, -50
-				scene.add(obj[3]);
-				obj[3].position.z +=25;
-
-				obj.push(object.clone()); 	// 1, -25
-				scene.add(obj[4]);
-				obj[4].position.z +=50;
-
-				obj.push(object.clone());	// 1, 0
-				scene.add(obj[5]);
-				obj[5].position.z +=75;
-
-				obj.push(object.clone());	// 1, 25
-				scene.add(obj[6]);
-				obj[6].position.z +=100;
-				
-			}, onProgress, onError );
+				addObjectsOnTrack(modelObject, 4, 0.3, -97);
+				addObjectsOnTrack(modelObject, -2, 0.3, -97);
+				addObjectsOnTrack(modelObject, 1, 0.3, -75);
+				addObjectsOnTrack(modelObject, 1, 0.3, -50);
+				addObjectsOnTrack(modelObject, 1, 0.3, -25);
+				addObjectsOnTrack(modelObject, 1, 0.3, 0);
+				addObjectsOnTrack(modelObject, 1, 0.3, 25);
 			}
 
 			function deleteCones(){
-
-			for (var i = 0; i < obj.length; i++) scene.remove(obj[i]);
+				for (var i = 0; i < objectsOnTrack.length; i++) {
+					scene.remove(objectsOnTrack[i]);
+				}
+				objectsOnTrack = [];
+				console.log("All objects were deleted!");
 			}
 			
 
