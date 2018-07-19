@@ -14,7 +14,7 @@
 <body>
     <div>
         <div class="column">
-            <iframe id="ide" src="onlineIDE/api/load.html?mountPoint=[EmbeddedMontiArc]/demonstrator/IDE" height="900" scrolling="no" width="900" align="left"></iframe>
+            <iframe onload="cleanOnLoad()" id="ide" src="onlineIDE/api/load.html?mountPoint=[EmbeddedMontiArc]/demonstrator/IDE" height="900" scrolling="no" width="900" align="left"></iframe>
         </div>
         <div id="rightSide1" class="column">
                 <div class="row">
@@ -33,12 +33,12 @@
             
             <table>
                 <tr>
-                    <th><button onclick="appendTestTutorial3()">1a Step : Parking tutorial</button></th>
-                    <th rowspan="2"><button onclick="showTutorial()">2 Step : Show tutorial/simulator</button></th>
-                    <th rowspan="2"><button onclick="readAllFiles()">3 Step : Read, pack and send files</button></th>
+                    <th><button onclick="appendTestTutorial3()"><b>1a Step</b> : Parking tutorial</button></th>
+                    <th rowspan="2"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
+                    <th rowspan="2"><button onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
                 </tr>
                 <tr>
-                    <td><button onclick="appendTestTutorial4()">1b Step : Elk-Test tutorial</button></td>
+                    <td><button onclick="appendTestTutorial4()"><b>1b Step</b> : Elk-Test tutorial</button></td>
                 </tr>
             </table>
             
@@ -59,6 +59,12 @@
     </div>
 
     <script>
+
+        function cleanOnLoad(){
+            setTimeout(function(){
+                clearAllFiles();
+            },1000);
+        }
 
         function clearAllFiles() {
 
@@ -211,7 +217,7 @@
         //     appendFile("ConstantVelocity.emam", readFileFromDisk("simulator1/ConstantVelocity.emam"));
         //     appendFile("SteeringControl.emam", readFileFromDisk("simulator1/SteeringControl.emam"));
         //     appendFile("GameOverTrigger.emam", readFileFromDisk("simulator1/GameOverTrigger.emam"));
-        // }
+        // }     
 
         function appendTestTutorial3(){
            
@@ -227,6 +233,8 @@
             },500);
 
             document.getElementById("indexSimulator").contentWindow.presentationObjects = 3;
+            if (document.getElementById("indexSimulator").contentWindow.objectsOnTrack.length > 1)
+                document.getElementById("indexSimulator").contentWindow.deleteCones();
         }
 
         function appendTestTutorial4(){
@@ -242,6 +250,9 @@
             },500);
 
             document.getElementById("indexSimulator").contentWindow.presentationObjects = 4;
+
+            if (document.getElementById("indexSimulator").contentWindow.objectsOnTrack.length < 1)
+                document.getElementById("indexSimulator").contentWindow.showCones();
         }
 
         // Read files from ide and pack
