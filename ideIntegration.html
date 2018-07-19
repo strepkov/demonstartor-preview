@@ -62,7 +62,7 @@
 
         function cleanOnLoad(){
             setTimeout(function(){
-                clearAllFiles();
+                if (document.getElementById("ide").contentWindow.api) clearAllFiles();
             },1000);
         }
 
@@ -150,7 +150,7 @@
 
                 setTimeout(()=>{
                     resolve();
-                },1000)
+                },2000)
             });
 
         }        
@@ -235,6 +235,11 @@
             document.getElementById("indexSimulator").contentWindow.presentationObjects = 3;
             if (document.getElementById("indexSimulator").contentWindow.objectsOnTrack.length > 1)
                 document.getElementById("indexSimulator").contentWindow.deleteCones();
+                document.getElementById("indexSimulator").contentWindow.showCars();
+                document.getElementById("indexSimulator").contentWindow.setPosition(
+                    document.getElementById("indexSimulator").contentWindow.currentCar, 0, 0.2, 0);
+                document.getElementById("indexSimulator").contentWindow.rotateCar(
+                    document.getElementById("indexSimulator").contentWindow.currentCar, 0);
         }
 
         function appendTestTutorial4(){
@@ -251,8 +256,15 @@
 
             document.getElementById("indexSimulator").contentWindow.presentationObjects = 4;
 
-            if (document.getElementById("indexSimulator").contentWindow.objectsOnTrack.length < 1)
+            if (document.getElementById("indexSimulator").contentWindow.objectsOnTrack.length < 1){
                 document.getElementById("indexSimulator").contentWindow.showCones();
+                document.getElementById("indexSimulator").contentWindow.hideCars();
+                document.getElementById("indexSimulator").contentWindow.setPosition(
+                    document.getElementById("indexSimulator").contentWindow.currentCar, 1, 0.2, -100);
+                document.getElementById("indexSimulator").contentWindow.rotateCar(
+                    document.getElementById("indexSimulator").contentWindow.currentCar, 0);
+            }
+                
         }
 
         // Read files from ide and pack
