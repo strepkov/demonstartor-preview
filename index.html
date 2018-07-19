@@ -235,9 +235,19 @@
 			// Main car is loading here
 			addCarOnTrack(carModel, 0, 0, 0.2, 0);
 			// Second car is loading here
-			addCarOnTrack(carModel, 1, 7.5, 0.2, 22);
+			addCarOnTrack(carModel, 1, -30, 0.2, 32);
 			// Third car is loading here
-			addCarOnTrack(carModel, 2, 7.5, 0.2, 44);
+			addCarOnTrack(carModel, 2, -30, 0.2, 44);
+
+			function showCars(){
+				setPosition(currentCar2, 7.5, 0.2, 22);
+				setPosition(currentCar3, 7.5, 0.2, 44);
+			}
+
+			function hideCars(){
+				setPosition(currentCar2, -30, 0.2, 32);
+				setPosition(currentCar3, -30, 0.2, 44);
+			}
 			
 			function addCarOnTrack(carModel, objectCar, x, y, z) {
 				carLoader.load(carModel, function (object) {
