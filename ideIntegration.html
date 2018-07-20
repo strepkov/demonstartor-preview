@@ -215,6 +215,7 @@
             document.getElementById("ide").contentWindow.api.
                 fs.appendFile(fileName,fileContent,function (err, data) {
                     if (err) throw err;
+                    filesFromDiskData.push(fileContent); // Save data from disk to array
                 });
         }
 
@@ -290,7 +291,6 @@
         }
 
         // Read files from ide and pack
-
         var filesData = Array();
         var fileNames = Array();
 
@@ -301,6 +301,21 @@
                 filesData.push(data);
                 fileNames.push(name);
             });
+        }
+
+        // Files from tutorial folder
+        var filesFromDiskData = Array();
+
+        function isContentWasChanged(){
+            var check = true;
+            if(filesData.length == filesFromDiskData.length){
+                check = false;
+                for(var i=0; i<filesData.length; i++){
+                   if (filesData[i] != filesFromDiskData[i])
+                        check = true;
+                }
+            }
+            return check;
         }
 
         var firstTimeRunAlert = false;
