@@ -215,24 +215,26 @@
             document.getElementById("ide").contentWindow.api.
                 fs.appendFile(fileName,fileContent,function (err, data) {
                     if (err) throw err;
-                    filesFromDiskData.push(fileContent); // Save data from disk to array
                 });
+            filesFromDiskData.push(fileContent); // Save data from disk to array
         }
 
         function readFileFromDisk(file) {
-            var rawFile = new XMLHttpRequest();
+            var oReq = new XMLHttpRequest();
             var text;
-            rawFile.open("GET", file, false);
-            rawFile.onreadystatechange = function () {
-                if (rawFile.readyState === 4) {
-                    if (rawFile.status === 200 || rawFile.status == 0) {
-                        text = rawFile.responseText;
+            oReq.open("GET", file, false);
+            oReq.onreadystatechange = function () {
+                if (oReq.readyState === 4) {
+                    if (oReq.status === 200 || oReq.status == 0) {
+                        text = oReq.responseText;
                     }
                 }
             }
-            rawFile.send(null);
+            oReq.send(null);
             return text;
         }
+
+
         
         // Test function to don't create every time controller's file to test the system 
         // function appendTestModel(){
@@ -240,7 +242,9 @@
         //     appendFile("ConstantVelocity.emam", readFileFromDisk("simulator1/ConstantVelocity.emam"));
         //     appendFile("SteeringControl.emam", readFileFromDisk("simulator1/SteeringControl.emam"));
         //     appendFile("GameOverTrigger.emam", readFileFromDisk("simulator1/GameOverTrigger.emam"));
-        // }     
+        // }
+        
+        var activeTutorial = 0;
 
         function appendTestTutorial3(){
            
@@ -249,6 +253,7 @@
             document.getElementById('tutorialFrame').src = "tutorials/html/tutorial03.md.html";
             
             setTimeout(function(){
+                filesFromDiskData = [];
                 appendFile("/controller03","controller03/MainController.emam", readFileFromDisk("tutorials/controllers/controller03/MainController.emam"));
                 appendFile("/controller03","controller03/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller03/ParkingController.emam"));
                 appendFile("/controller03","controller03/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller03/SearchParkingPlaceController.emam"));
@@ -263,6 +268,8 @@
                     document.getElementById("indexSimulator").contentWindow.currentCar, 0, 0.2, 0);
                 document.getElementById("indexSimulator").contentWindow.rotateCar(
                     document.getElementById("indexSimulator").contentWindow.currentCar, 0);
+
+            activeTutorial = 3;
         }
 
         function appendTestTutorial4(){
@@ -272,6 +279,7 @@
             document.getElementById('tutorialFrame').src = "tutorials/html/tutorial04.md.html";
     
             setTimeout(function(){
+                filesFromDiskData = [];
                 appendFile("/controller04","controller04/MainController.emam", readFileFromDisk("tutorials/controllers/controller04/MainController.emam"));
                 appendFile("/controller04","controller04/ConeRunner.emam", readFileFromDisk("tutorials/controllers/controller04/ConeRunner.emam"));
                 appendFile("/controller04","controller04/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller04/VelocityController.emam"));
@@ -287,7 +295,8 @@
                 document.getElementById("indexSimulator").contentWindow.rotateCar(
                     document.getElementById("indexSimulator").contentWindow.currentCar, 0);
             }
-                
+
+            activeTutorial = 4;
         }
 
         // Read files from ide and pack
@@ -311,8 +320,10 @@
             if(filesData.length == filesFromDiskData.length){
                 check = false;
                 for(var i=0; i<filesData.length; i++){
-                   if (filesData[i] != filesFromDiskData[i])
+                   if (filesData[i] != filesFromDiskData[i]){
                         check = true;
+                        console.log("file ", fileNames[i]," was changed!");
+                   }
                 }
             }
             return check;
@@ -359,12 +370,88 @@
                     }
                 });
             });
-
+            
             setTimeout(function(){
-                packData(folderName).then(sendData,function(){
-                    console.log("packing problem happened!");
-                });
-            },100);
+                if(isContentWasChanged()){
+                    setTimeout(function () {
+                        packData(folderName).then(sendData, function () {
+                            console.log("packing problem happened!");
+                        });
+                    }, 1000);
+                } else {
+                    console.log("The content of the files haven't been changed!");
+                    // we can just read data from folder
+                    filesFromDisk = [];
+
+                    if(activeTutorial == 3){
+                        console.log("activeTutorial ",activeTutorial);
+                        readFileFromDiskBlob("tutorials/compiledControllers/parkingTutorial/mainController.wasm");
+                        filesFromDisk.push(readFileFromDisk("tutorials/compiledControllers/parkingTutorial/mainController.js"));
+                    }
+                    if(activeTutorial == 4){
+                        console.log("activeTutorial ",activeTutorial);
+                        readFileFromDiskBlob("tutorials/compiledControllers/elkTestTutorial/mainController.wasm");
+                        filesFromDisk.push(readFileFromDisk("tutorials/compiledControllers/elkTestTutorial/mainController.js"));
+                    }
+
+                    setTimeout(function () {
+                        
+                        if(checkWasmBinaryData(filesFromDisk[1])){
+                            document.getElementById("indexSimulator").contentWindow.rawWebAssembly = filesFromDisk[1];
+
+                            setTimeout(function () {
+                                overrideReadBinaryWasm();
+                            }, 100);
+
+                            setTimeout(function () {
+                                loadMainController2().then(
+                                    document.getElementById("indexSimulator").contentWindow.initSimulator,
+                                    () => { console.error("error during loading a main controller tag!") });
+                            }, 100);
+                        } else {
+                            console.log(".wasm file error!");
+                        }
+                    }, 100);
+                }
+            },500);
+        }
+
+        // Controller from disc
+        function loadMainController2() {
+            
+            return new Promise((resolve, reject) => {
+                var doc = document.getElementById("indexSimulator").contentWindow.document;
+                var script_tag = doc.createElement('script');
+                script_tag.id = "mainController";
+                script_tag.text = filesFromDisk[0];
+                doc.body.appendChild(script_tag);
+                setTimeout(() => {
+                    resolve();
+                }, 2000)
+            });
+        }  
+
+        // Read file to replace compiled ones
+        var filesFromDisk = new Array();
+
+        function readFileFromDiskBlob(filePath) {
+            var oReq = new XMLHttpRequest();
+            oReq.open("GET", filePath, true);
+            oReq.responseType = "arraybuffer";
+            oReq.onload = function(){
+                var arrayBuffer = oReq.response; // Note: not oReq.responseText
+                if (arrayBuffer) {
+                    var byteArray = new Uint8Array(arrayBuffer);
+                    if(byteArray.byteLength){
+                        filesFromDisk.push(byteArray);
+                        console.log(byteArray.length);
+                        console.log(typeof(byteArray));
+                        console.log(byteArray);
+                    } else 
+                        console.error("Problem with reading .wasm file!");
+                }
+            }
+            oReq.send(null);
         }
 
         // show the content which was red from IDE
@@ -454,6 +541,9 @@
                         console.log(filename);
                         //appendFile(".home/" + filename, fileData);
                         rawFileData.push(fileData);
+                        console.log(fileData.length);
+                        console.log(typeof(fileData));
+                        console.log(fileData);
                     });}
                     else{
                     zip.files[filename].async('string').then(function (fileData) {
