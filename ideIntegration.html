@@ -88,6 +88,14 @@
             },2000);
         }
 
+        function removeFolder(apiFs, filePath) {
+            return new Promise(function (resolve, reject) {
+                apiFs.rmfile(filePath, function(err){
+                    if (err) throw err;
+                });
+            });
+        }
+
         function clearAllFiles() {
 
             var dirRoot = '/';
@@ -96,39 +104,50 @@
             apiFs.readdir(dirRoot, function (err, dir) {
 
                 if (err) throw err;
-
-                // (function(){
-                //     return new Promise((resolve, reject) => {
-
-                //     // TODO: relocate file deletion here
-                //     resolve();
-                // });
-
-                // })();
-
-                dir.forEach(function (item) {
+                
+                dir.forEach(item => {
                     // The folder(item) has to be a root directory for a model
                     if (item.mime == "folder" && !(item.name).includes(".")) {
 
-                        apiFs.readdir(item.fullPath, function (err, dirInternal) {
+                        apiFs.readdir(item.fullPath, async function (err, dirInternal) {
 
                             if (err) throw err;
-                            dirInternal.forEach(function (file) {
 
-                                apiFs.rmfile(file.fullPath, () => { });
-                            });
+                            const removeFiles = async () =>{
+                                await Promise.all(dirInternal.map(async file => {
+                                    await removeFolder(apiFs,file.fullPath);
+                                }));
+                            }
+                            await removeFiles();
                         });
-
-                        setTimeout(function () {
+                        
+                        // Still has to be improved!
+                        setTimeout(function(){
                             // recursive does not work!!!
                             apiFs.rmdir(item.fullPath, { recursive: true }, function (err) {
                                 if (err) return console.error(err);
                                 console.log("The directory is deleted");
                             });
-                        }, 200);
+                        },500);
                     }
                 });
             });
+        }
+
+        function promiseTest() {
+
+            var testArray = [1,2,3];
+
+            const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
+
+            const start = async () => {
+                await Promise.all(testArray.map(async num => {
+                    await waitFor(50)
+                    console.log(num)
+                }));
+                console.log('Done')
+            }
+            start()
         }
 
         function showSelectedTutorial(){
@@ -386,18 +405,18 @@
                     if(activeTutorial == 3){
                         console.log("activeTutorial ",activeTutorial);
                         readFileFromDiskBlob("tutorials/compiledControllers/parkingTutorial/mainController.wasm");
-                        filesFromDisk.push(readFileFromDisk("tutorials/compiledControllers/parkingTutorial/mainController.js"));
+                        filesFromDisk[1] = readFileFromDisk("tutorials/compiledControllers/parkingTutorial/mainController.js");
                     }
                     if(activeTutorial == 4){
                         console.log("activeTutorial ",activeTutorial);
                         readFileFromDiskBlob("tutorials/compiledControllers/elkTestTutorial/mainController.wasm");
-                        filesFromDisk.push(readFileFromDisk("tutorials/compiledControllers/elkTestTutorial/mainController.js"));
+                        filesFromDisk[1] = readFileFromDisk("tutorials/compiledControllers/elkTestTutorial/mainController.js");
                     }
 
                     setTimeout(function () {
                         
-                        if(checkWasmBinaryData(filesFromDisk[1])){
-                            document.getElementById("indexSimulator").contentWindow.rawWebAssembly = filesFromDisk[1];
+                        if(checkWasmBinaryData(filesFromDisk[0])){
+                            document.getElementById("indexSimulator").contentWindow.rawWebAssembly = filesFromDisk[0];
 
                             setTimeout(function () {
                                 overrideReadBinaryWasm();
@@ -423,7 +442,7 @@
                 var doc = document.getElementById("indexSimulator").contentWindow.document;
                 var script_tag = doc.createElement('script');
                 script_tag.id = "mainController";
-                script_tag.text = filesFromDisk[0];
+                script_tag.text = filesFromDisk[1];
                 doc.body.appendChild(script_tag);
                 setTimeout(() => {
                     resolve();
@@ -443,10 +462,7 @@
                 if (arrayBuffer) {
                     var byteArray = new Uint8Array(arrayBuffer);
                     if(byteArray.byteLength){
-                        filesFromDisk.push(byteArray);
-                        console.log(byteArray.length);
-                        console.log(typeof(byteArray));
-                        console.log(byteArray);
+                        filesFromDisk[0] = byteArray;
                     } else 
                         console.error("Problem with reading .wasm file!");
                 }
@@ -541,9 +557,6 @@
                         console.log(filename);
                         //appendFile(".home/" + filename, fileData);
                         rawFileData.push(fileData);
-                        console.log(fileData.length);
-                        console.log(typeof(fileData));
-                        console.log(fileData);
                     });}
                     else{
                     zip.files[filename].async('string').then(function (fileData) {
