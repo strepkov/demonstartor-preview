@@ -174,7 +174,7 @@
         }
         
         // functions for working with VFS
-        
+
         function clearAllFiles() {
 
             var dirRoot = '/';
@@ -404,11 +404,9 @@
             
             setTimeout(function(){
                 if(isContentWasChanged()){
-                    setTimeout(function () {
-                        packData(folderName).then(sendData, function () {
-                            console.log("packing problem happened!");
-                        });
-                    }, 1000);
+                    packData(folderName).then(sendData, function () {
+                        console.log("packing problem happened!");
+                    });
                 } else {
                     console.log("The content of the files haven't been changed!");
                     // we can just read data from folder
@@ -495,15 +493,16 @@
         var packCounter = 0;
 
         function packData(folderName){
-            return new Promise((resolve, reject) => {
-                fileNames.forEach(function(item,index){
-                    zipContainer.file(item, filesData[index]);
-                    console.log(item," was packed!");
-                    packCounter++;
-                });
-                setTimeout(()=>{
-                    resolve();
-                },0)
+            return new Promise(r => {
+                const packFiles = async () =>{
+                    await Promise.all(fileNames.map(async function(item,index){
+                        await zipContainer.file(item, filesData[index]);
+                        console.log(item," was packed!");
+                        packCounter++;
+                    }));
+                }
+                packFiles();
+                r();
             });
         }
 
