@@ -88,67 +88,19 @@
             },2000);
         }
 
-        function removeFolder(apiFs, filePath) {
-            return new Promise(function (resolve, reject) {
-                apiFs.rmfile(filePath, function(err){
-                    if (err) throw err;
-                });
-            });
-        }
-
-        function clearAllFiles() {
-
-            var dirRoot = '/';
-            var apiFs = document.getElementById("ide").contentWindow.api.fs;
-
-            apiFs.readdir(dirRoot, function (err, dir) {
-
-                if (err) throw err;
-                
-                dir.forEach(item => {
-                    // The folder(item) has to be a root directory for a model
-                    if (item.mime == "folder" && !(item.name).includes(".")) {
-
-                        apiFs.readdir(item.fullPath, async function (err, dirInternal) {
-
-                            if (err) throw err;
-
-                            const removeFiles = async () =>{
-                                await Promise.all(dirInternal.map(async file => {
-                                    await removeFolder(apiFs,file.fullPath);
-                                }));
-                            }
-                            await removeFiles();
-                        });
-                        
-                        // Still has to be improved!
-                        setTimeout(function(){
-                            // recursive does not work!!!
-                            apiFs.rmdir(item.fullPath, { recursive: true }, function (err) {
-                                if (err) return console.error(err);
-                                console.log("The directory is deleted");
-                            });
-                        },500);
-                    }
-                });
-            });
-        }
-
-        function promiseTest() {
-
-            var testArray = [1,2,3];
-
-            const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
-
-            const start = async () => {
-                await Promise.all(testArray.map(async num => {
-                    await waitFor(50)
-                    console.log(num)
-                }));
-                console.log('Done')
-            }
-            start()
-        }
+        // function promiseTest() {
+        //     var testArray = [1,2,3];
+        //     const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
+        //     const start = async () => {
+        //         await Promise.all(testArray.map(async num => {
+        //             await waitFor(50)
+        //             console.log(num)
+        //             console.log("after!");
+        //         }));
+        //         console.log('Done')
+        //     }
+        //     start();
+        // }
 
         function showSelectedTutorial(){
 
@@ -176,11 +128,6 @@
 		}
 
         function loadMainController(){
-
-            // if(document.getElementById("indexSimulator").contentWindow.document.getElementById('mainController')){
-            //     var elements = document.getElementById("indexSimulator").contentWindow.document.getElementById('mainController');
-            //     while (elements[0]) elements[0].parentNode.removeChild(elements[0]);
-            // }
 
             return new Promise((resolve, reject) => {
                 var doc = document.getElementById("indexSimulator").contentWindow.document;
@@ -225,18 +172,90 @@
 
             if (checkWasmBinaryData(rawFileData[1])) loadWasmData();
         }
+        
+        // functions for working with VFS
+        
+        function clearAllFiles() {
 
-        function appendFile(dirName,fileName,fileContent){
-            document.getElementById("ide").contentWindow.api.
-                fs.mkdir(dirName,function (err, data) {
-                    if (err) throw err;
-                });
-            document.getElementById("ide").contentWindow.api.
-                fs.appendFile(fileName,fileContent,function (err, data) {
-                    if (err) throw err;
-                });
-            filesFromDiskData.push(fileContent); // Save data from disk to array
+            var dirRoot = '/';
+            var files = [];
+            var apiFs = document.getElementById("ide").contentWindow.api.fs;
+
+            apiFs.readdir(dirRoot, function (err, dir) {
+
+                if (err) throw err;
+            
+                const start = async () => {
+                    await Promise.all(dir.map(async item => {
+                        // The folder(item) has to be a root directory for a model
+                        if (item.mime == "folder" && !(item.name).includes(".")) {
+
+                            await readDirAsync(item, files);
+                            removeDir(item);
+                        }
+                }))}
+                
+                start();
+            });
         }
+
+        function readDirAsync(dir, filesArray){
+            return new Promise(r => {
+                var apiFs = document.getElementById("ide").contentWindow.api.fs;
+                apiFs.readdir( dir.fullPath, function (err, dirInternal) {
+                    if (err) throw err;
+                    // filesArray.push(dirInternal);
+                    const removeFiles = async () =>{
+                            await Promise.all(dirInternal.map(async file => {
+                                await removeFile(apiFs,file);
+                            }));
+                    }
+                    removeFiles();
+                    r();
+                })});
+        }
+
+        function removeFile(apiFs, file) {
+            return new Promise(r => {
+                document.getElementById("ide").contentWindow.api.fs.rmfile(file.fullPath, err => {
+                    if (err) throw err;
+                });
+                console.log(file.fullPath," deleted!");
+                r();
+            });
+        }
+
+        function removeDir(dir) {
+            return new Promise(r => {
+                document.getElementById("ide").contentWindow.api.fs.rmdir(dir.fullPath, e => {
+                    if (e) return console.error(e);
+                    console.log("The directory " + dir.fullPath + " is deleted");
+                    r();
+                });
+            });
+        }
+
+        function appendFile(fileName,fileContent){
+            return new Promise(r => {
+                document.getElementById("ide").contentWindow.api.fs.appendFile(fileName,fileContent, e => {
+                    if (e) throw e;
+                });
+                filesFromDiskData.push(fileContent); // Save data from disk to array
+                console.log("Added file : " + fileName);
+                r();
+            });
+        }
+
+        function appendDir(dirName){
+            return new Promise(r => {
+                document.getElementById("ide").contentWindow.api.fs.mkdir(dirName, e => {
+                    if (e) throw e;
+                });
+                console.log("Added dir : " + dirName);
+                r();
+            });
+        }
+        // end
 
         function readFileFromDisk(file) {
             var oReq = new XMLHttpRequest();
@@ -249,34 +268,27 @@
                     }
                 }
             }
+            oReq.onerror = function(){
+                    console.log("error disk reading!");
+                }
             oReq.send(null);
             return text;
         }
-
-
-        
-        // Test function to don't create every time controller's file to test the system 
-        // function appendTestModel(){
-        //     appendFile("MainController.emam", readFileFromDisk("simulator1/MainController.emam"));
-        //     appendFile("ConstantVelocity.emam", readFileFromDisk("simulator1/ConstantVelocity.emam"));
-        //     appendFile("SteeringControl.emam", readFileFromDisk("simulator1/SteeringControl.emam"));
-        //     appendFile("GameOverTrigger.emam", readFileFromDisk("simulator1/GameOverTrigger.emam"));
-        // }
         
         var activeTutorial = 0;
 
         function appendTestTutorial3(){
            
             clearAllFiles();
-
             document.getElementById('tutorialFrame').src = "tutorials/html/tutorial03.md.html";
             
             setTimeout(function(){
                 filesFromDiskData = [];
-                appendFile("/controller03","controller03/MainController.emam", readFileFromDisk("tutorials/controllers/controller03/MainController.emam"));
-                appendFile("/controller03","controller03/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller03/ParkingController.emam"));
-                appendFile("/controller03","controller03/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller03/SearchParkingPlaceController.emam"));
-                appendFile("/controller03","controller03/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller03/VelocityController.emam"));
+                appendDir("/controller03");
+                appendFile("/controller03/MainController.emam", readFileFromDisk("tutorials/controllers/controller03/MainController.emam"));
+                appendFile("/controller03/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller03/ParkingController.emam"));
+                appendFile("/controller03/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller03/SearchParkingPlaceController.emam"));
+                appendFile("/controller03/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller03/VelocityController.emam"));
             },500);
 
             document.getElementById("indexSimulator").contentWindow.presentationObjects = 3;
@@ -294,14 +306,14 @@
         function appendTestTutorial4(){
 
             clearAllFiles();
-
             document.getElementById('tutorialFrame').src = "tutorials/html/tutorial04.md.html";
     
             setTimeout(function(){
                 filesFromDiskData = [];
-                appendFile("/controller04","controller04/MainController.emam", readFileFromDisk("tutorials/controllers/controller04/MainController.emam"));
-                appendFile("/controller04","controller04/ConeRunner.emam", readFileFromDisk("tutorials/controllers/controller04/ConeRunner.emam"));
-                appendFile("/controller04","controller04/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller04/VelocityController.emam"));
+                appendDir("/controller04");
+                appendFile("controller04/MainController.emam", readFileFromDisk("tutorials/controllers/controller04/MainController.emam"));
+                appendFile("controller04/ConeRunner.emam", readFileFromDisk("tutorials/controllers/controller04/ConeRunner.emam"));
+                appendFile("controller04/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller04/VelocityController.emam"));
             },500);
 
             document.getElementById("indexSimulator").contentWindow.presentationObjects = 4;
