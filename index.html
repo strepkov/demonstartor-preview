@@ -360,15 +360,19 @@
             return check;
         }
 
+        // related to the issue with HTTPS certificate
         var firstTimeRunAlert = false;
 
-        // traverse the folder(project name) 
-        function readAllFiles() {
+        function showAlertHTTPS(){
 
             if (!firstTimeRunAlert) {
                 alert("There is an security issue with the connection to the server RWTH-Aachen. It does not have HTTPS certificate yet. To be able to send the data to the server, please allow executing the insecure content. \n In the Chrome browser, the small shield is appeared in the upper right conner, just click on in and then click on - Load unsafe scripts. Then, try please send again. \n We are really sorry for inconvenience. Thank you for your understanding.");
                 firstTimeRunAlert = true;
             }
+        }
+
+        // traverse the folder(project name) 
+        function readAllFiles() {
 
             document.getElementById("indexSimulator").contentWindow.notReadyToGo();
 
@@ -404,6 +408,7 @@
             
             setTimeout(function(){
                 if(isContentWasChanged()){
+                    showAlertHTTPS();
                     packData(folderName).then(sendData, function () {
                         console.log("packing problem happened!");
                     });
