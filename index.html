@@ -35,7 +35,7 @@
                 <tr>
                     <th><button onclick="appendTestTutorial3()"><b>1a Step</b> : Parking tutorial</button></th>
                     <th rowspan="2"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
-                    <th rowspan="2"><button onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
+                    <th rowspan="2"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
                 </tr>
                 <tr>
                     <td><button onclick="appendTestTutorial4()"><b>1b Step</b> : Elk-Test tutorial</button></td>
@@ -88,19 +88,6 @@
             },2000);
         }
 
-        // function promiseTest() {
-        //     var testArray = [1,2,3];
-        //     const waitFor = (ms) => new Promise(r => setTimeout(r, ms));
-        //     const start = async () => {
-        //         await Promise.all(testArray.map(async num => {
-        //             await waitFor(50)
-        //             console.log(num)
-        //             console.log("after!");
-        //         }));
-        //         console.log('Done')
-        //     }
-        //     start();
-        // }
 
         function showSelectedTutorial(){
 
@@ -126,6 +113,14 @@
 				document.getElementById("rightSide2").style.display = 'none';
             }
 		}
+
+        function disableCompileBtn() {
+            document.getElementById("start").disabled = true;
+        }
+
+        function enableCompileBtn() {
+            document.getElementById("start").disabled = false;
+        } 
 
         function loadMainController(){
 
@@ -171,6 +166,7 @@
         function checkWasm(){
 
             if (checkWasmBinaryData(rawFileData[1])) loadWasmData();
+            else enableCompileBtn();
         }
         
         // functions for working with VFS
@@ -374,7 +370,9 @@
         // traverse the folder(project name) 
         function readAllFiles() {
 
+            disableCompileBtn();
             document.getElementById("indexSimulator").contentWindow.notReadyToGo();
+            
 
             filesData = [];
             fileNames = [];
@@ -444,6 +442,7 @@
                             }, 100);
                         } else {
                             console.log(".wasm file error!");
+                            enableCompileBtn();
                         }
                     }, 100);
                 }
