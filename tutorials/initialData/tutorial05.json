@@ -1,0 +1,42 @@
+{
+    "car" : 
+    {
+        "start" : "-105:1",
+        "end" : "z43"
+    },
+    "trackObject0" :
+    {
+        "position" : "-1:-75",
+        "width" : "1",
+        "height" : "1",
+        "type" : "cone"
+    },
+    "trackObject1" :
+    {
+        "position" : "5:-50",
+        "width" : "1",
+        "height" : "1",
+        "type" : "cone"
+    },
+    "trackObject2" :
+    {
+        "position" : "1:-25",
+        "width" : "1",
+        "height" : "1",
+        "type" : "cone"
+    },
+    "trackObject3" :
+    {
+        "position" : "-6:0",
+        "width" : "1",
+        "height" : "1",
+        "type" : "cone"
+    },
+    "trackObject4" :
+    {
+        "position" : "4:25",
+        "width" : "1",
+        "height" : "1",
+        "type" : "cone"
+    }
+}

@@ -34,11 +34,14 @@
             <table>
                 <tr>
                     <th><button onclick="appendTestTutorial3()"><b>1a Step</b> : Parking tutorial</button></th>
-                    <th rowspan="2"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
-                    <th rowspan="2"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
+                    <th rowspan="3"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
+                    <th rowspan="3"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
                 </tr>
                 <tr>
                     <td><button onclick="appendTestTutorial4()"><b>1b Step</b> : Elk-Test tutorial</button></td>
+                </tr>
+                <tr>
+                    <td><button onclick="appendTestTutorial5()"><b>1c Step</b> : FreeRide tutorial</button></td>
                 </tr>
             </table>
             
@@ -83,9 +86,9 @@
         
 
         function cleanOnLoad(){
-            setTimeout(function(){
-                if (document.getElementById("ide").contentWindow.api) clearAllFiles();
-            },2000);
+            // setTimeout(function(){
+            //     if (document.getElementById("ide").contentWindow.api) clearAllFiles();
+            // },2000);
         }
 
 
@@ -326,6 +329,35 @@
             activeTutorial = 4;
         }
 
+        function appendTestTutorial5() {
+
+            clearAllFiles();
+            
+            document.getElementById('tutorialFrame').src = "tutorials/html/tutorial04.md.html";
+            
+            setTimeout(function () {
+                filesFromDiskData = [];
+                appendDir("/controller05");
+                appendFile("controller05/MainController.emam", readFileFromDisk("tutorials/controllers/controller05/MainController.emam"));
+                appendFile("controller05/PassObjectsController.emam", readFileFromDisk("tutorials/controllers/controller05/PassObjectsController.emam"));
+                appendFile("controller05/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller05/VelocityController.emam"));
+            }, 500);
+            
+            document.getElementById("indexSimulator").contentWindow.presentationObjects = 5;
+
+            document.getElementById("indexSimulator").contentWindow.deleteCones();
+            document.getElementById("indexSimulator").contentWindow.hideCars();
+
+            document.getElementById("indexSimulator").contentWindow.showCones2();
+            document.getElementById("indexSimulator").contentWindow.setPosition(
+                document.getElementById("indexSimulator").contentWindow.currentCar, 1, 0.2, -120);
+            
+            document.getElementById("indexSimulator").contentWindow.rotateCar(
+                document.getElementById("indexSimulator").contentWindow.currentCar, 0);
+                
+            activeTutorial = 5;
+        }
+
         // Read files from ide and pack
         var filesData = Array();
         var fileNames = Array();
@@ -543,6 +575,7 @@
                             
                             console.log(xhr.status);
                             console.log(xhr.statusText);
+                            enableCompileBtn();
                         }
                     }
                 }

@@ -1,0 +1,41 @@
+package controller05;
+
+import VelocityController;
+import PassObjectsController;
+
+component MainController{
+    ports 
+        in Q(-200m:200m) frontLeftSensor,
+        in Q(-200m:200m) frontRightSensor,
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) frontRightSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in Q(-200m:200m) backRightSideSensor,
+        in Q(-200m:200m) backLeftSensor,
+        in Q(-200m:200m) backRightSensor,
+
+        in Q time,
+        in Q(0km/h:250km/h) velocity,
+
+        in Q(-200m:200m) x,
+        in Q(-200m:200m) y,
+
+        out Q(-2m/s^2:2m/s^2) acceleration,
+        out Q(-180:180) steering,
+        out B status;
+
+
+    instance VelocityController velocityController;
+    connect velocity->velocityController.velocity;
+    connect velocityController.acceleration->acceleration;
+    
+    instance PassObjectsController passObjectsController;
+    connect status -> passObjectsController.status;
+    connect frontLeftSensor -> passObjectsController.frontLeftSensor;
+    connect frontRightSensor -> passObjectsController.frontRightSensor;
+    connect frontLeftSideSensor -> passObjectsController.frontLeftSideSensor;
+    connect frontRightSideSensor -> passObjectsController.frontRightSideSensor;
+    connect backLeftSideSensor ->passObjectsController.backLeftSideSensor;
+    connect backRightSideSensor -> passObjectsController.backRightSideSensor;
+    connect passObjectsController.steering -> steering;
+}

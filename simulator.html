@@ -206,6 +206,14 @@
 			addObjectsOnTrack(modelObject, 1, 0.3, 25);
 		}
 
+		function showCones2() {
+			addObjectsOnTrack(modelObject, -1, 0.3, -75);
+			addObjectsOnTrack(modelObject, 5, 0.3, -50);
+			addObjectsOnTrack(modelObject, 1, 0.3, -25);
+			addObjectsOnTrack(modelObject, -6, 0.3, 0);
+			addObjectsOnTrack(modelObject, 4, 0.3, 25);
+		}
+
 		function deleteCones() {
 			for (var i = 0; i < objectsOnTrack.length; i++) {
 				scene.remove(objectsOnTrack[i]);
@@ -1018,7 +1026,7 @@
 		var simulationStatus = false;
 		var simulationTimeLimit = 3600;
 		var showLogsData = false;
-		var tutorialConfiguration = "tutorials/initialData/tutorial03.json";
+		var tutorialConfiguration = "tutorials/initialData/tutorial05.json";
 		var carInitialPosition = [];
 		// Data from .json
 		var trackObjects = [];	
@@ -1115,10 +1123,26 @@
 				}
 			}
 
+			if (presentationObjects == 5) {
+
+				console.log("Number of objects in json : ", trackObjects.length);
+
+				carInitialPosition = trackCarPosition;
+				for (var i in trackObjects) {
+
+					// if object does not have width/hide -> don't add into math model
+					if ((trackObjects[i])[2] != 0 && (trackObjects[i])[3] != 0) {
+						addObjectOnTrack([+(trackObjects[i])[0], +(trackObjects[i])[1]], (trackObjects[i])[2], (trackObjects[i])[3]);
+						console.log("Added object : ", trackObjects[i]);
+					}
+				}
+			}
+
 			// set math model position
 			simulatorInitPosition(carInitialPosition[0], carInitialPosition[1]);
 			// set visualization position
 			setPosition(currentCar, carInitialPosition[1], 0.2, carInitialPosition[0]);
+			rotateCar(currentCar, 0);
 
 			readyToGo();
 		}
@@ -1146,14 +1170,14 @@
 			var distances = simulatorGetDistances();
 
 			// TODO: define interface for standard wasm-model
-			Module.setFl(distances[0] * (Math.floor(Math.random() * slider.value) + 95) / 100);
-			Module.setFr(distances[1] * (Math.floor(Math.random() * slider.value) + 95) / 100);
-			Module.setSlf(distances[2] * (Math.floor(Math.random() * slider.value) + 95) / 100);
-			Module.setSlb(distances[3] * (Math.floor(Math.random() * slider.value) + 95) / 100);
-			Module.setSrf(distances[4] * (Math.floor(Math.random() * slider.value) + 95) / 100);
-			Module.setSrb(distances[5] * (Math.floor(Math.random() * slider.value) + 95) / 100);
-			Module.setBl(distances[6] * (Math.floor(Math.random() * slider.value) + 95) / 100);
-			Module.setBr(distances[7] * (Math.floor(Math.random() * slider.value) + 95) / 100);
+			Module.setFrontLeftSensor(distances[0] * (Math.floor(Math.random() * slider.value) + 95) / 100);
+			Module.setFrontRightSensor(distances[1] * (Math.floor(Math.random() * slider.value) + 95) / 100);
+			Module.setFrontLeftSideSensor(distances[2] * (Math.floor(Math.random() * slider.value) + 95) / 100);
+			Module.setBackLeftSideSensor(distances[3] * (Math.floor(Math.random() * slider.value) + 95) / 100);
+			Module.setFrontRightSideSensor(distances[4] * (Math.floor(Math.random() * slider.value) + 95) / 100);
+			Module.setBackRightSideSensor(distances[5] * (Math.floor(Math.random() * slider.value) + 95) / 100);
+			Module.setBackLeftSensor(distances[6] * (Math.floor(Math.random() * slider.value) + 95) / 100);
+			Module.setBackRightSensor(distances[7] * (Math.floor(Math.random() * slider.value) + 95) / 100);
 
 			Module.setX(simulator.output.xi.value);
 			Module.setY(simulator.output.yi.value);
