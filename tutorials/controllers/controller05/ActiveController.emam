@@ -8,7 +8,7 @@ component ActiveController {
 
 	implementation Math{                    
 
-    	if (xPosition > 20)
+    	if (xPosition > 15)
             activePassObject = 0;
             activeSearchParkingPlace = 1;
         else
