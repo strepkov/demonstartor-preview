@@ -8,11 +8,12 @@ component PassObjectsController {
         in Q(-200m:200m) frontRightSideSensor,
         in Q(-200m:200m) backLeftSideSensor,
         in Q(-200m:200m) backRightSideSensor,
-		out B status,
+		in B active,
         out Q steering;
 
-	implementation Math{                    
+	implementation Math{
 
+	if(active)
     	if((frontLeftSensor < 10) && (backRightSideSensor > 5))
     	    steering = 1;
     	else
@@ -29,5 +30,8 @@ component PassObjectsController {
     	        end
     	    end
     	end
+	else
+    	steering = 0;
+	end
 	}
 }

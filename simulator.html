@@ -207,11 +207,11 @@
 		}
 
 		function showCones2() {
-			addObjectsOnTrack(modelObject, -1, 0.3, -75);
-			addObjectsOnTrack(modelObject, 5, 0.3, -50);
-			addObjectsOnTrack(modelObject, 1, 0.3, -25);
-			addObjectsOnTrack(modelObject, -6, 0.3, 0);
-			addObjectsOnTrack(modelObject, 4, 0.3, 25);
+			addObjectsOnTrack(modelObject, -1, 0.3, -85);
+			addObjectsOnTrack(modelObject, 5, 0.3, -60);
+			addObjectsOnTrack(modelObject, 1, 0.3, -35);
+			addObjectsOnTrack(modelObject, -6, 0.3, -10);
+			addObjectsOnTrack(modelObject, -3, 0.3, 10);
 		}
 
 		function deleteCones() {
@@ -263,6 +263,11 @@
 		function showCars() {
 			setPosition(currentCar2, 7.5, 0.2, 22);
 			setPosition(currentCar3, 7.5, 0.2, 44);
+		}
+
+		function showCars2() {
+			setPosition(currentCar2, 7.5, 0.2, 32);
+			setPosition(currentCar3, 7.5, 0.2, 54);
 		}
 
 		function hideCars() {
@@ -1136,6 +1141,9 @@
 						console.log("Added object : ", trackObjects[i]);
 					}
 				}
+
+				addObjectOnTrack([7.5, 32], 4, 5);
+				addObjectOnTrack([7.5, 54], 4, 5);
 			}
 
 			// set math model position
@@ -1179,8 +1187,8 @@
 			Module.setBackLeftSensor(distances[6] * (Math.floor(Math.random() * slider.value) + 95) / 100);
 			Module.setBackRightSensor(distances[7] * (Math.floor(Math.random() * slider.value) + 95) / 100);
 
-			Module.setX(simulator.output.xi.value);
-			Module.setY(simulator.output.yi.value);
+			Module.setXPosition(simulator.output.xi.value);
+			Module.setYPosition(simulator.output.yi.value);
 
 			Module.setTime(simulator.output.ti.value);
 			Module.setVelocity(simulator.output.velocity.value);

@@ -341,6 +341,10 @@
                 appendFile("controller05/MainController.emam", readFileFromDisk("tutorials/controllers/controller05/MainController.emam"));
                 appendFile("controller05/PassObjectsController.emam", readFileFromDisk("tutorials/controllers/controller05/PassObjectsController.emam"));
                 appendFile("controller05/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller05/VelocityController.emam"));
+                appendFile("controller05/ActiveController.emam", readFileFromDisk("tutorials/controllers/controller05/ActiveController.emam"));
+                appendFile("controller05/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller05/SearchParkingPlaceController.emam"));
+                appendFile("controller05/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller05/ParkingController.emam"));
+                appendFile("controller05/SteeringProxyController.emam", readFileFromDisk("tutorials/controllers/controller05/SteeringProxyController.emam"));
             }, 500);
             
             document.getElementById("indexSimulator").contentWindow.presentationObjects = 5;
@@ -349,6 +353,7 @@
             document.getElementById("indexSimulator").contentWindow.hideCars();
 
             document.getElementById("indexSimulator").contentWindow.showCones2();
+            document.getElementById("indexSimulator").contentWindow.showCars2();
             document.getElementById("indexSimulator").contentWindow.setPosition(
                 document.getElementById("indexSimulator").contentWindow.currentCar, 1, 0.2, -120);
             
