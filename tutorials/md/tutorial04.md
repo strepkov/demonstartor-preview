@@ -11,7 +11,7 @@ To solve this tutorial you may use from 4 to 6 sensors, which measure the distan
 
 ![alt text](../img/drive_cones.png)
 
-The parking process can be divided in several steps steps:  
+The parking process can be divided in several steps:  
 1. Go straight until a cone it closer the 10m then start to rotate the car to round the cone.
 2. When a front part of the car is passed the cone, start to rotate in opposite direction.
 3. When the car is rotated enough to pass the next cone, stop rotation and continue moving straight.
