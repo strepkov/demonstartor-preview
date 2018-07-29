@@ -1288,13 +1288,7 @@
 			var resetSimulation = simulator.resetSimulation;
 			var resetSimulator = resetSimulation.bind(simulator);
 
-			// clean the logObject
-			while (logObject.telemetry.length) {
-				logObject.telemetry.pop();
-			}
-
-			// reload page to clean all drawings
-			parent.reloadTrajectoryPage();
+			resetTrajectoryOnly();
 
 			resetSimulator();
 
@@ -1316,6 +1310,17 @@
 
 			setPosition(currentCar, carInitialPosition[1], 0.2, carInitialPosition[0]);
 			rotateCar(currentCar, 0);
+		}
+
+		function resetTrajectoryOnly(){
+
+			// clean the logObject
+			while (logObject.telemetry.length) {
+				logObject.telemetry.pop();
+			}
+
+			// reload page to clean all drawings
+			parent.reloadTrajectoryPage();
 		}
 
 	</script>

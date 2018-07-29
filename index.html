@@ -274,6 +274,9 @@
         var activeTutorial = 0;
 
         function appendTestTutorial3(){
+
+            
+            document.getElementById("indexSimulator").contentWindow.resetTrajectoryOnly();
            
             clearAllFiles();
             document.getElementById('tutorialFrame').src = "tutorials/html/tutorial03.md.html";
@@ -301,6 +304,8 @@
 
         function appendTestTutorial4(){
 
+            document.getElementById("indexSimulator").contentWindow.resetTrajectoryOnly();
+            
             clearAllFiles();
             document.getElementById('tutorialFrame').src = "tutorials/html/tutorial04.md.html";
     
