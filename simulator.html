@@ -185,6 +185,8 @@
 		var objectsOnTrack = [];
 		var modelObject = 'models/cone.json';
 
+		var coneN;
+
 		function addObjectsOnTrack(modelJSON, x, y, z) {
 			coneLoader.load(modelJSON, function (object) {
 				objectsOnTrack.push(object);
@@ -192,6 +194,7 @@
 				object.position.x = x;
 				object.position.y = y;
 				object.position.z = z;
+				coneN = object;
 			}, onProgress, onError);
 		}
 
@@ -212,6 +215,10 @@
 			addObjectsOnTrack(modelObject, 1, 0.3, -35);
 			addObjectsOnTrack(modelObject, -6, 0.3, -10);
 			addObjectsOnTrack(modelObject, -3, 0.3, 10);
+		}
+
+		function showCones3() {
+			addObjectsOnTrack(modelObject, -1, 0.3, -85);
 		}
 
 		function deleteCones() {
@@ -1031,7 +1038,7 @@
 		var simulationStatus = false;
 		var simulationTimeLimit = 3600;
 		var showLogsData = false;
-		var tutorialConfiguration = "tutorials/initialData/tutorial05.json";
+		var tutorialConfiguration = "tutorials/initialData/tutorial06.json";
 		var carInitialPosition = [];
 		// Data from .json
 		var trackObjects = [];	
@@ -1146,6 +1153,21 @@
 				addObjectOnTrack([7.5, 54], 4, 5);
 			}
 
+			if (presentationObjects == 6) {
+
+				console.log("Number of objects in json : ", trackObjects.length);
+
+				carInitialPosition = trackCarPosition;
+				for (var i in trackObjects) {
+
+					// if object does not have width/hide -> don't add into math model
+					if ((trackObjects[i])[2] != 0 && (trackObjects[i])[3] != 0) {
+						addObjectOnTrack([+(trackObjects[i])[0], +(trackObjects[i])[1]], (trackObjects[i])[2], (trackObjects[i])[3]);
+						console.log("Added object : ", trackObjects[i]);
+					}
+				}
+			}
+
 			// set math model position
 			simulatorInitPosition(carInitialPosition[0], carInitialPosition[1]);
 			// set visualization position
@@ -1159,6 +1181,8 @@
 		// var x_previous = 0;
 		// var y_previous = 0;
 
+		var indexMove = -85;
+
 
 		function move() {
 
@@ -1168,6 +1192,14 @@
 			var run = simulator.run;
 			var simulatorRun = run.bind(simulator);
 
+			// change object position
+			var moveObject = simulator.changeObjectPosition;
+			var changeObjectPosition = moveObject.bind(simulator);
+			
+			changeObjectPosition(0, [-1, indexMove], 6, 6);
+			indexMove += 0.4;
+			setPosition(coneN, -1, 0.3, indexMove);
+			//
 			var getDistances = simulator.getDistances;
 			var simulatorGetDistances = getDistances.bind(simulator);
 
@@ -1313,6 +1345,9 @@
 		}
 
 		function resetSimulation() {
+
+			indexMove = -85;
+			setPosition(coneN, -1, 0.3, -85);
 
 			var simulator = window.simulatorInstance;
 
