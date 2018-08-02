@@ -34746,6 +34746,7 @@ define("track/Track", ["require", "exports", "track/WallCurved", "track/WallLine
             this.walls.push(new WallCurved_1.WallCurved([-123, 51.3], 41, [-164, 51.3], [-122, 10]));
         }
         Track.prototype.addRectangularObject = function (centralPoint, width, hight) {
+            var startObjectPosition = this.walls.length + 1;
             var point1 = [(centralPoint[1] + hight / 2), (centralPoint[0] - width / 2)];
             var point2 = [(centralPoint[1] - hight / 2), (centralPoint[0] - width / 2)];
             var point3 = [(centralPoint[1] + hight / 2), (centralPoint[0] + width / 2)];
@@ -34755,6 +34756,17 @@ define("track/Track", ["require", "exports", "track/WallCurved", "track/WallLine
             this.walls.push(new WallLinear_1.WallLinear(point4, point3));
             this.walls.push(new WallLinear_1.WallLinear(point3, point1));
             console.log("Added the object:", point1, point2, point3, point4);
+            return startObjectPosition;
+        };
+        Track.prototype.relocateRectangularObject = function (positionInArry, centralPoint, width, hight) {
+            var point1 = [(centralPoint[1] + hight / 2), (centralPoint[0] - width / 2)];
+            var point2 = [(centralPoint[1] - hight / 2), (centralPoint[0] - width / 2)];
+            var point3 = [(centralPoint[1] + hight / 2), (centralPoint[0] + width / 2)];
+            var point4 = [(centralPoint[1] - hight / 2), (centralPoint[0] + width / 2)];
+            this.walls[positionInArry] = new WallLinear_1.WallLinear(point1, point2);
+            this.walls[positionInArry + 1] = new WallLinear_1.WallLinear(point2, point4);
+            this.walls[positionInArry + 2] = new WallLinear_1.WallLinear(point4, point3);
+            this.walls[positionInArry + 3] = new WallLinear_1.WallLinear(point3, point1);
         };
         return Track;
     }());
@@ -35009,6 +35021,7 @@ define("Simulator", ["require", "exports", "math/math", "car/Car", "Sinput", "So
     Object.defineProperty(exports, "__esModule", { value: true });
     var Simulator = (function () {
         function Simulator() {
+            this.objectsPosition = [];
             this.velocity = math.unit('0 m/s');
             this.time = math.unit('0 sec');
             this.samplingTime = math.unit('0.3 sec');
@@ -35032,7 +35045,13 @@ define("Simulator", ["require", "exports", "math/math", "car/Car", "Sinput", "So
             console.log("Simulator is reseted");
         };
         Simulator.prototype.addObjectOnTrack = function (centralPoint, width, hight) {
-            this.track.addRectangularObject(centralPoint, width, hight);
+            var numberInArray = this.track.addRectangularObject(centralPoint, width, hight);
+            this.objectsPosition.push(numberInArray);
+            console.log(numberInArray);
+        };
+        Simulator.prototype.changeObjectPosition = function (objectInArray, position, width, hight) {
+            this.track.relocateRectangularObject(this.objectsPosition[objectInArray], position, width, hight);
+            console.log(this.objectsPosition[objectInArray]);
         };
         Simulator.prototype.calculate = function () {
             this.time = math.add(this.time, this.samplingTime);
