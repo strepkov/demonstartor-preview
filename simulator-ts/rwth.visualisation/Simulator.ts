@@ -19,10 +19,13 @@ class Simulator {
     private track: Track;
     public output: Soutput; //stores the output data(new positions, degree, velocity etc.)
     private input: Sinput;
+    private objectsPosition: number[];
 
     //private listeners: Array<Function>;
 
     public constructor() {
+
+        this.objectsPosition = [];
 
         // Initial velocity is 0 m/s, Initial time is 0 s
         this.velocity = math.unit('0 m/s'); // v - m/s
@@ -86,7 +89,15 @@ class Simulator {
 
     public addObjectOnTrack(centralPoint:number[], width:number, hight:number){
 
-        this.track.addRectangularObject(centralPoint, width, hight);
+        let numberInArray = this.track.addRectangularObject(centralPoint, width, hight);
+        this.objectsPosition.push(numberInArray);
+        console.log(numberInArray);
+    }
+
+    public changeObjectPosition(objectInArray: number, position: number[], width: number, hight: number){
+
+        this.track.relocateRectangularObject(this.objectsPosition[objectInArray], position, width, hight);
+        console.log(this.objectsPosition[objectInArray]);
     }
 
     // public addSimListener(simListener: Function) {
