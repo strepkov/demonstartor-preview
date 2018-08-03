@@ -18,7 +18,7 @@ component DistanceController<Q distance = 10m> {
     		run = 1;
         end
         
-        if ((run < 1) && ((previousFL < frontLeftSensor) || (previousFL < frontLeftSensor)))
+        if ((run < 1) && ((previousFL < frontLeftSensor) || (previousFR < frontRightSensor)))
         	follow = 1;
         else
         	follow = 0;

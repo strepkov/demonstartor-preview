@@ -2,6 +2,9 @@ package controller06;
 
 import VelocityController;
 import DistanceController;
+import CheckDistanceController;
+import ActiveController;
+import PassObjectController;
 
 component MainController{
     ports 
@@ -15,22 +18,44 @@ component MainController{
         in Q(-200m:200m) backRightSensor,
 
         in Q time,
-        in Q(0km/h:250km/h) velocity,
+        in Q(0km/h:250km/h) velocity, 
 
         in Q(-200m:200m) xPosition,
         in Q(-200m:200m) yPosition,
 
-        out Q(-2m/s^2:2m/s^2) acceleration,
+        out Q(-2m/s^2:2m/s^2) acceleration, 
         out Q(-180:180) steering,
         out B status;
 
-    instance VelocityController<2m/s> velocityController;
+    instance VelocityController<2 m/s> velocityController;
     connect velocity->velocityController.velocity;
     connect velocityController.acceleration->acceleration;
 
-    instance DistanceController<5m> distanceController;
+    instance DistanceController<10 m> distanceController;
     connect frontLeftSensor -> distanceController.frontLeftSensor;
     connect frontRightSensor -> distanceController.frontRightSensor;
     connect distanceController.run -> velocityController.run;
     connect distanceController.follow -> velocityController.follow;
+
+    instance ActiveController activeController;
+    connect xPosition -> activeController.xPosition;
+    connect activeController.status -> status;
+
+    instance CheckDistanceController<50> checkDistanceController;
+    
+    connect frontLeftSensor -> checkDistanceController.frontLeftSensor;
+    connect frontRightSensor -> checkDistanceController.frontRightSensor;
+    connect frontLeftSideSensor -> checkDistanceController.frontLeftSideSensor;
+    connect frontRightSideSensor -> checkDistanceController.frontRightSideSensor;
+    connect backLeftSideSensor -> checkDistanceController.backLeftSideSensor;
+    connect backRightSideSensor -> checkDistanceController.backRightSideSensor;
+    
+    connect checkDistanceController.steering -> steering;
+    connect activeController.active -> checkDistanceController.active;
+    
+    instance PassObjectController passObjectController;
+    connect frontRightSideSensor -> passObjectController.frontRightSideSensor;
+    connect backRightSideSensor -> passObjectController.backRightSideSensor;
+    connect checkDistanceController.activatePassChecker -> passObjectController.active;
+    connect passObjectController.done -> checkDistanceController.passed;
 }

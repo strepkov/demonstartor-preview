@@ -12,7 +12,7 @@ component VelocityController<Q velMAX = 2m/s> {
     	if (run && (velocity < velMAX))
 			acceleration = 0.1 m/s^2;
     	else
-			acceleration = -0.05 m/s^2;
+			acceleration = -0.1 m/s^2;
         end
         
         if follow
