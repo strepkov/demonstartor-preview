@@ -9,8 +9,8 @@ component PassObjectController {
 
 	implementation Math{
 	    
-	    static Q passed0 = 0;
-	    static Q passed1 = 0;
+	    static B passed0 = 0;
+	    static B passed1 = 0;
 	    done = 0;
 	    
 	    if active

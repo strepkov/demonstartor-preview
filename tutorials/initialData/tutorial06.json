@@ -1,12 +1,12 @@
 {
     "car" : 
     {
-        "start" : "-105:1",
+        "start" : "-120:1",
         "end" : "z43"
     },
     "trackObject0" :
     {
-        "position" : "-1:-85",
+        "position" : "-1:-100",
         "width" : "1",
         "height" : "1",
         "type" : "cone"
