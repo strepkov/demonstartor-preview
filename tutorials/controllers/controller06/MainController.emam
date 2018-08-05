@@ -2,7 +2,7 @@ package controller06;
 
 import VelocityController;
 import DistanceController;
-import CheckDistanceController;
+import OvertakeController;
 import ActiveController;
 import PassObjectController;
 
@@ -41,21 +41,21 @@ component MainController{
     connect xPosition -> activeController.xPosition;
     connect activeController.status -> status;
 
-    instance CheckDistanceController<50> checkDistanceController;
+    instance OvertakeController<50> overtakeController;
     
-    connect frontLeftSensor -> checkDistanceController.frontLeftSensor;
-    connect frontRightSensor -> checkDistanceController.frontRightSensor;
-    connect frontLeftSideSensor -> checkDistanceController.frontLeftSideSensor;
-    connect frontRightSideSensor -> checkDistanceController.frontRightSideSensor;
-    connect backLeftSideSensor -> checkDistanceController.backLeftSideSensor;
-    connect backRightSideSensor -> checkDistanceController.backRightSideSensor;
+    connect frontLeftSensor -> overtakeController.frontLeftSensor;
+    connect frontRightSensor -> overtakeController.frontRightSensor;
+    connect frontLeftSideSensor -> overtakeController.frontLeftSideSensor;
+    connect frontRightSideSensor -> overtakeController.frontRightSideSensor;
+    connect backLeftSideSensor -> overtakeController.backLeftSideSensor;
+    connect backRightSideSensor -> overtakeController.backRightSideSensor;
     
-    connect checkDistanceController.steering -> steering;
-    connect activeController.active -> checkDistanceController.active;
+    connect overtakeController.steering -> steering;
+    connect activeController.active -> overtakeController.active;
     
     instance PassObjectController passObjectController;
     connect frontRightSideSensor -> passObjectController.frontRightSideSensor;
     connect backRightSideSensor -> passObjectController.backRightSideSensor;
-    connect checkDistanceController.activatePassChecker -> passObjectController.active;
-    connect passObjectController.done -> checkDistanceController.passed;
+    connect overtakeController.activatePassChecker -> passObjectController.active;
+    connect passObjectController.done -> overtakeController.passed;
 }
