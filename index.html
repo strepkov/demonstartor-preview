@@ -44,7 +44,7 @@
                     <td><button onclick="appendTestTutorial5()"><b>1c Step</b> : FreeRide tutorial</button></td>
                 </tr>
                 <tr>
-                    <td><button onclick="appendTestTutorial6()"><b>1d Step</b> : New tutorial</button></td>
+                    <td><button onclick="appendTestTutorial7()"><b>1d Step</b> : New tutorial</button></td>
                 </tr>
             </table>
             
@@ -371,19 +371,19 @@
             activeTutorial = 5;
         }
 
-        function appendTestTutorial6() {
+        function appendTestTutorial7() {
 
             clearAllFiles();
             // document.getElementById('tutorialFrame').src = "tutorials/html/tutorial04.md.html";
             setTimeout(function () {
                 filesFromDiskData = [];
-                appendDir("/controller06");
-                appendFile("controller06/MainController.emam", readFileFromDisk("tutorials/controllers/controller06/MainController.emam"));
-                appendFile("controller06/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller06/VelocityController.emam"));
-                appendFile("controller06/DistanceController.emam", readFileFromDisk("tutorials/controllers/controller06/DistanceController.emam"));
-                appendFile("controller06/ActiveController.emam", readFileFromDisk("tutorials/controllers/controller06/ActiveController.emam"));
-                appendFile("controller06/OvertakeController.emam", readFileFromDisk("tutorials/controllers/controller06/OvertakeController.emam"));
-                appendFile("controller06/PassObjectController.emam", readFileFromDisk("tutorials/controllers/controller06/PassObjectController.emam"));
+                appendDir("/controller07");
+                appendFile("controller07/MainController.emam", readFileFromDisk("tutorials/controllers/controller07/MainController.emam"));
+                appendFile("controller07/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller07/VelocityController.emam"));
+                appendFile("controller07/DistanceController.emam", readFileFromDisk("tutorials/controllers/controller07/DistanceController.emam"));
+                appendFile("controller07/ActiveController.emam", readFileFromDisk("tutorials/controllers/controller07/ActiveController.emam"));
+                appendFile("controller07/OvertakeController.emam", readFileFromDisk("tutorials/controllers/controller07/OvertakeController.emam"));
+                appendFile("controller07/PassObjectController.emam", readFileFromDisk("tutorials/controllers/controller07/PassObjectController.emam"));
             }, 500);
 
             document.getElementById("indexSimulator").contentWindow.presentationObjects = 6;
