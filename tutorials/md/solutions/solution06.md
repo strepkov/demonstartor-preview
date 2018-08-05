@@ -1,6 +1,6 @@
 # Solution(06)
 
-### Follow the car (adaptive cruise control).
+### Follow a car (adaptive cruise control).
 
 To solve that tutorial you have to use the MainController, like you did in the other tutorials. The difference here in other connections between the components:
 

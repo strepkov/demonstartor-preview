@@ -1,6 +1,6 @@
 # Tutorial(06)
 
-### Follow the car (adaptive cruise control).
+### Follow a car (adaptive cruise control).
 Implement a model which follow a car in front. The car in front starts movement and your car has to catch up the car in front and then follow it with the similar velocity. It should be something like adaptive cruise control for cars. At the picture you can see how the measurements are done:
 
 ![alt text](../img/adaptive_cruise.jpg)
