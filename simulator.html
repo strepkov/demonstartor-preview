@@ -221,6 +221,10 @@
 			addObjectsOnTrack(modelObject, -1, 0.3, -100);
 		}
 
+		function showCarTutorial6() {
+			setPosition(currentCar2, 1, 0.3, -80);
+		}
+
 		function deleteCones() {
 			for (var i = 0; i < objectsOnTrack.length; i++) {
 				scene.remove(objectsOnTrack[i]);
@@ -1038,7 +1042,7 @@
 		var simulationStatus = false;
 		var simulationTimeLimit = 3600;
 		var showLogsData = false;
-		var tutorialConfiguration = "tutorials/initialData/tutorial07.json";
+		var tutorialConfiguration = "tutorials/initialData/tutorial06.json";
 		var carInitialPosition = [];
 		// Data from .json
 		var trackObjects = [];	
@@ -1153,7 +1157,7 @@
 				addObjectOnTrack([7.5, 54], 4, 5);
 			}
 
-			if (presentationObjects == 7) {
+			if (presentationObjects == 7 || presentationObjects == 6) {
 
 				console.log("Number of objects in json : ", trackObjects.length);
 
@@ -1181,7 +1185,16 @@
 		// var x_previous = 0;
 		// var y_previous = 0;
 
-		var indexMove = -100;
+		// extra moving object positioning
+		var indexMove;
+
+		// (function () {
+		// 	if (presentationObjects == 6)
+		// 		indexMove = -80;
+		// 	if (presentationObjects == 7)
+		// 		indexMove = -100;
+		// })();
+
 
 
 		function move() {
@@ -1195,10 +1208,11 @@
 			// change object position
 			var moveObject = simulator.changeObjectPosition;
 			var changeObjectPosition = moveObject.bind(simulator);
+				
+			changeObjectPosition(0, [1, indexMove], 4, 4);
+			indexMove += 0.4;
+			setPosition(currentCar2, 1, 0.3, indexMove);
 			
-			changeObjectPosition(0, [-1, indexMove], 2, 2);
-			indexMove += 0.3;
-			setPosition(coneN, -1, 0.3, indexMove);
 			//
 			var getDistances = simulator.getDistances;
 			var simulatorGetDistances = getDistances.bind(simulator);
@@ -1346,8 +1360,16 @@
 
 		function resetSimulation() {
 
-			indexMove = -100;
-			setPosition(coneN, -1, 0.3, -100);
+			if (presentationObjects == 6){
+
+				indexMove = -80;
+				setPosition(currentCar2, 1, 0.3, -80);
+			}
+			if (presentationObjects == 7){
+
+				indexMove = -100;
+				setPosition(currentCar2, 1, 0.3, -100);
+			}
 
 			var simulator = window.simulatorInstance;
 

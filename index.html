@@ -34,8 +34,8 @@
             <table>
                 <tr>
                     <th><button onclick="appendTestTutorial3()"><b>1a Step</b> : Parking tutorial</button></th>
-                    <th rowspan="4"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
-                    <th rowspan="4"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
+                    <th rowspan="5"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
+                    <th rowspan="5"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
                 </tr>
                 <tr>
                     <td><button onclick="appendTestTutorial4()"><b>1b Step</b> : Elk-Test tutorial</button></td>
@@ -44,7 +44,10 @@
                     <td><button onclick="appendTestTutorial5()"><b>1c Step</b> : FreeRide tutorial</button></td>
                 </tr>
                 <tr>
-                    <td><button onclick="appendTestTutorial7()"><b>1d Step</b> : New tutorial</button></td>
+                    <td><button onclick="appendTestTutorial6()"><b>1d Step</b> : Following</button></td>
+                </tr>
+                <tr>
+                    <td><button onclick="appendTestTutorial7()"><b>1e Step</b> : Overtaking</button></td>
                 </tr>
             </table>
             
@@ -371,6 +374,31 @@
             activeTutorial = 5;
         }
 
+
+        function appendTestTutorial6() {
+
+            clearAllFiles();
+            // document.getElementById('tutorialFrame').src = "tutorials/html/tutorial04.md.html";
+            setTimeout(function () {
+                filesFromDiskData = [];
+                appendDir("/controller06");
+                appendFile("controller06/MainController.emam", readFileFromDisk("tutorials/controllers/controller06/MainController.emam"));
+                appendFile("controller06/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller06/VelocityController.emam"));
+                appendFile("controller06/DistanceController.emam", readFileFromDisk("tutorials/controllers/controller06/DistanceController.emam"));
+                appendFile("controller06/StatusController.emam", readFileFromDisk("tutorials/controllers/controller06/StatusController.emam"));
+            }, 500);
+            document.getElementById("indexSimulator").contentWindow.presentationObjects = 6;
+            document.getElementById("indexSimulator").contentWindow.indexMove = -80;
+            document.getElementById("indexSimulator").contentWindow.deleteCones();
+            document.getElementById("indexSimulator").contentWindow.hideCars();
+            document.getElementById("indexSimulator").contentWindow.showCarTutorial6();
+            document.getElementById("indexSimulator").contentWindow.setPosition(
+                document.getElementById("indexSimulator").contentWindow.currentCar, 1, 0.2, -100);
+            document.getElementById("indexSimulator").contentWindow.rotateCar(
+                document.getElementById("indexSimulator").contentWindow.currentCar, 0);
+            activeTutorial = 6;
+        }
+
         function appendTestTutorial7() {
 
             clearAllFiles();
@@ -386,7 +414,8 @@
                 appendFile("controller07/PassObjectController.emam", readFileFromDisk("tutorials/controllers/controller07/PassObjectController.emam"));
             }, 500);
 
-            document.getElementById("indexSimulator").contentWindow.presentationObjects = 6;
+            document.getElementById("indexSimulator").contentWindow.presentationObjects = 7;
+            document.getElementById("indexSimulator").contentWindow.indexMove = -100;
 
             document.getElementById("indexSimulator").contentWindow.deleteCones();
             document.getElementById("indexSimulator").contentWindow.hideCars();
@@ -396,7 +425,7 @@
                 document.getElementById("indexSimulator").contentWindow.currentCar, 1, 0.2, -120);
             document.getElementById("indexSimulator").contentWindow.rotateCar(
                 document.getElementById("indexSimulator").contentWindow.currentCar, 0);
-            activeTutorial = 6;
+            activeTutorial = 7;
         }
 
         // Read files from ide and pack
