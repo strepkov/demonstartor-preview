@@ -1,0 +1,30 @@
+package controller08;
+
+component SearchParkingPlaceController {
+    port
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in B enoughSpace,
+        out B activeMeasure,
+        out B foundPlace;
+
+    implementation Math{
+        
+        static Q passed0 = 0;
+        static Q passed1 = 0;
+        static Q passed2 = 0;
+        static Q found = 0;
+
+        if ((frontLeftSideSensor - backLeftSideSensor) < -3)
+                passed0 = 1;
+        end
+
+        if (((backLeftSideSensor - frontLeftSideSensor) < -3) && passed0 )
+                passed1 = 1;
+        end
+
+        // xor
+        activeMeasure = passed1;
+        foundPlace = found > 0;
+    }
+}

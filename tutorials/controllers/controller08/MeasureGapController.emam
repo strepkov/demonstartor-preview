@@ -1,0 +1,16 @@
+package controller08;
+
+component MeasureGapController<Q length = 10m> {
+    port
+        in Q(0km/h:250km/h) velocity,
+        in Q time,
+        in B active,
+        out B passed;
+
+    implementation Math{
+        
+        if active
+
+        end
+    }
+}
