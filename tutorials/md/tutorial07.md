@@ -1,7 +1,7 @@
 # Tutorial(07)
 
 ### Overtaking a car on a straight road
-In this tutorial we a going to implement model which is in charge of an overtaking process. We intend to use the previously created controller from the tutorial06. Now it is needed to catch up a front driving car and then if we have enough space for overtaking, do it.
+In this tutorial we are going to implement a model which is in charge of an overtaking process. We intend to use the previously created controller from the tutorial06. Now it is needed to catch up a front driving car and then ,if we have enough space for overtaking, carry out the maneuver.
 
 ![alt text](../img/overtaking.png)
 
