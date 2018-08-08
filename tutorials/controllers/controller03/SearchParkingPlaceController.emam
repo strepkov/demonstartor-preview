@@ -2,8 +2,8 @@ package controller03;
 
 component SearchParkingPlaceController {
     port
-        in Q frs,
-        in Q brs,
+        in Q frontLeftSideSensor,
+        in Q backLeftSideSensor,
         out B foundPlace;
 
     implementation Math{
@@ -13,21 +13,21 @@ component SearchParkingPlaceController {
         static Q third = 0;
         static Q found = 0;
 
-        if (frs > brs) && (second == 1)  && (third == 1)
+        if (frontLeftSideSensor > backLeftSideSensor) && (second == 1)  && (third == 1)
             found = 1;
             second = 0;
             third = 0;
         end
         
-        if frs > brs
+        if frontLeftSideSensor > backLeftSideSensor
             first = 1;
         end
         
-        if frs < brs
+        if frontLeftSideSensor < backLeftSideSensor
             second = 1;
         end
         
-        if (frs == brs) && (first == 1) && (second == 1)
+        if (frontLeftSideSensor == backLeftSideSensor) && (first == 1) && (second == 1)
             first = 0;
             second = 0;
             third = 1;

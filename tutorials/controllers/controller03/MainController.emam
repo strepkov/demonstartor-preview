@@ -6,14 +6,14 @@ import ParkingController;
 
 component MainController{
     ports 
-        in Q fl,
-        in Q fr,
-        in Q slf,
-        in Q slb,
-        in Q srf,
-        in Q srb,
-        in Q bl,
-        in Q br,
+        in Q(-200m:200m) frontLeftSensor,
+        in Q(-200m:200m) frontRightSensor,
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) frontRightSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in Q(-200m:200m) backRightSideSensor,
+        in Q(-200m:200m) backLeftSensor,
+        in Q(-200m:200m) backRightSensor,
 
         in Q time,
         in Q(0km/h:250km/h) velocity,
@@ -33,17 +33,17 @@ component MainController{
 
     instance SearchParkingPlaceController searchParkingPlaceController;
 
-    connect slf->searchParkingPlaceController.frs;
-    connect slb->searchParkingPlaceController.brs;
+    connect frontLeftSideSensor->searchParkingPlaceController.frontLeftSideSensor;
+    connect backLeftSideSensor->searchParkingPlaceController.backLeftSideSensor;
     
     instance ParkingController parkingController;
     
-    connect bl->parkingController.bl;
-    connect br->parkingController.br;
-    connect fr->parkingController.fr;
-    connect fl->parkingController.fl;
-    connect slf->parkingController.slf;
-    connect slb->parkingController.slb;
+    connect backLeftSensor->parkingController.backLeftSensor;
+    connect backRightSensor->parkingController.backRightSensor;
+    connect frontRightSensor->parkingController.frontRightSensor;
+    connect frontLeftSensor->parkingController.frontLeftSensor;
+    connect frontLeftSideSensor->parkingController.frontLeftSideSensor;
+    connect backLeftSideSensor->parkingController.backLeftSideSensor;
     connect searchParkingPlaceController.foundPlace->velocityController.reverseMove;
     connect searchParkingPlaceController.foundPlace->parkingController.reverseMove;
     connect parkingController.steeringAngle->steering;
