@@ -34,8 +34,8 @@
             <table>
                 <tr>
                     <th><button onclick="appendTestTutorial3()"><b>1a Step</b> : Parking tutorial</button></th>
-                    <th rowspan="5"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
-                    <th rowspan="5"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
+                    <th rowspan="6"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
+                    <th rowspan="6"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
                 </tr>
                 <tr>
                     <td><button onclick="appendTestTutorial4()"><b>1b Step</b> : Elk-Test tutorial</button></td>
@@ -48,6 +48,9 @@
                 </tr>
                 <tr>
                     <td><button onclick="appendTestTutorial7()"><b>1e Step</b> : Overtaking</button></td>
+                </tr>
+                <tr>
+                    <td><button onclick="appendTestTutorial8()"><b>1f Step</b> : Measuring parking lot</button></td>
                 </tr>
             </table>
             
@@ -280,11 +283,11 @@
             return text;
         }
         
+        // needed only for pre-compiled tutorials, to don't send data to server
         var activeTutorial = 0;
 
         function appendTestTutorial3(){
 
-            
             document.getElementById("indexSimulator").contentWindow.resetTrajectoryOnly();
            
             clearAllFiles();
@@ -299,15 +302,8 @@
                 appendFile("/controller03/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller03/VelocityController.emam"));
             },500);
 
-            document.getElementById("indexSimulator").contentWindow.presentationObjects = 3;
-            if (document.getElementById("indexSimulator").contentWindow.objectsOnTrack.length > 1)
-                document.getElementById("indexSimulator").contentWindow.deleteCones();
-                document.getElementById("indexSimulator").contentWindow.showCars();
-                document.getElementById("indexSimulator").contentWindow.setPosition(
-                    document.getElementById("indexSimulator").contentWindow.currentCar, 0, 0.2, 0);
-                document.getElementById("indexSimulator").contentWindow.rotateCar(
-                    document.getElementById("indexSimulator").contentWindow.currentCar, 0);
-
+            document.getElementById("indexSimulator").contentWindow.loadTutorial(3);
+            // document.getElementById("indexSimulator").contentWindow.deleteCones();
             activeTutorial = 3;
         }
 
@@ -326,16 +322,17 @@
                 appendFile("controller04/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller04/VelocityController.emam"));
             },500);
 
-            document.getElementById("indexSimulator").contentWindow.presentationObjects = 4;
+            // TODO: rewrite to send in the simulator only a number of the tutorial
+            document.getElementById("indexSimulator").contentWindow.loadTutorial(4);
 
-            if (document.getElementById("indexSimulator").contentWindow.objectsOnTrack.length < 1){
-                document.getElementById("indexSimulator").contentWindow.showCones();
-                document.getElementById("indexSimulator").contentWindow.hideCars();
-                document.getElementById("indexSimulator").contentWindow.setPosition(
-                    document.getElementById("indexSimulator").contentWindow.currentCar, 1, 0.2, -100);
-                document.getElementById("indexSimulator").contentWindow.rotateCar(
-                    document.getElementById("indexSimulator").contentWindow.currentCar, 0);
-            }
+            
+            document.getElementById("indexSimulator").contentWindow.showCones();
+            document.getElementById("indexSimulator").contentWindow.hideCars();
+            document.getElementById("indexSimulator").contentWindow.setPosition(
+                document.getElementById("indexSimulator").contentWindow.currentCar, 1, 0.2, -100);
+            document.getElementById("indexSimulator").contentWindow.rotateCar(
+                document.getElementById("indexSimulator").contentWindow.currentCar, 0);
+            
 
             activeTutorial = 4;
         }
@@ -371,7 +368,6 @@
             document.getElementById("indexSimulator").contentWindow.rotateCar(
                 document.getElementById("indexSimulator").contentWindow.currentCar, 0);
                 
-            activeTutorial = 5;
         }
 
 
@@ -396,7 +392,6 @@
                 document.getElementById("indexSimulator").contentWindow.currentCar, 1, 0.2, -100);
             document.getElementById("indexSimulator").contentWindow.rotateCar(
                 document.getElementById("indexSimulator").contentWindow.currentCar, 0);
-            activeTutorial = 6;
         }
 
         function appendTestTutorial7() {
@@ -425,7 +420,23 @@
                 document.getElementById("indexSimulator").contentWindow.currentCar, 1, 0.2, -120);
             document.getElementById("indexSimulator").contentWindow.rotateCar(
                 document.getElementById("indexSimulator").contentWindow.currentCar, 0);
-            activeTutorial = 7;
+        }
+
+        function appendTestTutorial8() {
+
+            clearAllFiles();
+            // document.getElementById('tutorialFrame').src = "tutorials/html/tutorial04.md.html";
+            setTimeout(function () {
+                filesFromDiskData = [];
+                appendDir("/controller08");
+                appendFile("controller08/MainController.emam", readFileFromDisk("tutorials/controllers/controller08/MainController.emam"));
+                appendFile("controller08/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller08/VelocityController.emam"));
+                appendFile("controller08/MeasureGapController.emam", readFileFromDisk("tutorials/controllers/controller08/MeasureGapController.emam"));
+                appendFile("controller08/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller08/ParkingController.emam"));
+                appendFile("controller08/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller08/SearchParkingPlaceController.emam"));
+            }, 500);
+            
+            document.getElementById("indexSimulator").contentWindow.loadTutorial(8);
         }
 
         // Read files from ide and pack

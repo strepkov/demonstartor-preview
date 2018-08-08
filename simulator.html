@@ -1042,15 +1042,20 @@
 		var simulationStatus = false;
 		var simulationTimeLimit = 3600;
 		var showLogsData = false;
-		var tutorialConfiguration = "tutorials/initialData/tutorial06.json";
+		var tutorialConfiguration;
 		var carInitialPosition = [];
+		
 		// Data from .json
-		var trackObjects = [];	
-		var trackCarPosition = [];
+		var trackObjects;	
+		var trackCarPosition;
 
 		// Fill the initial data from the configuration file
-		(function () {
+		function readTutorialConfig() {
+			
 			readJSONFile(tutorialConfiguration);
+			// Clean a data is there was some
+			trackObjects = [];
+			trackCarPosition = [];
 
 			// Read all objects from configuration
 			if (jsonSimulationConf != undefined) {
@@ -1062,8 +1067,7 @@
 
 								var carJSON = jsonSimulationConf[name];
 								var initPosition = carJSON.start;
-								// Read a start position for the car
-								// Whether it's an grid position or coordinates directly
+								// Read a start position for the car, whether it's an grid position or coordinates directly
 								if (initPosition.match(/[a-z]/i)) {
 									trackCarPosition = [zone2Coord.get(initPosition)[0], zone2Coord.get(initPosition)[1]];
 								} else {
@@ -1080,23 +1084,62 @@
 
 								if (objectPosition.match(/[a-z]/i)) {
 									if (objectJSON.width != undefined && objectJSON.height != undefined)
-										trackObjects.push([zone2Coord.get(objectPosition)[0],
-										zone2Coord.get(objectPosition)[1],
-										objectJSON.width,
-										objectJSON.height]);
+										trackObjects.push([
+											zone2Coord.get(objectPosition)[0],
+											zone2Coord.get(objectPosition)[1],
+											objectJSON.width,
+											objectJSON.height,
+											objectJSON.type
+										]);
 								} else {
 									var separatorPosition = objectPosition.indexOf(":");
 									var x = objectPosition.substr(0, (separatorPosition));
 									var y = objectPosition.substr((separatorPosition + 1), (objectPosition.length - separatorPosition));
 									if (objectJSON.width != undefined && objectJSON.height != undefined)
-										trackObjects.push([x, y,
+										trackObjects.push([
+											x,
+											y,
 											objectJSON.width,
-											objectJSON.height]);
+											objectJSON.height,
+											objectJSON.type
+										]);
 								}
 							}
 						});
 			}
-		})();
+		}
+
+		function loadTutorial(tutorial){
+
+			// TODO: if there was other tutorials loaded
+			if (presentationObjects != 0){
+				
+			}
+			// set variable to read tutorial's configuration
+			tutorialConfiguration = "tutorials/initialData/tutorial0" + tutorial + ".json";
+			readTutorialConfig();
+			// influences on the scene for tutorials
+			presentationObjects = tutorial;
+			// directly set the position of the car visually
+			if (trackCarPosition != undefined){
+				setPosition(currentCar, +trackCarPosition[1], 0.2, +trackCarPosition[0]);
+            	rotateCar(currentCar, 0);
+			} else console.error("func loadTutorial: trackCarPosition == undefined");
+
+			// Load models on the track visually
+			if (trackObjects != undefined){
+				console.log("Number of objects in current tutorial json config : ", trackObjects.length);
+				for(var i in trackObjects){
+					if ((trackObjects[i])[4] == "car") {
+						showCars();
+					}
+
+					if ((trackObjects[i])[4] == "cone") {
+						addObjectsOnTrack(modelObject, +(trackObjects[i])[0], 0.3, +(trackObjects[i])[1]);
+					}
+				}
+			}
+		}
 
 		function initSimulator() {
 
@@ -1115,66 +1158,22 @@
 			var addObjectOnTrack = addObject.bind(simulator);
 
 			// add objects depends on the task
-			if (presentationObjects == 3) {
-
-				carInitialPosition = [0, 2];
-
-				addObjectOnTrack([7.5, 22], 4, 5);
-				addObjectOnTrack([7.5, 44], 4, 5);
-
-			}
-
-			if (presentationObjects == 4) {
-
-				console.log("Number of objects in json : ", trackObjects.length);
-
+			if (presentationObjects != 0) {
+				console.log("Number of objects in current tutorial json config : ", trackObjects.length);
 				carInitialPosition = trackCarPosition;
 				for(var i in trackObjects){
-
 					// if object does not have width/hide -> don't add into math model
 					if((trackObjects[i])[2] != 0 && (trackObjects[i])[3] != 0){
+						// Math model
 						addObjectOnTrack([+(trackObjects[i])[0], +(trackObjects[i])[1]], (trackObjects[i])[2], (trackObjects[i])[3]);
 						console.log("Added object : ", trackObjects[i]);
 					}
 				}
 			}
 
-			if (presentationObjects == 5) {
-
-				console.log("Number of objects in json : ", trackObjects.length);
-
-				carInitialPosition = trackCarPosition;
-				for (var i in trackObjects) {
-
-					// if object does not have width/hide -> don't add into math model
-					if ((trackObjects[i])[2] != 0 && (trackObjects[i])[3] != 0) {
-						addObjectOnTrack([+(trackObjects[i])[0], +(trackObjects[i])[1]], (trackObjects[i])[2], (trackObjects[i])[3]);
-						console.log("Added object : ", trackObjects[i]);
-					}
-				}
-
-				addObjectOnTrack([7.5, 32], 4, 5);
-				addObjectOnTrack([7.5, 54], 4, 5);
-			}
-
-			if (presentationObjects == 7 || presentationObjects == 6) {
-
-				console.log("Number of objects in json : ", trackObjects.length);
-
-				carInitialPosition = trackCarPosition;
-				for (var i in trackObjects) {
-
-					// if object does not have width/hide -> don't add into math model
-					if ((trackObjects[i])[2] != 0 && (trackObjects[i])[3] != 0) {
-						addObjectOnTrack([+(trackObjects[i])[0], +(trackObjects[i])[1]], (trackObjects[i])[2], (trackObjects[i])[3]);
-						console.log("Added object : ", trackObjects[i]);
-					}
-				}
-			}
-
-			// set math model position
+			// Set math model init position
 			simulatorInitPosition(carInitialPosition[0], carInitialPosition[1]);
-			// set visualization position
+			// Set visualization position
 			setPosition(currentCar, carInitialPosition[1], 0.2, carInitialPosition[0]);
 			rotateCar(currentCar, 0);
 
@@ -1205,13 +1204,13 @@
 			var run = simulator.run;
 			var simulatorRun = run.bind(simulator);
 
-			// change object position
-			var moveObject = simulator.changeObjectPosition;
-			var changeObjectPosition = moveObject.bind(simulator);
+			// change object position - now related only to following and overtaking
+			// var moveObject = simulator.changeObjectPosition;
+			// var changeObjectPosition = moveObject.bind(simulator);
 				
-			changeObjectPosition(0, [1, indexMove], 4, 4);
-			indexMove += 0.4;
-			setPosition(currentCar2, 1, 0.3, indexMove);
+			// changeObjectPosition(0, [1, indexMove], 4, 4);
+			// indexMove += 0.4;
+			// setPosition(currentCar2, 1, 0.3, indexMove);
 			
 			//
 			var getDistances = simulator.getDistances;
@@ -1378,15 +1377,9 @@
 			var resetSimulator = resetSimulation.bind(simulator);
 
 			resetTrajectoryOnly();
-
 			resetSimulator();
 
-			// var initPosition = simulator.initPosition;
-			// var simulatorInitPosition = initPosition.bind(simulator);
-			// simulatorInitPosition(0,0);
-
 			showTime(0);
-
 			initSimulator();
 
 			document.getElementById("myRange").value = 0;
@@ -1396,9 +1389,6 @@
 			document.getElementById("time").innerHTML = 0;
 
 			var simulationTimeLimit = 3600; // reset time to max
-
-			setPosition(currentCar, carInitialPosition[1], 0.2, carInitialPosition[0]);
-			rotateCar(currentCar, 0);
 		}
 
 		function resetTrajectoryOnly(){
