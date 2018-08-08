@@ -23,8 +23,10 @@ component SearchParkingPlaceController {
                 passed1 = 1;
         end
 
-        // xor
         activeMeasure = passed1;
-        foundPlace = found > 0;
+
+        if enoughSpace
+            foundPlace = 1;
+        end
     }
 }

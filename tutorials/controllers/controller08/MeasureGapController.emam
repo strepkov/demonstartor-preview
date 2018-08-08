@@ -8,9 +8,22 @@ component MeasureGapController<Q length = 10m> {
         out B passed;
 
     implementation Math{
+
+        static Q dist = 0;
+        static Q timeLoc = 0;
         
         if active
-
+            dist += (time - timeLoc) * velocity;
+            if (dist >= length)
+                passed = 1;
+            else
+                passed = 0;
+            end
+        else
+            passed = 0;
+            dist = 0;
         end
+
+        timeLoc = time;
     }
 }
