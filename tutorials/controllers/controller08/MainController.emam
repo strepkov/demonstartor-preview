@@ -30,7 +30,7 @@ component MainController{
     connect velocity->velocityController.velocity;
     connect velocityController.acceleration->acceleration;
 
-    instance MeasureGapController<10m> measureGapController;
+    instance MeasureGapController<15m> measureGapController;
     connect velocity -> measureGapController.velocity;
     connect time -> measureGapController.time;
     connect measureGapController.passed -> searchParkingPlaceController.enoughSpace;

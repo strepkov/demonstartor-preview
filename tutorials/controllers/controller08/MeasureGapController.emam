@@ -20,7 +20,6 @@ component MeasureGapController<Q length = 10m> {
                 passed = 0;
             end
         else
-            passed = 0;
             dist = 0;
         end
 
