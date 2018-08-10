@@ -34,8 +34,8 @@
             <table>
                 <tr>
                     <th><button onclick="appendTestTutorial3()"><b>1a Step</b> : Parking tutorial</button></th>
-                    <th rowspan="6"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
-                    <th rowspan="6"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
+                    <th rowspan="7"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
+                    <th rowspan="7"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
                 </tr>
                 <tr>
                     <td><button onclick="appendTestTutorial4()"><b>1b Step</b> : Elk-Test tutorial</button></td>
@@ -51,6 +51,9 @@
                 </tr>
                 <tr>
                     <td><button onclick="appendTestTutorial8()"><b>1f Step</b> : Measuring parking lot</button></td>
+                </tr>
+                <tr>
+                    <td><button onclick="appendTestTutorial9()"><b>1g Step</b> : Run the track</button></td>
                 </tr>
             </table>
             
@@ -437,6 +440,21 @@
             }, 500);
             
             document.getElementById("indexSimulator").contentWindow.loadTutorial(8);
+        }
+
+        function appendTestTutorial9() {
+
+            clearAllFiles();
+            // document.getElementById('tutorialFrame').src = "tutorials/html/tutorial04.md.html";
+            setTimeout(function () {
+                filesFromDiskData = [];
+                appendDir("/controller09");
+                appendFile("controller09/MainController.emam", readFileFromDisk("tutorials/controllers/controller09/MainController.emam"));
+                appendFile("controller09/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller09/VelocityController.emam"));
+                appendFile("controller09/StatusController.emam", readFileFromDisk("tutorials/controllers/controller09/StatusController.emam"));
+                appendFile("controller09/SteeringController.emam", readFileFromDisk("tutorials/controllers/controller09/SteeringController.emam"));
+            }, 500);
+            document.getElementById("indexSimulator").contentWindow.loadTutorial(9);
         }
 
         // Read files from ide and pack

@@ -2,24 +2,28 @@ package controller09;
 
 component SteeringController {
     port
-        
-        in Q(0m:200m) fl,
-        in Q(0m:200m) fr,
-        in Q(0m:200m) slf,
-        in Q(0m:200m) slb,
-        in Q(0m:200m) srf,
-        in Q(0m:200m) srb,
-        in Q(0m:200m) br,
-        in Q(0m:200m) bl,
+        in Q(-200m:200m) frontLeftSensor,
+        in Q(-200m:200m) frontRightSensor,
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) frontRightSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in Q(-200m:200m) backRightSideSensor,
+        in Q(-200m:200m) backLeftSensor,
+        in Q(-200m:200m) backRightSensor,
         out Q(-180:180) steering;
 
     implementation Math{
 
         Q(0m:1m) threshold = 0.1m;
 
-        B comp1 = (((fl-fr) > threshold) && ((slf-slb) > threshold)) && ((srb-srf) > threshold);
-        B comp2 = (((fr-fl) > threshold) && ((slb-slf) > threshold)) && ((srf-srb) > threshold);
-        B comp3 = (slf<slb) && (srf<srb);
+        B comp1 = (((frontLeftSensor-frontRightSensor) > threshold) && 
+                    ((frontLeftSideSensor-backLeftSideSensor) > threshold)) && 
+                        ((backRightSideSensor-frontRightSideSensor) > threshold);
+        B comp2 = (((frontRightSensor-frontLeftSensor) > threshold) && 
+                    ((backLeftSideSensor-frontLeftSideSensor) > threshold)) && 
+                        ((frontRightSideSensor-backRightSideSensor) > threshold);
+        B comp3 = (frontLeftSideSensor<backLeftSideSensor) && 
+                    (frontRightSideSensor<backRightSideSensor);
 
         if (comp3)
             steering = -1;
