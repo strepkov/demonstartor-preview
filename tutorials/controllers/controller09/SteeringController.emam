@@ -1,4 +1,4 @@
-package simulatorModel;
+package controller09;
 
 component SteeringController {
     port
@@ -16,10 +16,9 @@ component SteeringController {
     implementation Math{
 
         Q(0m:1m) threshold = 0.1m;
-        Q(-1m:0m) thresholdN = -0.1m;
 
         B comp1 = (((fl-fr) > threshold) && ((slf-slb) > threshold)) && ((srb-srf) > threshold);
-        B comp2 = (((fl-fr) < thresholdN) && ((slf-slb) < thresholdN)) && ((srb-srf) < thresholdN);
+        B comp2 = (((fr-fl) > threshold) && ((slb-slf) > threshold)) && ((srf-srb) > threshold);
         B comp3 = (slf<slb) && (srf<srb);
 
         if (comp3)

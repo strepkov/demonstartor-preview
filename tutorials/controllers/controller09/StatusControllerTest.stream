@@ -1,4 +1,4 @@
-package simulatorModel;
+package controller09;
 
 stream StatusControllerTest for StatusController {
     inx: 0m tick 200m tick -200m tick 250m;
