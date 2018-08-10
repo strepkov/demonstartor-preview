@@ -6,18 +6,20 @@ import StatusController;
 
 component MainController{
     ports 
-        in Q(0m:200m) fl,
-        in Q(0m:200m) fr,
-        in Q(0m:200m) slf,
-        in Q(0m:200m) slb,
-        in Q(0m:200m) srf,
-        in Q(0m:200m) srb,
+        in Q(-200m:200m) frontLeftSensor,
+        in Q(-200m:200m) frontRightSensor,
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) frontRightSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in Q(-200m:200m) backRightSideSensor,
+        in Q(-200m:200m) backLeftSensor,
+        in Q(-200m:200m) backRightSensor,
 
         in Q(0s:oos) time,
         in Q(0m/s:25m/s) velocity,
 
-        in Q(-200m:200m) x,
-        in Q(-200m:200m) y,
+        in Q(-200m:200m) xPosition,
+        in Q(-200m:200m) yPosition,
 
         out Q(-2m/s^2:2m/s^2) acceleration,
         out Q(-180:180) steering,
@@ -29,14 +31,14 @@ component MainController{
 
     connect time->velocityController.time;
     connect velocity->velocityController.velocity;
-    connect fl->steeringController.fl;
-    connect fr->steeringController.fr;
-    connect slf->steeringController.slf;
-    connect slb->steeringController.slb;
-    connect srf->steeringController.srf;
-    connect srb->steeringController.srb;
-    connect x->trigger.inx;
-    connect y->trigger.iny;
+    connect frontLeftSensor->steeringController.frontLeftSensor;
+    connect frontRightSensor->steeringController.frontRightSensor;
+    connect frontLeftSideSensor->steeringController.frontLeftSideSensor;
+    connect backLeftSideSensor->steeringController.backLeftSideSensor;
+    connect frontRightSideSensor->steeringController.frontRightSideSensor;
+    connect backRightSideSensor->steeringController.backRightSideSensor;
+    connect xPosition->trigger.inx;
+    connect yPosition->trigger.iny;
 
     connect velocityController.acceleration->acceleration;
     connect steeringController.steering->steering;
