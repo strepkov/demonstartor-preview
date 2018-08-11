@@ -5,7 +5,7 @@ In this tutorial we going to create a controller which will be used by the car t
 
 ![alt text](../img/circle_pass_trajectory.jpg)  
 
-To pass the track you may need around 4 controllers. They could be the following:
+To pass the track you may need around three controllers. They could be the following:
 1. The controller which checks the boundaries of the track
 2. The controller which in charge of the velocity control.
 3. And the last one, that controls the steering of the car.
