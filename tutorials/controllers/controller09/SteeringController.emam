@@ -8,8 +8,6 @@ component SteeringController {
         in Q(-200m:200m) frontRightSide,
         in Q(-200m:200m) backLeftSide,
         in Q(-200m:200m) backRightSide,
-        in Q(-200m:200m) backLeft,
-        in Q(-200m:200m) backRight,
         out Q(-180:180) steering;
 
     implementation Math{
