@@ -61,7 +61,7 @@ component MainController{
     connect parkingController.moveForward->velocityController.moveForward;
 }
 ```
-Then we may just fully reuse the VelocityController from the tutorial03:
+Then we may just completely reuse the VelocityController from the tutorial03:
 ```
 package controller08;
 
