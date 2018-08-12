@@ -1211,9 +1211,21 @@
 			var simulatorRun = run.bind(simulator);
 
 			// change object position - now related only to following and overtaking
-			// var moveObject = simulator.changeObjectPosition;
-			// var changeObjectPosition = moveObject.bind(simulator);
-				
+			var moveObject = simulator.changeObjectPosition;
+			var changeObjectPosition = moveObject.bind(simulator);
+			
+			if (simulator.output.ti.value >= 100 && simulator.output.ti.value <= 100.4){
+
+				changeObjectPosition(0, [95, -8], 2, 2);
+				changeObjectPosition(1, [108, -8], 2, 2);
+
+				deleteCones();
+
+				addObjectsOnTrack(modelObject, 95, 0.3, -8);
+				addObjectsOnTrack(modelObject, 108, 0.3, -8);
+			}
+
+			// Related to the tutorial with the car
 			// changeObjectPosition(0, [1, indexMove], 4, 4);
 			// indexMove += 0.4;
 			// setPosition(currentCar2, 1, 0.3, indexMove);
@@ -1375,6 +1387,9 @@
 				indexMove = -100;
 				setPosition(currentCar2, 1, 0.3, -100);
 			}
+
+			if (objectsOnTrack.length != 0) deleteCones();
+			loadTutorial(presentationObjects);
 
 			var simulator = window.simulatorInstance;
 
