@@ -1085,8 +1085,8 @@
 								if (objectPosition.match(/[a-z]/i)) {
 									if (objectJSON.width != undefined && objectJSON.height != undefined)
 										trackObjects.push([
-											zone2Coord.get(objectPosition)[0],
 											zone2Coord.get(objectPosition)[1],
+											zone2Coord.get(objectPosition)[0],
 											objectJSON.width,
 											objectJSON.height,
 											objectJSON.type
@@ -1116,7 +1116,13 @@
 				
 			}
 			// set variable to read tutorial's configuration
-			tutorialConfiguration = "tutorials/initialData/tutorial0" + tutorial + ".json";
+			if (tutorial > 10)
+				tutorialConfiguration = "tutorials/initialData/tutorial0" + tutorial + ".json";
+			else 
+				tutorialConfiguration = "tutorials/initialData/tutorial" + tutorial + ".json";
+
+			console.log(tutorialConfiguration);
+			
 			readTutorialConfig();
 			// influences on the scene for tutorials
 			presentationObjects = tutorial;
