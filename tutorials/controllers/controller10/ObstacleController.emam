@@ -4,8 +4,7 @@ component ObstacleController<Q distance = 30>{
     port
         in Q(-200m:200m) frontLeftSensor,
         in Q(-200m:200m) frontRightSensor,
-        out B brake,
-        out B status;
+        out B brake;
 
     implementation Math{
         

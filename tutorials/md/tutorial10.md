@@ -12,6 +12,6 @@ We may modify the velocity controller to have a brake function and then add anot
 
 ![alt text](../img/obstacle_on_track.jpg) 
 
-An approximate position of the obstacle is 100:25. The car should reach the obstacle and stop, when it disappears the car has to continue the movement.
+An approximate position of the obstacle is (-8:100 or z24). The car should reach the obstacle and stop, when it disappears(100 seconds after simulation has started) the car must continue the movement.
 
 Show the [solution](solutions/solution10.md).
