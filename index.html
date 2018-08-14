@@ -34,8 +34,8 @@
             <table>
                 <tr>
                     <th><button onclick="appendTestTutorial3()"><b>1a Step</b> : Parking tutorial</button></th>
-                    <th rowspan="8"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
-                    <th rowspan="8"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
+                    <th rowspan="9"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
+                    <th rowspan="9"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
                 </tr>
                 <tr>
                     <td><button onclick="appendTestTutorial4()"><b>1b Step</b> : Elk-Test tutorial</button></td>
@@ -57,6 +57,9 @@
                 </tr>
                 <tr>
                     <td><button onclick="appendTestTutorial10()"><b>1h Step</b> : Pass an obstacle</button></td>
+                </tr>
+                <tr>
+                    <td><button onclick="appendTestTutorial11()"><b>1h Step</b> : Full track</button></td>
                 </tr>
             </table>
             
@@ -474,6 +477,27 @@
                 appendFile("controller10/ObstacleController.emam", readFileFromDisk("tutorials/controllers/controller10/ObstacleController.emam"));
             }, 500);
             document.getElementById("indexSimulator").contentWindow.loadTutorial(10);
+        }
+
+        function appendTestTutorial11() {
+
+            clearAllFiles();
+            // document.getElementById('tutorialFrame').src = "tutorials/html/tutorial04.md.html";
+            setTimeout(function () {
+                filesFromDiskData = [];
+                appendDir("/controller11");
+                appendFile("controller11/MainController.emam", readFileFromDisk("tutorials/controllers/controller11/MainController.emam"));
+                appendFile("controller11/PassObjectsController.emam", readFileFromDisk("tutorials/controllers/controller11/PassObjectsController.emam"));
+                appendFile("controller11/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/VelocityController.emam"));
+                appendFile("controller11/ActiveController.emam", readFileFromDisk("tutorials/controllers/controller11/ActiveController.emam"));
+                appendFile("controller11/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller11/SearchParkingPlaceController.emam"));
+                appendFile("controller11/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller11/ParkingController.emam"));
+                appendFile("controller11/RunTrackController.emam", readFileFromDisk("tutorials/controllers/controller11/RunTrackController.emam"));
+                appendFile("controller11/SteeringSwitchController.emam", readFileFromDisk("tutorials/controllers/controller11/SteeringSwitchController.emam"));
+                appendFile("controller11/VelocitySwitchController.emam", readFileFromDisk("tutorials/controllers/controller11/VelocitySwitchController.emam"));
+                appendFile("controller11/RunTrackVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/RunTrackVelocityController.emam"));
+            }, 500);
+            document.getElementById("indexSimulator").contentWindow.loadTutorial(11);
         }
 
         // Read files from ide and pack

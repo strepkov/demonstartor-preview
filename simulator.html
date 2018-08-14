@@ -1044,6 +1044,7 @@
 		var showLogsData = false;
 		var tutorialConfiguration;
 		var carInitialPosition = [];
+		var carCounter = 0;
 		
 		// Data from .json
 		var trackObjects;	
@@ -1116,7 +1117,7 @@
 				
 			}
 			// set variable to read tutorial's configuration
-			if (tutorial > 10)
+			if (tutorial < 10)
 				tutorialConfiguration = "tutorials/initialData/tutorial0" + tutorial + ".json";
 			else 
 				tutorialConfiguration = "tutorials/initialData/tutorial" + tutorial + ".json";
@@ -1137,7 +1138,13 @@
 				console.log("Number of objects in current tutorial json config : ", trackObjects.length);
 				for(var i in trackObjects){
 					if ((trackObjects[i])[4] == "car") {
-						showCars();
+						if (carCounter == 0){
+							setPosition(currentCar2, +(trackObjects[i])[0], 0.2, +(trackObjects[i])[1]);
+						}
+						if (carCounter == 1){
+							setPosition(currentCar3, +(trackObjects[i])[0], 0.2, +(trackObjects[i])[1]);
+						}
+						carCounter++;
 					}
 
 					if ((trackObjects[i])[4] == "cone") {
@@ -1214,16 +1221,17 @@
 			var moveObject = simulator.changeObjectPosition;
 			var changeObjectPosition = moveObject.bind(simulator);
 			
-			if (simulator.output.ti.value >= 100 && simulator.output.ti.value <= 100.4){
+			// related to obstacle tutorial
+			// if (simulator.output.ti.value >= 100 && simulator.output.ti.value <= 100.4){
 
-				changeObjectPosition(0, [95, -8], 2, 2);
-				changeObjectPosition(1, [108, -8], 2, 2);
+			// 	changeObjectPosition(0, [95, -8], 2, 2);
+			// 	changeObjectPosition(1, [108, -8], 2, 2);
 
-				deleteCones();
+			// 	deleteCones();
 
-				addObjectsOnTrack(modelObject, 95, 0.3, -8);
-				addObjectsOnTrack(modelObject, 108, 0.3, -8);
-			}
+			// 	addObjectsOnTrack(modelObject, 95, 0.3, -8);
+			// 	addObjectsOnTrack(modelObject, 108, 0.3, -8);
+			// }
 
 			// Related to the tutorial with the car
 			// changeObjectPosition(0, [1, indexMove], 4, 4);

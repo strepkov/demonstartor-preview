@@ -1,0 +1,77 @@
+{
+    "car" : 
+    {
+        "start" : "50:0",
+        "end" : "z43"
+    },
+    "trackObject0" :
+    {
+        "position" : "-1:-95",
+        "width" : "1",
+        "height" : "1",
+        "type" : "cone"
+    },
+    "trackObject1" :
+    {
+        "position" : "5:-70",
+        "width" : "1",
+        "height" : "1",
+        "type" : "cone"
+    },
+    "trackObject2" :
+    {
+        "position" : "1:-45",
+        "width" : "1",
+        "height" : "1",
+        "type" : "cone"
+    },
+    "trackObject3" :
+    {
+        "position" : "-6:-20",
+        "width" : "1",
+        "height" : "1",
+        "type" : "cone"
+    },
+    "trackObject4" :
+    {
+        "position" : "-3:0",
+        "width" : "1",
+        "height" : "1",
+        "type" : "cone"
+    },
+    "trackObject5" :
+    {
+        "position" : "7.5:18",
+        "width" : "4",
+        "height" : "5",
+        "type" : "car"
+    },
+    "trackObject6" :
+    {
+        "position" : "7.5:40",
+        "width" : "4",
+        "height" : "5",
+        "type" : "car"
+    },
+    "trackObject7" :
+    {
+        "position" : "7.5:54",
+        "width" : "4",
+        "height" : "5",
+        "type" : "movingCar"
+    },
+    "trackObject8" :
+    {
+        "position" : "z24d",
+        "width" : "4",
+        "height" : "1",
+        "type" : "cone"
+    },
+    "trackObject9" :
+    {
+        "position" : "z24b",
+        "width" : "4",
+        "height" : "1",
+        "type" : "cone"
+    }
+}
