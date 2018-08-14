@@ -6,7 +6,7 @@
     },
     "trackObject0" :
     {
-        "position" : "-1:-95",
+        "position" : "-5:-95",
         "width" : "1",
         "height" : "1",
         "type" : "cone"
@@ -41,14 +41,14 @@
     },
     "trackObject5" :
     {
-        "position" : "7.5:18",
+        "position" : "7.5:22",
         "width" : "4",
         "height" : "5",
         "type" : "car"
     },
     "trackObject6" :
     {
-        "position" : "7.5:40",
+        "position" : "7.5:44",
         "width" : "4",
         "height" : "5",
         "type" : "car"

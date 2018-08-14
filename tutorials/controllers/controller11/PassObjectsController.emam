@@ -15,10 +15,10 @@ component PassObjectsController {
 
 	if(active)
     	if((frontLeftSensor < 10) && (backRightSideSensor > 5))
-    	    steering = 1;
+    	    steering = 0.5;
     	else
     	    if((frontRightSensor < 10) && (backLeftSideSensor > 5))
-    	        steering = -1;
+    	        steering = -0.5;
     	    else
     	        steering = 0; 
     	        

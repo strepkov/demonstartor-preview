@@ -7,6 +7,7 @@ component SteeringSwitchController {
         in Q steeringTrack,
         in B activeTrack,
         in B activePassObject,
+        in B activeParking,
         out Q steering;
 
     implementation Math{
@@ -18,6 +19,9 @@ component SteeringSwitchController {
         if activePassObject
             steering = steeringPassObjects;
         end
-    }
-
+        
+        if activeParking
+            steering = steeringParking;
+        end
+    }   
 }

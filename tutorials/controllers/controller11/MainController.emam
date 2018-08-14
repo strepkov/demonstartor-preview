@@ -42,18 +42,23 @@ component MainController{
     connect searchParkingPlaceController.foundPlace -> velocityController.reverseMove;
     connect searchParkingPlaceController.foundPlace -> parkingController.reverseMove;
 
+    
     instance ActiveController activeController;
     connect xPosition -> activeController.xPosition;
     connect yPosition -> activeController.yPosition;
+    
     connect activeController.activeSearchParkingPlace -> searchParkingPlaceController.active;
-    connect activeController.activeSearchParkingPlace -> velocitySwitch.activePassObject;
-    connect activeController.activeSearchParkingPlace -> steeringSwitch.activePassObject;
+    connect activeController.activeSearchParkingPlace -> velocitySwitch.activeParking;
+    connect activeController.activeSearchParkingPlace -> steeringSwitch.activeParking;
+    
     connect activeController.activePassObject -> passObjectsController.active;
-    connect activeController.activeTrack -> velocitySwitch.activeRunTrack;
-    connect activeController.activeTrack -> steeringSwitch.activeTrack;
     connect activeController.activePassObject -> velocitySwitch.activePassObject;
     connect activeController.activePassObject -> steeringSwitch.activePassObject;
+    
+    connect activeController.activeTrack -> velocitySwitch.activeRunTrack;
+    connect activeController.activeTrack -> steeringSwitch.activeTrack;
 
+    
     instance ParkingController parkingController;
     connect frontLeftSensor -> parkingController.frontLeftSensor;
     connect frontRightSensor -> parkingController.frontRightSensor;
