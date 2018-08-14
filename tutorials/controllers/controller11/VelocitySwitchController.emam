@@ -1,0 +1,24 @@
+package controller11;
+
+component VelocitySwitchController {
+	port                                    
+		in Q(-2m/s^2:2m/s^2) accelerationRunTrack,
+        in Q(-2m/s^2:2m/s^2) accelerationLast,
+        in B activeRunTrack,
+        in B activePassObject,
+		out Q(-2m/s^2:2m/s^2) acceleration; 
+
+	implementation Math{
+	    
+	    acceleration = 0.2;
+
+        if activeRunTrack
+            acceleration = accelerationRunTrack;
+        end
+
+        if activePassObject
+            acceleration = accelerationLast;
+        end
+        
+	}
+} 

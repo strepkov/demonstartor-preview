@@ -1,0 +1,23 @@
+package controller11;
+
+component SteeringSwitchController {
+    port
+        in Q steeringParking,
+        in Q steeringPassObjects,
+        in Q steeringTrack,
+        in B activeTrack,
+        in B activePassObject,
+        out Q steering;
+
+    implementation Math{
+        
+        if activeTrack
+            steering = steeringTrack;
+        end
+        
+        if activePassObject
+            steering = steeringPassObjects;
+        end
+    }
+
+}

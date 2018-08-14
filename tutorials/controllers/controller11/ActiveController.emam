@@ -1,0 +1,31 @@
+package controller11;
+
+component ActiveController {
+	port                                    
+		in Q xPosition,
+        in Q yPosition,
+		out B activePassObject,
+        out B activeSearchParkingPlace,
+        out B activeTrack;
+
+	implementation Math{
+
+        activeTrack = 0;
+        activePassObject = 0;
+        activeSearchParkingPlace = 0;
+
+    	//if (xPosition >= 40)
+            activeTrack = 1;
+        //end
+
+        if ((xPosition < 10) && (xPosition >= -110) && (yPosition >= -5) && (yPosition < 5))
+            activePassObject = 1;
+            activeTrack = 0;
+        end
+        
+        if ((xPosition > 10) && (xPosition < 60) && (yPosition >= -10) && (yPosition < 10))
+           activeSearchParkingPlace = 1;
+           activeTrack = 0;
+        end
+	}
+}
