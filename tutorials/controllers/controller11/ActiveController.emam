@@ -37,14 +37,10 @@ component ActiveController {
            activeTrack = 0;
         end
 
-        if ((xPosition < 45 ) && (xPosition > 20 ) (yPosition > 95) && (yPosition < 110))
+        if ((xPosition < 45 ) && (yPosition > 95) && (yPosition < 110))
            followCar = 1;
            activeTrack = 0;
         end
 
-        if ((xPosition <= 20) && (xPosition > -100) && (yPosition > 95) && (yPosition < 110))
-           overtakeCar = 1;
-           activeTrack = 0;
-        end 
 	}
 }
