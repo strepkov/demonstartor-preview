@@ -1207,7 +1207,7 @@
 		// var y_previous = 0;
 
 		// extra moving object positioning
-		var indexMove;
+		var indexMove = 30;
 
 		// (function () {
 		// 	if (presentationObjects == 6)
@@ -1246,6 +1246,12 @@
 			// changeObjectPosition(0, [1, indexMove], 4, 4);
 			// indexMove += 0.4;
 			// setPosition(currentCar2, 1, 0.3, indexMove);
+
+			if((simulator.output.xi.value < 60) && (simulator.output.yi.value > 95)){
+				changeObjectPosition(0, [101, indexMove], 4, 4);
+				setPosition(currentCar4, 101, 0.3, indexMove);
+				indexMove -= 0.4;
+			}
 			
 			//
 			var getDistances = simulator.getDistances;
@@ -1403,6 +1409,11 @@
 
 				indexMove = -100;
 				setPosition(currentCar2, 1, 0.3, -100);
+			}
+			if (presentationObjects == 11) {
+
+				indexMove = 30;
+				setPosition(currentCar4, 101, 0.3, 30);
 			}
 
 			if (objectsOnTrack.length != 0) deleteCones();
