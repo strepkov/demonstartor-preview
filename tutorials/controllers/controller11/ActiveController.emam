@@ -7,6 +7,8 @@ component ActiveController {
 		out B activePassObject,
         out B activeSearchParkingPlace,
         out B activeTrack,
+        out B followCar,
+        out B overtakeCar,
         out B activeAlign;
 
 	implementation Math{
@@ -15,7 +17,9 @@ component ActiveController {
         activePassObject = 0;
         activeSearchParkingPlace = 0;
         activeAlign = 0;
+        followCar = 0;
   	
+        // default controller
         activeTrack = 1;
 
         if ((xPosition < 11) && (xPosition > -130) && (yPosition > -8) && (yPosition < 8))
@@ -28,8 +32,18 @@ component ActiveController {
            activeTrack = 0;
         end
 
-        if ((xPosition > 45 ) && (xPosition < 60) && (yPosition > 95) && (yPosition < 110))
+        if ((xPosition >= 45 ) && (xPosition < 60) && (yPosition > 95) && (yPosition < 110))
            activeAlign = 1;
+           activeTrack = 0;
+        end
+
+        if ((xPosition < 45 ) && (xPosition > 20 ) (yPosition > 95) && (yPosition < 110))
+           followCar = 1;
+           activeTrack = 0;
+        end
+
+        if ((xPosition <= 20) && (xPosition > -100) && (yPosition > 95) && (yPosition < 110))
+           overtakeCar = 1;
            activeTrack = 0;
         end 
 	}

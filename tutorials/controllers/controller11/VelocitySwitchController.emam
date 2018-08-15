@@ -4,10 +4,12 @@ component VelocitySwitchController {
 	port                                    
 		in Q(-2m/s^2:2m/s^2) accelerationRunTrack,
         in Q(-2m/s^2:2m/s^2) accelerationLast,
+        in Q(-2m/s^2:2m/s^2) accFollow,
         in B activeRunTrack,
         in B activePassObject,
         in B activeParking,
         in B activeAlign,
+        in B activeFollow,
 		out Q(-2m/s^2:2m/s^2) acceleration; 
 
 	implementation Math{
@@ -21,8 +23,11 @@ component VelocitySwitchController {
         end
         
         if activeAlign
-            acceleration = -0.5;
+            acceleration = -0.7;
         end
-        
+
+        if activeFollow
+            acceleration = accFollow;
+        end
 	}
 } 

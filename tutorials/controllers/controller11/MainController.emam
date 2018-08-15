@@ -7,9 +7,10 @@ import SearchParkingPlaceController;
 import ParkingController;
 import RunTrackController;
 import RunTrackVelocityController;
+import SteeringAlignController;
+import FollowController;
 import SteeringSwitchController;
 import VelocitySwitchController;
-import SteeringAlignController;
 
 component MainController{
     ports 
@@ -61,6 +62,10 @@ component MainController{
 
     connect activeController.activeAlign -> velocitySwitch.activeAlign;
     connect activeController.activeAlign -> steeringSwitch.activeAlign;
+
+    connect activeController.followCar -> velocitySwitch.activeFollow;
+    connect activeController.followCar -> steeringSwitch.activeFollow;
+
     
     instance ParkingController parkingController;
     connect frontLeftSensor -> parkingController.frontLeftSensor;
@@ -101,11 +106,20 @@ component MainController{
     connect backLeftSideSensor -> steeringAlign.backLeftSide;
     connect backRightSideSensor -> steeringAlign.backRightSide;
     connect steeringAlign.steering -> steeringSwitch.steeringAlign;
- 
+
+    instance FollowController<15m> follow;
+    connect frontLeftSensor -> follow.frontLeftSensor;
+    connect frontRightSensor -> follow.frontRightSensor;
+    connect follow.follow -> followVelocity.follow;
+    connect follow.run -> followVelocity.run;
+
+    instance FollowVelocityController<2m/s> followVelocity;
+    connect velocity -> followVelocity.velocity;
+    connect followVelocity.acceleration -> velocitySwitch.accFollow;
     
     instance SteeringSwitchController steeringSwitch;
     connect steeringSwitch.steering -> steering;
 
     instance VelocitySwitchController velocitySwitch;
-    connect velocitySwitch.acceleration -> acceleration;
+    connect velocitySwitch.acceleration -> acceleration; 
 }
