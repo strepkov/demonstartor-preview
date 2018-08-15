@@ -236,6 +236,7 @@
 		var currentCar = new THREE.Object3D();
 		var currentCar2 = new THREE.Object3D();
 		var currentCar3 = new THREE.Object3D();
+		var currentCar4 = new THREE.Object3D();
 		var body = new THREE.Object3D();
 		var backPlate2 = new THREE.Object3D();
 		var backPlate = new THREE.Object3D();
@@ -270,6 +271,8 @@
 		addCarOnTrack(carModel, 1, -30, 0.2, 32);
 		// Third car is loading here
 		addCarOnTrack(carModel, 2, -30, 0.2, 44);
+		// Fourth car is loading here
+		addCarOnTrack(carModel, 3, -30, 0.2, 20);
 
 		function showCars() {
 			setPosition(currentCar2, 7.5, 0.2, 22);
@@ -292,6 +295,7 @@
 				if (objectCar == 0) currentCar = object;
 				if (objectCar == 1) currentCar2 = object;
 				if (objectCar == 2) currentCar3 = object;
+				if (objectCar == 3) currentCar4 = object;
 
 				object.position.x = x;
 				object.position.y = y;
@@ -988,6 +992,7 @@
 			scene.add(currentCar);
 			scene.add(currentCar2);
 			scene.add(currentCar3);
+			scene.add(currentCar4);
 			renderer.render(scene, camera);
 			//stats.update();
 		}
@@ -1143,6 +1148,10 @@
 						}
 						if (carCounter == 1){
 							setPosition(currentCar3, +(trackObjects[i])[0], 0.2, +(trackObjects[i])[1]);
+						}
+						if (carCounter == 2){
+							setPosition(currentCar4, +(trackObjects[i])[0], 0.2, +(trackObjects[i])[1]);
+							rotateCar(currentCar4, 180);
 						}
 						carCounter++;
 					}

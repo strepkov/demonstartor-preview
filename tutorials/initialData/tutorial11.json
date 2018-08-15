@@ -6,70 +6,70 @@
     },
     "trackObject0" :
     {
-        "position" : "-5:-95",
+        "position" : "-5:-100",
         "width" : "1",
         "height" : "1",
         "type" : "cone"
     },
     "trackObject1" :
     {
-        "position" : "5:-70",
+        "position" : "5:-75",
         "width" : "1",
         "height" : "1",
         "type" : "cone"
     },
     "trackObject2" :
     {
-        "position" : "1:-45",
+        "position" : "1:-50",
         "width" : "1",
         "height" : "1",
         "type" : "cone"
     },
     "trackObject3" :
     {
-        "position" : "-6:-20",
+        "position" : "-6:-25",
         "width" : "1",
         "height" : "1",
         "type" : "cone"
     },
     "trackObject4" :
     {
-        "position" : "-3:0",
+        "position" : "-3:5",
         "width" : "1",
         "height" : "1",
         "type" : "cone"
     },
     "trackObject5" :
     {
-        "position" : "7.5:22",
+        "position" : "7.5:17",
         "width" : "4",
         "height" : "5",
         "type" : "car"
     },
     "trackObject6" :
     {
-        "position" : "7.5:44",
+        "position" : "7.5:39",
         "width" : "4",
         "height" : "5",
         "type" : "car"
     },
     "trackObject7" :
     {
-        "position" : "7.5:54",
+        "position" : "101:30",
         "width" : "4",
         "height" : "5",
-        "type" : "movingCar"
+        "type" : "car"
     },
     "trackObject8" :
     {
-        "position" : "z24d",
+        "position" : "57:-176",
         "width" : "4",
         "height" : "1",
         "type" : "cone"
     },
     "trackObject9" :
     {
-        "position" : "z24b",
+        "position" : "57:-169",
         "width" : "4",
         "height" : "1",
         "type" : "cone"
