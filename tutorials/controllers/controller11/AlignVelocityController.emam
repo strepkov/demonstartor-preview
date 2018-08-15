@@ -1,0 +1,16 @@
+package controller11;
+
+component AlignVelocityController {
+	port                                    
+		in Q(0km/h : 250km/h) velocity,
+		out Q(-2m/s^2:2m/s^2) acceleration; 
+
+	implementation Math{                    
+
+    	if (velocity > 2 m/s)
+			acceleration = -0.5 m/s^2;
+        else
+        	acceleration = 0 m/s^2;
+        end
+	}
+}

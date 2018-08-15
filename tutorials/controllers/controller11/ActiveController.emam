@@ -18,6 +18,7 @@ component ActiveController {
         activeSearchParkingPlace = 0;
         activeAlign = 0;
         followCar = 0;
+        overtakeCar = 0;
   	
         // default controller
         activeTrack = 1;
@@ -41,6 +42,11 @@ component ActiveController {
            followCar = 1;
            activeTrack = 0;
         end
+
+        if ((xPosition <= 20) && (xPosition > -100) && (yPosition > 95) && (yPosition < 110))
+           overtakeCar = 1;
+           activeTrack = 0;
+        end 
 
 	}
 }

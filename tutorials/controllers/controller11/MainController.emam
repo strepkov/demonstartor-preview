@@ -66,6 +66,10 @@ component MainController{
     connect activeController.followCar -> velocitySwitch.activeFollow;
     connect activeController.followCar -> steeringSwitch.activeFollow;
 
+    connect activeController.overtakeCar -> overtake.active;
+    connect activeController.overtakeCar -> steeringSwitch.activeOvertake;
+    // connect activeController.overtakeCar -> velocitySwitch.activeFollow;
+
     
     instance ParkingController parkingController;
     connect frontLeftSensor -> parkingController.frontLeftSensor;
@@ -116,6 +120,21 @@ component MainController{
     instance FollowVelocityController<2m/s> followVelocity;
     connect velocity -> followVelocity.velocity;
     connect followVelocity.acceleration -> velocitySwitch.accFollow;
+
+    instance OvertakeController<50m> overtake;
+    connect frontLeftSensor -> overtake.frontLeftSensor;
+    connect frontRightSensor -> overtake.frontRightSensor;
+    connect frontRightSideSensor -> overtake.frontRightSideSensor;
+    connect frontLeftSideSensor -> overtake.frontLeftSideSensor;
+    connect backLeftSideSensor -> overtake.backLeftSideSensor;
+    connect backRightSideSensor -> overtake.backRightSideSensor;
+    connect overtake.steering -> steeringSwitch.steeringOvertake;
+    connect overtake.activatePassChecker -> passCar.active;
+
+    instance PassCarController passCar;
+    connect frontRightSideSensor -> passCar.frontRightSideSensor;
+    connect backRightSideSensor -> passCar.backRightSideSensor;
+    connect passCar.done -> overtake.passed;
     
     instance SteeringSwitchController steeringSwitch;
     connect steeringSwitch.steering -> steering;
