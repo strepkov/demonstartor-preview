@@ -73,6 +73,7 @@ component MainController{
     connect activeController.overtakeCar -> steeringSwitch.activeOvertake;
 
     connect activeController.obstacleWait -> velocitySwitch.activeObstacle;
+    connect activeController.obstacleWait -> steeringSwitch.activeObstacle;
 
 
     instance ParkingController parkingController;

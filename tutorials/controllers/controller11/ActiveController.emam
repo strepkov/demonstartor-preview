@@ -25,12 +25,12 @@ component ActiveController {
         // default controller
         activeTrack = 1;
 
-        if ((xPosition < 11) && (xPosition > -130) && (yPosition > -8) && (yPosition < 8))
+        if ((xPosition < 15) && (xPosition > -130) && (yPosition > -8) && (yPosition < 8))
             activePassObject = 1;
             activeTrack = 0;
         end
         
-        if ((xPosition >= 11) && (xPosition < 50) && (yPosition > -8) && (yPosition < 8))
+        if ((xPosition >= 15) && (xPosition < 50) && (yPosition > -8) && (yPosition < 8))
            activeSearchParkingPlace = 1;
            activeTrack = 0;
         end
