@@ -23,7 +23,7 @@ component OvertakeController<Q distance = 80m> {
     if active
     
         if ((frontLeftSideSensor > 5) && (frontRightSensor < 20))
-            steering = -1;
+            steering = -0.5;
         end
         
         if (frontRightSensor > 20) 
@@ -31,7 +31,7 @@ component OvertakeController<Q distance = 80m> {
         end
         
         if (overtake0 && (frontLeftSideSensor < backLeftSideSensor))
-            steering = 0.2;
+            steering = 0.5;
             overtake1 = 1;
         end
         
@@ -40,8 +40,8 @@ component OvertakeController<Q distance = 80m> {
         end
         
         if passed
-            if (frontRightSideSensor > 10)
-                steering = 0.5;
+            if (frontRightSideSensor > 9)
+                steering = 1;
             else
                 if (frontLeftSideSensor < backLeftSideSensor)
                     steering = 0.5;

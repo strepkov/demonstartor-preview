@@ -5,14 +5,18 @@ component VelocitySwitchController {
 		in Q(-2m/s^2:2m/s^2) accelerationRunTrack,
         in Q(-2m/s^2:2m/s^2) accelerationLast,
         in Q(-2m/s^2:2m/s^2) accFollow,
+        in Q(-2m/s^2:2m/s^2) accOvertake,
         in B activeRunTrack,
         in B activePassObject,
         in B activeParking,
         in B activeAlign,
         in B activeFollow,
+        in B activeOvertake,
 		out Q(-2m/s^2:2m/s^2) acceleration; 
 
 	implementation Math{
+
+        acceleration = 0;
 
         if activeRunTrack
             acceleration = accelerationRunTrack;
@@ -28,6 +32,10 @@ component VelocitySwitchController {
 
         if activeFollow
             acceleration = accFollow;
+        end
+
+        if activeOvertake
+            acceleration = accOvertake;
         end
 	}
 } 
