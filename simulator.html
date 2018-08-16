@@ -1247,10 +1247,16 @@
 			// indexMove += 0.4;
 			// setPosition(currentCar2, 1, 0.3, indexMove);
 
-			if((simulator.output.xi.value < 60) && (simulator.output.yi.value > 90)){
+			if((simulator.output.xi.value < 60) && (simulator.output.xi.value > -60) && (simulator.output.yi.value > 90)){
 				changeObjectPosition(7, [101, indexMove], 4, 4);
 				setPosition(currentCar4, 101, 0.3, indexMove);
 				indexMove -= 0.4;
+			}
+
+			if (simulator.output.ti.value >= 140 && simulator.output.ti.value <= 140.4){
+
+				changeObjectPosition(8, [95, -122], 2, 2);
+				changeObjectPosition(9, [108, -122], 2, 2);
 			}
 			
 			//

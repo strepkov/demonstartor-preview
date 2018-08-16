@@ -41,14 +41,14 @@
     },
     "trackObject5" :
     {
-        "position" : "7.5:17",
+        "position" : "7.5:22",
         "width" : "4",
         "height" : "5",
         "type" : "car"
     },
     "trackObject6" :
     {
-        "position" : "7.5:39",
+        "position" : "7.5:44",
         "width" : "4",
         "height" : "5",
         "type" : "car"
