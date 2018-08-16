@@ -232,6 +232,13 @@
 			objectsOnTrack = [];
 			console.log("All objects were deleted!");
 		}
+
+		function deleteConesMove() {	
+			scene.remove(objectsOnTrack[5]);
+			scene.remove(objectsOnTrack[6]);
+		
+			console.log("Cones were deleted!");
+		}
 		// Global Car Variable
 		var currentCar = new THREE.Object3D();
 		var currentCar2 = new THREE.Object3D();
@@ -1257,6 +1264,9 @@
 
 				changeObjectPosition(8, [95, -122], 2, 2);
 				changeObjectPosition(9, [108, -122], 2, 2);
+				deleteConesMove();
+				addObjectsOnTrack(modelObject, 95, 0.3, -122);
+				addObjectsOnTrack(modelObject, 108, 0.3, -122);
 			}
 			
 			//
