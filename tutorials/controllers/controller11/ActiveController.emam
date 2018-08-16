@@ -9,6 +9,7 @@ component ActiveController {
         out B activeTrack,
         out B followCar,
         out B overtakeCar,
+        out B obstacleWait,
         out B activeAlign;
 
 	implementation Math{
@@ -19,6 +20,7 @@ component ActiveController {
         activeAlign = 0;
         followCar = 0;
         overtakeCar = 0;
+        obstacleWait = 0;
   	
         // default controller
         activeTrack = 1;
@@ -46,6 +48,11 @@ component ActiveController {
         if ((xPosition < 20) && (xPosition > -100) && (yPosition > 90) && (yPosition < 110))
            overtakeCar = 1;
            activeTrack = 0;
-        end 
+        end
+
+        if ((xPosition < -90) && (xPosition > -130) && (yPosition > 90) && (yPosition < 110))
+           obstacleWait = 1;
+           activeTrack = 0;
+        end
 	}
 }

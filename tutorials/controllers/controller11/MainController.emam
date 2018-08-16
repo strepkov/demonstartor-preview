@@ -11,6 +11,8 @@ import SteeringAlignController;
 import FollowController;
 import OvertakeVelocityController;
 import SteeringSwitchController;
+import ObstacleController;
+import ObstacleVelocityController;
 import VelocitySwitchController;
 
 component MainController{
@@ -69,9 +71,10 @@ component MainController{
 
     connect activeController.overtakeCar -> overtake.active;
     connect activeController.overtakeCar -> steeringSwitch.activeOvertake;
-    // connect activeController.overtakeCar -> velocitySwitch.activeFollow;
 
-    
+    connect activeController.obstacleWait -> velocitySwitch.activeObstacle;
+
+
     instance ParkingController parkingController;
     connect frontLeftSensor -> parkingController.frontLeftSensor;
     connect frontRightSensor -> parkingController.frontRightSensor;
@@ -141,6 +144,16 @@ component MainController{
     instance OvertakeVelocityController overtakeVelocity;
     connect velocity -> overtakeVelocity.velocity;
     connect overtakeVelocity.acceleration -> velocitySwitch.accOvertake;
+
+    instance ObstacleController<30m> obstacle;
+    connect frontLeftSensor -> obstacle.frontLeftSensor;
+    connect frontRightSensor -> obstacle.frontRightSensor;
+    connect obstacle.brake -> obstacleVelocity.brake;
+
+    instance ObstacleVelocityController<5m/s> obstacleVelocity;
+    connect velocity -> obstacleVelocity.velocity;
+    connect obstacleVelocity.acceleration -> velocitySwitch.accObstacle;
+
     
     instance SteeringSwitchController steeringSwitch;
     connect steeringSwitch.steering -> steering;
