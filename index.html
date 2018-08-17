@@ -191,7 +191,6 @@
         }
         
         // functions for working with VFS
-
         function clearAllFiles() {
 
             var dirRoot = '/';
@@ -508,19 +507,6 @@
             document.getElementById("indexSimulator").contentWindow.loadTutorial(11);
         }
 
-        // Read files from ide and pack
-        var filesData = Array();
-        var fileNames = Array();
-
-        function readFileName(name) {
-            
-            document.getElementById("ide").contentWindow.api.fs.readFile('/' + name, function (err, data) {
-                if (err) throw err;
-                filesData.push(data);
-                fileNames.push(name);
-            });
-        }
-
         // Files from tutorial folder
         var filesFromDiskData = Array();
 
@@ -549,47 +535,64 @@
             }
         }
 
-        // traverse the folder(project name) 
-        function readAllFiles() {
+        // Read files from ide and pack
+        var filesData = Array();
+        var fileNames = Array();
+
+        function readFileName(name) {
+            
+            document.getElementById("ide").contentWindow.api.fs.readFile(name.fullPath, function (err, data) {
+                if (err) throw err;
+                filesData.push(data);
+                fileNames.push(name.fullPath.slice(1));
+            });
+        }
+
+        function listAllFiles(){
 
             disableCompileBtn();
             document.getElementById("indexSimulator").contentWindow.notReadyToGo();
             
-
             filesData = [];
             fileNames = [];
             var dirRoot = '/';
-            var folderName;
-            
-            var apiFs = document.getElementById("ide").contentWindow.api.fs;
-            
-            apiFs.readdir(dirRoot,function (err, dir){
-                
-                if (err) throw err;
-                dir.forEach( function (item){
-                    // The folder(item) has to be a root directory for a model
-                    if(item.mime == "folder" && !(item.name).includes(".")){
 
-                        folderName = item.name;
-                        apiFs.readdir(dirRoot+item.name, function (err, dirInternal){
-                
-                            if (err) throw err;
-                            dirInternal.forEach( function (file){
-             
-                                if((file.name).includes(".emam") || (file.name).includes(".stream")){
-                                    readFileName(item.name + "/" +file.name);
-                                }
-                            });
-                        });
-                        
+            var apiFs = document.getElementById("ide").contentWindow.api.fs;
+
+            function recursiveReadDir(file) {
+                apiFs.readdir(file.fullPath, function (err, internal) {
+                    internal.forEach(file => {
+                        if (file.mime == "folder") {
+                            recursiveReadDir(file);
+                        }
+                        else {
+                            if((file.name).includes(".emam") || (file.name).includes(".stream")){
+                                readFileName(file);
+                            }
+                        }
+                    });
+                });
+            }
+
+            apiFs.readdir(dirRoot, function (err, dir) {
+                if (err) throw err;
+                dir.forEach(function (item) {
+                    // Find the folder which is a root directory for a model
+                    if (item.mime == "folder" && !(item.name).includes(".")) {
+                        recursiveReadDir(item);
                     }
                 });
             });
+        }
+
+        function readAllFiles() {
+
+            listAllFiles();
             
             setTimeout(function(){
                 if(isContentWasChanged()){
                     showAlertHTTPS();
-                    packData(folderName).then(sendData, function () {
+                    packData().then(sendData, function () {
                         console.log("packing problem happened!");
                     });
                 } else {
@@ -678,7 +681,7 @@
         var zipContainer = new JSZip();
         var packCounter = 0;
 
-        function packData(folderName){
+        function packData(){
             return new Promise(r => {
                 const packFiles = async () =>{
                     await Promise.all(fileNames.map(async function(item,index){
