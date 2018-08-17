@@ -9,11 +9,14 @@ import RunTrackController;
 import RunTrackVelocityController;
 import SteeringAlignController;
 import FollowController;
+import FollowVelocityController;
+import PassCarController;
+import OvertakeController;
 import OvertakeVelocityController;
-import SteeringSwitchController;
 import ObstacleController;
 import ObstacleVelocityController;
 import VelocitySwitchController;
+import SteeringSwitchController;
 
 component MainController{
     ports 
@@ -155,7 +158,6 @@ component MainController{
     connect velocity -> obstacleVelocity.velocity;
     connect obstacleVelocity.acceleration -> velocitySwitch.accObstacle;
 
-    
     instance SteeringSwitchController steeringSwitch;
     connect steeringSwitch.steering -> steering;
 
