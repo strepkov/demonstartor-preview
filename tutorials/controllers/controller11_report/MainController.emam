@@ -18,6 +18,8 @@ import ObstacleVelocityController;
 import VelocitySwitchController;
 import SteeringSwitchController;
 
+// how to define the package of sub-folders?
+
 component MainController{
     ports 
         in Q(-200m:200m) frontLeftSensor,
@@ -29,14 +31,14 @@ component MainController{
         in Q(-200m:200m) backLeftSensor,
         in Q(-200m:200m) backRightSensor,
 
-        in Q time,
+        in Q(0s:oos) time,
         in Q(0km/h:250km/h) velocity,
 
         in Q(-200m:200m) xPosition,
         in Q(-200m:200m) yPosition,
 
         out Q(-2m/s^2:2m/s^2) acceleration,
-        out Q(-180:180) steering,
+        out Q(-35°:35°) steering,
         out B status;
 
 
@@ -97,8 +99,7 @@ component MainController{
     instance OvertakeController<50m> overtake;
     connect this.* -> overtake.*;
     connect overtake.steering -> steeringSwitch.steeringOvertake;
-    connect overtake.activatePassChecker -> passCar.active;
-    connect overtake.activatePassChecker -> velocitySwitch.activeOvertake;
+    connect overtake.activatePassChecker -> [passCar.active, velocitySwitch.activeOvertake];
 
     instance OvertakeVelocityController overtakeVelocity;
     connect velocity -> overtakeVelocity.velocity;

@@ -9,15 +9,16 @@ component ObstacleController<Q distance = 30>{
     implementation Math{
         
         Q threshold = 0.5 m;
-        brake = 0;
+        brake = false;
 
+        // Simple to divide, or not ?
         if ((frontRightSensor - frontLeftSensor) > 0)
             if (((frontRightSensor - frontLeftSensor) < threshold) && (frontLeftSensor < distance))
-                brake = 1;
+                brake = true;
             end
         else
             if (((frontLeftSensor - frontRightSensor) < threshold) && (frontLeftSensor < distance))
-                brake = 1;
+                brake = true;
             end
         end
     }

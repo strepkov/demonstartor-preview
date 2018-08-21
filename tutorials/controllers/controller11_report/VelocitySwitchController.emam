@@ -18,7 +18,9 @@ component VelocitySwitchController {
 
 	implementation Math{
 
-        acceleration = 0;
+        //Create some general switch component?
+
+        acceleration = 0m/s^2;
 
         if activeRunTrack
             acceleration = accelerationRunTrack;
@@ -29,7 +31,7 @@ component VelocitySwitchController {
         end
         
         if activeAlign
-            acceleration = -0.7;
+            acceleration = -0.7m/s^2;
         end
 
         if activeFollow

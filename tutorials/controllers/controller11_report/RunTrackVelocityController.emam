@@ -7,6 +7,8 @@ component RunTrackVelocityController {
 
 	implementation Math{
 
+		// Maybe create some general component for velocity controlling (overtake)
+
     	if (velocity > 5 m/s)
     	    acceleration = 0 m/s^2;
     	else

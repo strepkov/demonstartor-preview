@@ -8,6 +8,7 @@ component ObstacleVelocityController<Q maxVel = 5 m/s> {
 
 	implementation Math{
         
+		// Maybe rewrite controller to use reuse some general brake component?
         if (brake && (velocity > 0))
         	acceleration = -0.5 m/s^2;
         else

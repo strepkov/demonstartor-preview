@@ -8,23 +8,22 @@ component RunTrackController {
         in Q(-200m:200m) frontRightSide,
         in Q(-200m:200m) backLeftSide,
         in Q(-200m:200m) backRightSide,
-        out Q(-180:180) steering;
+        out Q(-35°:35°) steering;
 
     implementation Math{
 
         Q(0m:1m) threshold = 0.1m;
+        steering = 0°;
 
         B comp1 = (((frontLeft-frontRight) > threshold) && ((frontLeftSide-backLeftSide) > threshold)) && ((backRightSide-frontRightSide) > threshold);
         B comp2 = (((frontRight-frontLeft) > threshold) && ((backLeftSide-frontLeftSide) > threshold)) && ((frontRightSide-backRightSide) > threshold);
         
-        steering = 0;
-        
         if (comp2)
-            steering = 3;
+            steering = 3°;
         end
 
         if (comp1)
-            steering = -3;
+            steering = -3°;
         end
     }
 }

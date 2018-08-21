@@ -8,7 +8,7 @@ component VelocityController {
 		out Q(-2m/s^2:2m/s^2) acceleration; 
 
 	implementation Math{
-
+		// maybe divide to several components?
     	if (velocity > 1 m/s)
     	    acceleration = 0m/s^2;
     	else

@@ -4,24 +4,25 @@ component FollowController<Q distance = 10m> {
 	port                                    
 		in Q(-200m:200m) frontLeftSensor,
         in Q(-200m:200m) frontRightSensor,
-        out Q follow,
-		out Q run; 
+        out B follow,
+		out B run; 
 
 	implementation Math{
 		
-		static Q previousFL = 0;
-		static Q previousFR = 0;
+		static Q previousFL = 0m;
+		static Q previousFR = 0m;
 
+		// Maybe divide into 2 condition controllers: follow, run
     	if ((frontLeftSensor < distance) || (frontRightSensor < distance))
-    	    run = 0;
+    	    run = false;
     	else
-    		run = 1;
+    		run = true;
         end
         
-        if ((run < 1) && ((previousFL < frontLeftSensor) || (previousFR < frontRightSensor)))
-        	follow = 1;
+        if (!run && ((previousFL < frontLeftSensor) || (previousFR < frontRightSensor)))
+        	follow = true;
         else
-        	follow = 0;
+        	follow = false;
         end
         
         previousFL = frontLeftSensor;
