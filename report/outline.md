@@ -1,4 +1,4 @@
-Outline
+# Outline
 
 - Motivation
     gamification
@@ -27,3 +27,13 @@ Outline
 - References
 - Appendix
 	- controller for tutorial11
+
+
+# Motivation
+Self-driving vehicles are very important part of our future life. To design and develop this kind of Cyber-physical systems (CPS), Component and connector(C&C) models are widely used. Using C&C models, it is easier to represent different feature layers and their logical interactions. The most important feature of C&C modeling is a possibility to decompose complex models into sub-components and develop and manage, these less complex components, by domain experts.  
+To inspire students to be involved in the future technology we invented a web-playground which allows creating controllers for a simulator and almost instantly see the result in 3D environment. We believe that visualization will motivate students and make the studying process more attractive due to gamification. This kind of education become more popular recent years due to good learning outcome(link).  
+To teach students how to develop C&C models we should use a C&C modeling language which has all features and tools to satisfy our requirements. EmbeddedMontiArc(EMA)(link) language was picked for this purpose, to achieve the best results in short terms.  
+
+Feature description of chapters(should be done later).
+
+# Problem Definition
