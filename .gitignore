@@ -4,4 +4,13 @@
 .idea
 .git
 .DS_Store
-*.iml
+.iml
+.aux
+.bbl
+.blg
+.fdb*
+.fls
+.log
+.gz
+.toc
+
