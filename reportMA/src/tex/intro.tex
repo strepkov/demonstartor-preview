@@ -26,8 +26,7 @@ Eine der beiden Varianten MUSS man wählen, welche ist jedoch egal.
 \chapter{Related work}
 In this section, different tutorials will be analyzed to extract the most convenient and important features. The result will be used to increase the productivity and efficiency of the teaching process. Different tutorials have been taken into consideration from various domains: programming languages, numerical computing environment and so on. The main goal is to find the most useful features and integrate them.
 
-In the section 3.1 will be introduced very powerful tool which is used in different areas for building systems with 
-any complexity level.
+In the section 3.1 will be introduced tutorials for the very powerful tool which is used in different areas for building systems with any complexity level. In the section 3.2, is presented tutorials for the Rust programming language. In the section 3.3, is shown the theorem prover Z3 Solver from Microsoft.
 
 \section{Simulink}
 Simulink has been created by Mathworks(link). Simulink is a block diagram environment for various domain simulation and Model-Based Design. It also involves C\&C models into the modeling process. Users create models in a visual way, not writing the code. You can see an example of a fuel calculation subsystem(see figure \ref{fig:simulink}). There are depicted the incoming and outgoing ports of the schema, like est\_airflow or fuel\_rate. And the connections between the components inside. The schema is very useful for visual perception, you can easily see connections between elements and understand the logic behind that. If you had just textual representation of the elements and connections between, it would de much harder to imagine the whole schema and i.e. find some issue with an accidentally connected port or disconnected one.
@@ -68,7 +67,40 @@ In the figure \ref{fig:z3}, you can see the code given in a tutorial on the left
 Another advantage in this tutorial is a in-browser execution. Students do not have to install anything and can directly work in browsers. It means, the operating system(OS) does not have any influence on the execution and compilation process. Any OS can be used, it is necessary to have a web-browser. If this tutorial will be used directly on a lecture, then students just enter the URL in a browser and can instantly try to execute some examples.
 
 \section{Octave Online}
-Octave Online(link) is web-playground fot a high-level language Octave, which is primarily intended for numerical computations. It has a simple and intuitive interface despite the complexity of the internal implementation. It provides directly in a browser fast execution with errors handling. Even if you do complex computations it is not needed to install any software on the PC. Everything works out of the box.
+Octave Online(link) is a web-playground fot a high-level language Octave, which is primarily intended for numerical computations. It has a simple and intuitive interface despite the complexity of the internal implementation. It provides directly in a browser fast execution with errors handling. Even if you do complex computations it is not needed to install any software on the PC. Everything works out of the box.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{src/pic/octave}
+    \caption{Octave web-playground example.}
+    \label{fig:octave}
+\end{figure}
+
+This web-playground is oriented on students, who are using the tool directly on the lecture. Do some computations in a browser and run previously created scrips, as a sequence of the commands. To visualize some data, there is a possibility to build some plots for better understanding.
+
+\section{Wolfram Alpha}
+Wolfram Alpha is a very powerful tool, which works by using expert-level knowledge and algorithms to automatically answer questions, do analysis and generate reports. It has matrix operations and calculations as the EmbeddedMontiArcMath(link) language has, to describe atomic components. It can do even more as solving linear equations, it allows to specify the behavior of controllers, and then, by solving the equations, they synthesize the controller. Furthermore, it has one very interesting and useful feature, which provide the interactive visualization of the given data. The idea behind that is that you can \"feel\" how one or another parameter influence on the final result. It promises a better understanding of the dependencies between the components or elements of the system.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{src/pic/wolfram}
+    \caption{Wolfram Alpha example.}
+    \label{fig:wolfram}
+\end{figure}
+
+It offers the tutorials, which have step-by-step solution with detailed explanation of each step and additional hints for students(see figure \ref{fig:wolfram}). Futhermore, it has high quality visualization, which encourage students to do some experiments and see the changes on the displayed figure.
+
+\section{TypeScript Playground}
+TypeScript is a typed superset of JavaScript. It has a clean and simple playground which shows the difference and benefits of TypeScript over JavaScript. It has preloaded examples which actually show this difference and a user can see distinction in the direct comparison(see figure \ref{fig:typescript}). What, again, gives the better understanding and facilitates further analysis.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/typescript}
+    \caption{Typescript playground example.}
+    \label{fig:typescript}
+\end{figure}
+
+In the picture, it emphasizes the difference in a class architecture. It helps to find feature architecture advantages from using new language(means Typescript). Moreover, you can run the given example and see the result directly in a browser, but in different tab, which is not really convenient. If you have some complex code, it is really helpful to see the source and the result simultaneously.
 
 
 \cleardoublepage
