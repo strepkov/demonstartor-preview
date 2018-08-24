@@ -24,9 +24,9 @@ Eine der beiden Varianten MUSS man wählen, welche ist jedoch egal.
 \cleardoublepage
 
 \chapter{Related work}
-In this section, different tutorials will be analyzed to extract the most convenient and important features. The result will be used to increase the productivity and efficiency of the teaching process. Different tutorials have been taken into consideration from various domains: programming languages, numerical computing environment and so on. The main goal is to find the most useful features and integrate them.
+In this section, different tutorials will be analyzed to extract the most convenient and important features. The result will be used to increase the productivity and efficiency of the teaching process. Different tutorials and playgrounds have been taken into consideration from various domains: programming languages, numerical computing environment and so on. The main goal is to find the most useful features and integrate them.
 
-In the section 3.1 will be introduced tutorials for the very powerful tool which is used in different areas for building systems with any complexity level. In the section 3.2, is presented tutorials for the Rust programming language. In the section 3.3, is shown the theorem prover Z3 Solver from Microsoft.
+In the section 3.1 will be introduced tutorials for the very powerful tool which is used in different areas for building systems with any complexity level: Simulink. In the section 3.2, is presented tutorials for the Rust programming language. In the section 3.3, is shown the theorem prover Z3 Solver from Microsoft. In the section 3.4, the Octave online is considered, web-playground for numerical computation. The next one is the section 3.5, where is Wolfram Alpha is reviewed, which can solve various of mathematical and others tasks. In the section 3.6, is presented a playground for the Typescript language, which is widespread due to type checking, in contrast to its predecessor JavaScript.
 
 \section{Simulink}
 Simulink has been created by Mathworks(link). Simulink is a block diagram environment for various domain simulation and Model-Based Design. It also involves C\&C models into the modeling process. Users create models in a visual way, not writing the code. You can see an example of a fuel calculation subsystem(see figure \ref{fig:simulink}). There are depicted the incoming and outgoing ports of the schema, like est\_airflow or fuel\_rate. And the connections between the components inside. The schema is very useful for visual perception, you can easily see connections between elements and understand the logic behind that. If you had just textual representation of the elements and connections between, it would de much harder to imagine the whole schema and i.e. find some issue with an accidentally connected port or disconnected one.
@@ -100,7 +100,43 @@ TypeScript is a typed superset of JavaScript. It has a clean and simple playgrou
     \label{fig:typescript}
 \end{figure}
 
-In the picture, it emphasizes the difference in a class architecture. It helps to find feature architecture advantages from using new language(means Typescript). Moreover, you can run the given example and see the result directly in a browser, but in different tab, which is not really convenient. If you have some complex code, it is really helpful to see the source and the result simultaneously.
+In the picture, it emphasizes the difference in classes architecture. It helps to find architecture advantages of using new language(means Typescript). Moreover, you can run the given example and see the result directly in a browser, but in different tab, which is not really convenient. If you have some complex code, it is really helpful to see the source and the result simultaneously.
 
+\section{Swift Playground}
+Swift Playground has been created for teaching the Swift language in a game form. You can create small programs that instantly show the results of the code that you write. From the right side of the screen is shown a 3D world where an action is happen(see figure \ref{fig:swift}). The tutorials are pretty simple but the concept is very interesting. They have automatic verification of an implemented correctness in the 3D environment. To produce many diverse game oriented tutorials, it would be convenient to have simple 3D models importing which can use different models from various 3D editors.
+
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.6\linewidth]{src/pic/swift}
+    \caption{Swift playground example.}
+    \label{fig:swift}
+\end{figure}
+
+Apple gives into trends and have used the gamification in the tutorials, to attract learners to their product.
+
+\section{Requirements deriving}
+Thoroughly analyzed the projects described above, we have derived the following list of requirements for our tool: \\\\
+(R1) 3D visualization for demonstration purposes \\
+(R2) Simple, clean and intuitive interface \\
+(R3) Work on any operating system and without installation \\
+(R4) Automatic verification of obtained results \\
+(R5) Import and use existing 3D models for the simulation \\
+(R6) Displaying the object's trajectory \\
+(R7) Integrated testing support \\
+
+The table summarizes the comparison between the all considered tutorials.
+\begin{table}[h!]
+    \begin{tabular}{|l|l|l|l|l|l|l|l|l|}
+    \hline
+     &  &  &  &  &  &  &  &  \\ \hline
+     &  &  &  &  &  &  &  &  \\ \hline
+     &  &  &  &  &  &  &  &  \\ \hline
+     &  &  &  &  &  &  &  &  \\ \hline
+     &  &  &  &  &  &  &  &  \\ \hline
+     &  &  &  &  &  &  &  &  \\ \hline
+     &  &  &  &  &  &  &  &  \\ \hline
+     &  &  &  &  &  &  &  &  \\ \hline
+    \end{tabular}
+    \end{table}
 
 \cleardoublepage
