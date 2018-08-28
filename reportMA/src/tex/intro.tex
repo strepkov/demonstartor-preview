@@ -1,32 +1,19 @@
-\chapter{Einleitung}
-\section{Eins - Eins}
-\subsection{Eins - Eins - Eins}
-
-% Die Logos sind veraltet und duerfen zurzeit nicht verwendet werden!
-% Auf Seite \pageref{Logo} in Abbildung \ref{Logo} befindet sich das SE Logo.
-
-Absätze werden in Latex durch eine Leerzeile voneinder getrennt. Die Grundlagen zur UML/P finden sich in \cite{Rum11}
-
-Anstatt die Absätze durch einen größeren Abstand voneinander zu trennen, kann man auch die erste Zeile einrücken.
-
-Eine Website zitiert man so \cite{SE10} und hier gibt es MontiCore \cite{Mon10}. 
-
-Das sieht dann z.B. so aus ...
 \setlength{\parindent}{3ex}
 \setlength{\parskip}{0ex}
 
-Neuer Absatz ... Neuer Absatz ... Neuer Absatz ... Neuer Absatz ... Neuer Absatz ... Neuer Absatz ... Neuer Absatz ... Neuer Absatz ...
+\chapter{Motivation}
+Self-driving vehicles are very important part of our future life. To design and develop this kind of Cyber-physical systems (CPS), Component and connector(C\&C) models are widely used. Using C\&C models, it is easier to represent different feature layers and their logical interactions. The most important feature of C\&C modeling is a possibility to decompose complex models into sub-components and develop and manage, these less complex components, by domain experts.\\
+To inspire students to be involved in the future technology we invented a web-playground which allows creating controllers for a simulator and almost instantly see the result in 3D environment. We believe that visualization will motivate students and make the studying process more attractive due to gamification. This kind of education become more popular recent years due to good learning outcome(link).\\
+To teach students how to develop C\&C models we should use a C\&C modeling language which has all features and tools to satisfy our requirements. EmbeddedMontiArc(EMA)(link) language was picked for this purpose, to achieve the best results in short terms.\\
 
-Neuer Absatz ... Neuer Absatz ... Neuer Absatz ... Neuer Absatz ... Neuer Absatz ... Neuer Absatz ... Neuer Absatz ... Neuer Absatz ...
-
-Eine der beiden Varianten MUSS man wählen, welche ist jedoch egal.
+Feature description of chapters(should be done later).
 
 \cleardoublepage
 
 \chapter{Related work}
 In this section, different tutorials will be analyzed to extract the most convenient and important features. The result will be used to increase the productivity and efficiency of the teaching process. Different tutorials and playgrounds have been taken into consideration from various domains: programming languages, numerical computing environment and so on. The main goal is to find the most useful features and integrate them.
 
-In the section 3.1 will be introduced tutorials for the very powerful tool which is used in different areas for building systems with any complexity level: Simulink. In the section 3.2, is presented tutorials for the Rust programming language. In the section 3.3, is shown the theorem prover Z3 Solver from Microsoft. In the section 3.4, the Octave online is considered, web-playground for numerical computation. The next one is the section 3.5, where is Wolfram Alpha is reviewed, which can solve various of mathematical and others tasks. In the section 3.6, is presented a playground for the Typescript language, which is widespread due to type checking, in contrast to its predecessor JavaScript.
+In the section 2.1 will be introduced tutorials for the very powerful tool which is used in different areas for building systems with any complexity level - Simulink. In the section 2.2, is presented tutorials for the Rust programming language. In the section 2.3, is shown the theorem prover Z3 Solver from Microsoft. In the section 2.4, the Octave online is considered, web-playground for numerical computation. The next one is the section 2.5, where is Wolfram Alpha is reviewed, which can solve various of mathematical tasks. In the section 2.6, is presented a playground for the Typescript language, which is widespread due to type checking, in contrast to its predecessor JavaScript. The section 2.7, analyzes the Swift Playground, which has the most advanced 3D visualization but limited platform support. After reviewing the different tutorials and playgrounds, the requirements for the future tool will be derived and subsequently used in the development process. Using this approach, it is possible to combine advantages from the reviewed applications in one the most advanced tool.
 
 \section{Simulink}
 Simulink has been created by Mathworks(link). Simulink is a block diagram environment for various domain simulation and Model-Based Design. It also involves C\&C models into the modeling process. Users create models in a visual way, not writing the code. You can see an example of a fuel calculation subsystem(see figure \ref{fig:simulink}). There are depicted the incoming and outgoing ports of the schema, like est\_airflow or fuel\_rate. And the connections between the components inside. The schema is very useful for visual perception, you can easily see connections between elements and understand the logic behind that. If you had just textual representation of the elements and connections between, it would de much harder to imagine the whole schema and i.e. find some issue with an accidentally connected port or disconnected one.
@@ -115,7 +102,7 @@ Swift Playground has been created for teaching the Swift language in a game form
 Apple gives into trends and have used the gamification in the tutorials, to attract learners to their product.
 
 \section{Requirements deriving}
-Thoroughly analyzed the projects described above, we have derived the following list of requirements for our tool: \\\\
+Thoroughly analyzed the projects described above, the following list of requirements has been derived: \\\\
 (R1) 3D visualization for demonstration purposes \\
 (R2) Simple, clean and intuitive interface \\
 (R3) Work on any operating system and without installation \\
@@ -124,19 +111,46 @@ Thoroughly analyzed the projects described above, we have derived the following 
 (R6) Displaying the object's trajectory \\
 (R7) Integrated testing support \\
 
-The table summarizes the comparison between the all considered tutorials.
+The table summarizes the comparison between the all considered tutorials. \\
 \begin{table}[h!]
     \begin{tabular}{|l|l|l|l|l|l|l|l|l|}
     \hline
-     &  &  &  &  &  &  &  &  \\ \hline
-     &  &  &  &  &  &  &  &  \\ \hline
-     &  &  &  &  &  &  &  &  \\ \hline
-     &  &  &  &  &  &  &  &  \\ \hline
-     &  &  &  &  &  &  &  &  \\ \hline
-     &  &  &  &  &  &  &  &  \\ \hline
-     &  &  &  &  &  &  &  &  \\ \hline
-     &  &  &  &  &  &  &  &  \\ \hline
+    &  Z3 Solver & Octave & Wolfram & TypeScript & Swift & Rust & Simulink & EMAM PG \\ \hline
+    R1 & - & + & + & - & + & - & + & + \\ \hline
+    R2 & + & + & + & + & + & + & + & + \\ \hline
+    R3 & + & + & + & + & - & + & - & + \\ \hline
+    R4 & - & - & - & - & + & - & + & + \\ \hline
+    R5 & - & - & - & - & - & - & + & + \\ \hline
+    R6 & - & - & P & - & P & - & P & + \\ \hline
+    R7 & - & - & - & - & - & - & + & + \\ \hline
     \end{tabular}
-    \end{table}
+\end{table}
+(+ support, P partially support) \\
+
+Take a closer look at the differences between the tutorials regarding to the derived requirements.\\
+(R1) 3D visualization for demonstration purposes: Four considered tutorials have a 3D visualization. The Octave online has a possibility to generate plots and graphics for given data. The Wolfram Alpha has a very powerful tool which can generate 3D models and you can even interact with them and see the changes in a real time. Whereas the Swift Playground has the most advanced 3D world which is like a part of the tutorial and result presentation. The Simulink has an opportunity to build nice 3D models which involved in the simulation process, but the difference is that a user has to build everything himself.\\
+(R2) Simple, clean and intuitive interface: This is the only requirement which all tutorial are satisfied. We believe that it is very important to have an understandable and clear interface which does not distract from the educational process. Moreover, the interface should be intuitive so that students can use it directly at the lecture without detailed explanation of its features. \\
+(R3) Work on any operating system and without installation: Almost all examined tutorials have web-implementation and work without installation, except the Swift tutorial and Simulink. The Swift tutorial has only iOS implementation. The Simulink does not work on the Web too, only the MathLab, which has partial web-implementation.\\
+(R4) Automatic verification of obtained results: Only one among the examined tutorials, the Swift tutorial, has a gaming base verification of a solution correctness. It causes additional interest in the studying process, and can be the motivation to keep solving the tasks, by analogy with computer games. Whereas the Simulink gives you possibility to do it, but it is more like extra feature which can be implemented.\\
+(R5) Import and use existing 3D models for the simulation: Only the Simulink has feasibility to import 3D models. It helps to create tutorials quickly and efficiently, by using the previously created models and configurations. An example of reusing a 3D object can be a cone that is used in many exercises. This feature simplifies the process of creating new tutorials and decreases the time which has to be invested into the building process.\\
+(R6) Displaying the object's trajectory: Wolfram Alpha, Swift PG and Simulink, we could say, partially support this feature in case that you can see the whole process of movement of the object from the very beginning to the end. But it would be better to improve the concept and add the separate window which permanently displays a traversed route of the object, for better visual perception and visual comparison of results. In our case the object is a car.\\
+(R7) Integrated testing support: Only the Simulink has integrated testing options. Due to the specificity of the tutorials, tests play an important role. Writing the streaming test for components, students can be sure that it reacts properly to the incoming data. Tests make the components more reliable and robust. Because of the using the C\&C language, it is great to be sure that each component of a composed model behaves correctly.  
+Taking into account all these derived requirements we going to start working on the architecture.\\
 
 \cleardoublepage
+
+\chapter{Preliminaries}
+
+\section{EmbeddedMontiArc language}
+\section{EMA Tools}
+\subsection{Emam2Cpp}
+\subsection{Emam2Wasm}
+\subsection{Online IDE}
+\subsection{SVG generator}
+
+\chapter{Tutorials}
+\chapter{Toolchain implementation}
+\section{3D web-simulator}
+\section{Client-side}
+\section{Server-side}
+\section{CoCo checker}
