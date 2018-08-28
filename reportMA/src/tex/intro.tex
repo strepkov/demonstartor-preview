@@ -142,6 +142,15 @@ Taking into account all these derived requirements we going to start working on 
 \chapter{Preliminaries}
 The section introduces technologies that have been used in this thesis. The section \ref{sec:ema} gives an overview of the modelling C\&C language - EmbeddedMontiArc(EMA). The section \ref{sec:tools} presents the whole stack of EmbeddedMontiArc tools that have been used in the toolchain. More detailed description of the tools will be given in the following subsections: the subsection \ref{sec:emam2wasm} EMAM2Wasm describes the generator, which translate code from the EmbeddedMontiArcMath(EMAM) to C++ and then to Web-assembly. The subsection \ref{sec:onlineide} gives an overview of the Online IDE, which is used for writing EMA code in a browser. The subsection \ref{sec:svggen} explains the features of the schema' picture generator.
 \section{EmbeddedMontiArc language} \label{sec:ema}
+EmbeddedMontiArc language belongs to the MontiCAR language(link) family. It was designed to model architectures of embedded and cyber-physical systems. To show the main advantages of the language, it is easier to start directly with the example \ref{fig:embdmontiarc}.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{src/pic/embdmontiarc}
+    \caption{Textual EmbeddedMontiArc model of ParkAssistant.}
+    \label{fig:embdmontiarc}
+\end{figure} \\
+In the picture is shown the component with the name - ParkAssistant. This is not the entire component but a main part, which shows the most important features. It has incoming and outgoing ports. All ports must have a type, name and range. The type defines a kind of a signal(e.g., Q,N,Z,B). The range is very important, it helps to control the signal in boundaries, which are defined in advance. Another option, which is available for ports - port size array. It is possible to define an array of ports, it can increase the readability of the connection schema.
+
 \section{EMA Tools} \label{sec:tools}
 \subsection{EMAM2Wasm} \label{sec:emam2wasm}
 \subsection{Online IDE} \label{sec:onlineide}
