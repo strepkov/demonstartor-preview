@@ -163,7 +163,8 @@ Online IDE is based on the Cloud9 IDE, that is an online integrated development 
 \end{figure} \\
 To store porject's files, a virtual file system(VFS)(link) is used. It provides the filesystem API, which is used by developers to manipulate the project's files. It makes available all basic methods for working with files and folders(e.g., mkdir, readFile, copy and so on).
 \subsection{EMAM2Wasm} \label{sec:emam2wasm}
-
+This tool generates the web-assembly binary file and JavaScript file from the EMA project. The tool is based on the EMAM2Cpp generator, which firstly produces the c++ equivalent of the EMAM model, afterwards the generated c++ model is used to generate the Web-assembly model, using Emscripten compiler(link). The produced files later are used in a browser to execute compiled EMA model for the 3D visualization process.
+The tool is consisted of the .jar file, which has packed with all dependencies and configuration files... (check on the server!).
 \subsection{SVG generator} \label{sec:svggen}
 
 \chapter{Tutorials}
