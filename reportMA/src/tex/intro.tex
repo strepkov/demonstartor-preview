@@ -145,7 +145,7 @@ The section introduces technologies that have been used in this thesis. The sect
 EmbeddedMontiArc language belongs to the MontiCAR language(link) family. It was designed to model architectures of embedded and cyber-physical systems. To show the main advantages of the language, it is easier to start directly with the example \ref{fig:embdmontiarc}.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\linewidth]{src/pic/embdmontiarc}
+    \includegraphics[width=\linewidth]{src/pic/embdmontiarc}
     \caption{Textual EmbeddedMontiArc model of ParkAssistant.}
     \label{fig:embdmontiarc}
 \end{figure} \\
@@ -157,17 +157,25 @@ In this section will be described a full stack of components, which have been us
 Online IDE is based on the Cloud9 IDE, that is an online integrated development environment. It supports various languages and was adapted to support the EmbeddedMontiArc and EmbeddedMontiArcMath. It has many features which simplify the development process(see figure \ref{fig:onlineIDE}). The IDE supports the autocompletion for the given languages and syntax highlighting. It increases the speed of the development process and convenience during the code writing. From the left hand side is located the directory tree, which is simplify the navigation inside the project. In this area, you can create new files and folders. Files, which have beed opened, organized in tabs, which can be also used for navigation. From the right hand side, there is shown the list of all ports of the currently selected component. Then the list of the sub-components, which contains the selected component. It shows types of components and their names. When there are many other components in the component, it is easier to see the entire list of components in one screen. Below the sub-components, a group of connectors is shown, which are used to connect currently selected component with others components instantiated inside it. Moreover, the autocompletion is offered to connect to ports of a component, which actually has this component. It means that, the autocompletion tracks all instantiated components with ports. Needless to say, that the IDE supports a text search and search through the ports, sub-components and connectors.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\linewidth]{src/pic/onlineIDE}
+    \includegraphics[width=\linewidth]{src/pic/onlineIDE}
     \caption{EMA Online IDE.}
     \label{fig:onlineIDE}
 \end{figure} \\
 To store porject's files, a virtual file system(VFS)(link) is used. It provides the filesystem API, which is used by developers to manipulate the project's files. It makes available all basic methods for working with files and folders(e.g., mkdir, readFile, copy and so on).
 \subsection{EMAM2Wasm} \label{sec:emam2wasm}
-This tool generates the web-assembly binary file and JavaScript file from the EMA project. The tool is based on the EMAM2Cpp generator, which firstly produces the c++ equivalent of the EMAM model, afterwards the generated c++ model is used to generate the Web-assembly model, using Emscripten compiler(link). The produced files later are used in a browser to execute compiled EMA model for the 3D visualization process.
-The tool is consisted of the .jar file, which has packed with all dependencies and configuration files... (check on the server!).
+This tool generates the web-assembly binary file and JavaScript file from the EMA project. The tool is based on the EMAM2Cpp generator, which firstly produces the c++ equivalent of the EMAM model, afterwards the generated c++ model is used to generate the Web-assembly model, using Emscripten compiler \cite{Emscripten}. The produced files later are used in a browser to execute compiled EMA model for the 3D visualization process. \\
+The tool is consisted of the .jar file, which has packed with all dependencies and script files. One of these script files, does the setup procedure and another one executes the main .jar file, with all important parameters. One of the important parameters, which is given in the script file, is a path to Armadillo \cite{Armadillo} library. It is a C++ library for linear algebra \& scientific computing and it is used for matrix computations.
 \subsection{SVG generator} \label{sec:svggen}
-
+The main purpose of the SVG generator to create single or multiple layers schema of the given controller. The generated schema helps to visualize the textual model of the EMA controller. The visualization can help to find some errors related to incorrect connection between some components. The SVG generator able to generate multiple layer models, that increases a readability of schemas, because firstly you see more general schema of the model, then you just need to click on some component and an internal schema of the component is appeared.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/controller03}
+    \caption{EMA Parking controller.}
+    \label{fig:parking}
+\end{figure}
+In the figure \ref{fig:parking} is depicted the parking controller, which has three internal sub-components. Each of these components can have another components inside. The generator calculates the layout in the way to optimize positions of components and decrease the length of the connectors between them. One of the features, is a possibility to simplify the schema by hiding the ports' names and grouping the connections between components.
 \chapter{Tutorials}
+In this chapter a group of tutorials will be presented. The goal of the tutorials to teach students the basics of the EmbeddedMontiArc language and give a general idea how to build the autopilot's models.
 \chapter{Toolchain implementation}
 \section{3D web-simulator}
 \section{Client-side}
