@@ -175,7 +175,116 @@ The main purpose of the SVG generator to create single or multiple layers schema
 \end{figure}
 In the figure \ref{fig:parking} is depicted the parking controller, which has three internal sub-components. Each of these components can have another components inside. The generator calculates the layout in the way to optimize positions of components and decrease the length of the connectors between them. One of the features, is a possibility to simplify the schema by hiding the ports' names and grouping the connections between components.
 \chapter{Tutorials}
-In this chapter a group of tutorials will be presented. The goal of the tutorials to teach students the basics of the EmbeddedMontiArc language and give a general idea how to build the autopilot's models.
+In this chapter a group of tutorials will be presented. The goal of the tutorials to teach students the basics of the EmbeddedMontiArc language and give a general idea how to build the autopilot's models. The tutorials are given with respect of an increasing the complexity level. Examples are explained step-by-step, to give the best studying experience.
+\section{Zero tutorial}
+Task: accelerate to the given speed. \\
+Implement the model that continuously accelerates to 10 m/s and then stops.\\ \\
+Basic explanation:\\
+The car has 8 sensors to measure distances to obstacles. They are located respectively: \\
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/car-with-sensors}
+    \caption{Car with sensors.}
+    \label{fig:sensors}
+\end{figure} \\
+To solve this task it's needed to control only an acceleration of the car. Changing the acceleration you may control the behavior of the car. To be able to reach 10 m/s speed, you have to accelerate the car continuously until it reaches the desired speed. Let's start with a MainController which defines the interface to the simulator. We should create a new file which has the same name like component has, with .emam extension.
+\bigskip
+\begin{lstlisting}
+    package controller;
+
+    component MainController{
+        ports                                   
+            in Q(-200m:200m) frontLeftSensor,
+            in Q(-200m:200m) frontRightSensor,
+            in Q(-200m:200m) frontLeftSideSensor,
+            in Q(-200m:200m) frontRightSideSensor,
+            in Q(-200m:200m) backLeftSideSensor,
+            in Q(-200m:200m) backRightSideSensor,
+            in Q(-200m:200m) backLeftSensor,
+            in Q(-200m:200m) backRightSensor,
+    
+            in Q(0s:oos) time,
+            in Q(0m/s:25m/s) velocity,
+            in Q(-200m:200m) xPosition,
+            in Q(-200m:200m) yPosition,
+    
+            out Q(-2m/s^2:2m/s^2) acceleration,
+            out Q(-180 deg:180 deg) steering,
+            out B status;
+    ...
+\end{lstlisting}
+\bigskip
+The first eight incoming ports, lines from 5 to 12, receive the data from the sensors which are shown in the picture \ref{fig:sensors}. The next port is a simulation time, which starts from zero second to infinity. The velocity incoming port shows a current velocity of the car. And the next two ports give a position of the car on a track. After the incoming ports the outgoing are following. Outgoing ports control a behaviour of the car using the data which is coming to the incoming ports. The acceleration port controls the velocity, it is like you have two pedals in the car. If you push a brake, you have a negative acceleration. But if you push an accelerator pedal, the car accelerates and velocity has been increased. Then following the steering port, which controls the rotation of the car. And finally the status port, which signals the end of a simulation process. The reason to finish the simulation can be a successful completion of an assignment or violating by the car the track or a map borders. \\
+After examination of the example, we should notice:
+\begin{itemize}
+\item Component has ports incoming and outgoing
+\item For each port must be specified a type ( like Q,B) with a valid range.
+\item After each port name has to be a comma and the last one must have a semicolon.
+\item The possible units are:
+    \begin{itemize}
+        \item Distance: meters(m), kilometers(km)
+        \item Time: seconds(s), minutes(m), hours(h)
+        \item Velocity: km/h, m/s
+        \item Acceleration: m/s\^2
+        \item Rotation: degrees(deg)
+    \end{itemize}
+\end{itemize}
+It was the default interface for the Simulator. It has to be define for all feature controllers. Then you should create your own components which will be connected to the mainController. Let's create a simple component and connect it to the main one. To do that, we have to create a new file .emam with the following content:
+\bigskip
+\begin{lstlisting}
+    package controller;
+
+    component ExampleController {
+	    ports
+		    in Q(0m/s : 25m/s) velocity,
+		    out Q(-2m/s^2:2m/s^2) acceleration,
+		    out B status;
+
+	    implementation Math{
+		
+		    if (velocity <= 10 m/s)
+    	        acceleration = 1m/s^2;
+    	    else
+    	    	status = true;
+            end
+	    }
+    }
+\end{lstlisting}
+\bigskip
+In this component, which is named - ExampleController, are one incoming port and two outgoing ones. Firstly we should reach the speed 10 m/s then stop the simulation. The logic of the controller is implemented inside the Math{} scope. Inside the Math scope you can see if-else-end constructions and the example how to use it. Moreover, it the Math scope can be used different constructions, which you will see later in the next tutorials. The logic in this controller pretty straightforward, it the velocity of the car is less then 10 m/s then accelerate the car with the acceleration 1 m/s. When the given velocity is reached, stop the simulation by setting the status port to true. \\
+When we have created the ExampleController we should import it into the MainController and then instantiate it, to have possibility to use it, like a part of the MainController:
+\bigskip
+\begin{lstlisting}
+    package controller;
+
+    import ExampleController;
+
+    component MainController{ 
+    ...
+
+    instance ExampleController exampleController;
+    ...
+\end{lstlisting}
+\bigskip
+How you can see, we have imported the ExampleController in the line 3. Then later, after specifying the ports of the MainController we have instantiate the controller with the type ExampleController and the name exampleController. Now we should connect this controller to the main controller using specified ports.
+\bigskip
+\begin{lstlisting}
+    ...
+    connect velocity->exampleController.velocity;
+    connect exampleController.acceleration->acceleration;
+    connect exampleController.status->status;
+}
+\end{lstlisting}
+\bigskip
+We have connected the incoming port - velocity(mainController) to our instantiated controller and it's corresponding incoming port velocity. Then we connected the outgoing port of velocityController.acceleration to the outgoing port of our MainController. And finally the status port of the ExampleController to status of the MainController.\\
+Finally the connections scheme should look like is depicted in the figure \ref{fig:controller}.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/car-with-controller}
+    \caption{Car with controller.}
+    \label{fig:controller}
+\end{figure} \\
+Eventually we should send these files to the server to process it and then execute in the simulator, to the how the car behaves using our first controller.
 \chapter{Toolchain implementation}
 \section{3D web-simulator}
 \section{Client-side}
