@@ -177,7 +177,7 @@ In the figure \ref{fig:parking} is depicted the parking controller, which has th
 \chapter{Tutorials}
 In this chapter a group of tutorials will be presented. The goal of the tutorials to teach students the basics of the EmbeddedMontiArc language and give a general idea how to build the autopilot's models. The tutorials are given with respect of an increasing the complexity level. Examples are explained step-by-step, to give the best studying experience.
 \section{Zero tutorial}
-Task: accelerate to the given speed. \\
+\textbf{Task:} accelerate to the given speed. \\
 Implement the model that continuously accelerates to 10 m/s and then stops.\\ \\
 Basic explanation:\\
 The car has 8 sensors to measure distances to obstacles. They are located respectively: \\
@@ -285,6 +285,34 @@ Finally the connections scheme should look like is depicted in the figure \ref{f
     \label{fig:controller}
 \end{figure} \\
 Eventually we should send these files to the server to process it and then execute in the simulator, to the how the car behaves using our first controller.
+\section{Parallel parking tutorial}
+\textbf{Task:} To carry out a parallel parking between two cars. \\
+Implement a model that manages a parking between two cars. The model has to have several modules which are responsible for different actions. One of the examples could be:
+\begin{enumerate}
+    \item Module which controls the speed of the car, depends on the current action(e.g. parking, searching a parking place).
+    \item Module which looking for a gap between cars for the parking.
+    \item Module which controls a steering of the car during the parking process.
+\end{enumerate}
+Each module should be as simple as possible. \\
+To solve this task you should use at least 6 sensors, which measure the distance to objects which are located in front, left side and back of the car. The speed has to be around 0.5-1 m/s. In the picture you can see the main idea how the parking has to be done:
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{src/pic/parking_process1}
+    \caption{Parking process.}
+    \label{fig:parking}
+\end{figure}
+The parking process can be divided in 4 steps:
+\begin{enumerate}
+    \item Go straight until a place have been found.
+    \item When the place is found, go back and rotate the car.
+    \item When the car has reached appropriate point, rotate car in other direction to fit into given gap between the cars.
+    \item When the car is close to the car behind, stop and go forward until it reaches certain distance to the front car.
+\end{enumerate}
+Important to know, this wed-simulator is a simplified version and it does not change the angle of front wheels but an angle of the car entirely. \\ \\
+\textbf{Solution}
+
+\section{Maneuverability test tutorial}
+
 \chapter{Toolchain implementation}
 \section{3D web-simulator}
 \section{Client-side}
