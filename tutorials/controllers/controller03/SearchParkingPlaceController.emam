@@ -8,31 +8,27 @@ component SearchParkingPlaceController {
 
     implementation Math{
         
-        static Q first = 0;
-        static Q second = 0;
-        static Q third = 0;
-        static Q found = 0;
+        static Q passed0 = 0;
+        static Q passed1 = 0;
+        static Q passed2 = 0;
+        static Q passed3 = 0;
 
-        if (frontLeftSideSensor > backLeftSideSensor) && (second == 1)  && (third == 1)
-            found = 1;
-            second = 0;
-            third = 0;
+        if ((backLeftSideSensor - frontLeftSideSensor) > 3)
+            passed0 = 1;
+        end
+
+        if (((frontLeftSideSensor - backLeftSideSensor) > 3) && passed0)
+            passed1 = 1;
         end
         
-        if frontLeftSideSensor > backLeftSideSensor
-            first = 1;
+        if (((backLeftSideSensor - frontLeftSideSensor) > 3) && passed1)
+            passed2 = 1;
         end
         
-        if frontLeftSideSensor < backLeftSideSensor
-            second = 1;
+        if (((frontLeftSideSensor - backLeftSideSensor) > 3) && passed2)
+            passed3 = 1;
         end
         
-        if (frontLeftSideSensor == backLeftSideSensor) && (first == 1) && (second == 1)
-            first = 0;
-            second = 0;
-            third = 1;
-        end
-        
-        foundPlace = found > 0;
+        foundPlace = passed3;
     }
 }

@@ -18,8 +18,8 @@ component MainController{
         in Q time,
         in Q(0km/h:250km/h) velocity,
 
-        in Q(-200m:200m) x,
-        in Q(-200m:200m) y,
+        in Q(-200m:200m) xPosition,
+        in Q(-200m:200m) yPosition,
 
         out Q(-2m/s^2:2m/s^2) acceleration,
         out Q(-180:180) steering,
