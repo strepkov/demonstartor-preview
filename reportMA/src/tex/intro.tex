@@ -177,7 +177,7 @@ In the figure \ref{fig:parking} is depicted the parking controller, which has th
 \chapter{Tutorials}
 In this chapter a group of tutorials will be presented. The goal of the tutorials to teach students the basics of the EmbeddedMontiArc language and give a general idea how to build the autopilot's models. The tutorials are given with respect of an increasing the complexity level. Examples are explained step-by-step, to give the best studying experience.
 \section{Zero tutorial}
-\textbf{Task:} accelerate to the given speed. \\
+\textbf{Task:} accelerate to the given speed. \newline
 Implement the model that continuously accelerates to 10 m/s and then stops.\\ \\
 Basic explanation:\\
 The car has 8 sensors to measure distances to obstacles. They are located respectively: \\
@@ -286,14 +286,14 @@ Finally the connections scheme should look like is depicted in the figure \ref{f
 \end{figure} \\
 Eventually we should send these files to the server to process it and then execute in the simulator, to the how the car behaves using our first controller.
 \section{Parallel parking tutorial}
-\textbf{Task:} To carry out a parallel parking between two cars. \\
+\textbf{Task:} To carry out a parallel parking between two cars. \newline
 Implement a model that manages a parking between two cars. The model has to have several modules which are responsible for different actions. One of the examples could be:
 \begin{enumerate}
     \item Module which controls the speed of the car, depends on the current action(e.g. parking, searching a parking place).
     \item Module which looking for a gap between cars for the parking.
     \item Module which controls a steering of the car during the parking process.
 \end{enumerate}
-Each module should be as simple as possible. \\
+Each module should be as simple as possible. \newline
 To solve this task you should use at least 6 sensors, which measure the distance to objects which are located in front, left side and back of the car. The speed has to be around 0.5-1 m/s. In the picture you can see the main idea how the parking has to be done:
 \begin{figure}[h!]
     \centering
@@ -308,9 +308,196 @@ The parking process can be divided in 4 steps:
     \item When the car has reached appropriate point, rotate car in other direction to fit into given gap between the cars.
     \item When the car is close to the car behind, stop and go forward until it reaches certain distance to the front car.
 \end{enumerate}
-Important to know, this wed-simulator is a simplified version and it does not change the angle of front wheels but an angle of the car entirely. \\ \\
-\textbf{Solution}
+Important to know, this wed-simulator is a simplified version and it does not change the angle of front wheels but an angle of the car entirely. \newline \newline
+\textbf{Solution} \newline \newline
+To solve that tutorial we have to use the MainController, like we did in the previous tutorial. But we are going to start from an implementation of a controller which will search the place for the car, between two other cars to carry out the parallel parking. The idea is to pass the first car and find the "end" of the second car to start parking process form a right point, like it is shown in the picture \ref{fig:parking}.
+\bigskip
+\begin{lstlisting}
+package controller03;
 
+component SearchParkingPlaceController {
+    port
+        in Q(-200m:200m) frontLeftSide,
+        in Q(-200m:200m) backLeftSide,
+        out B foundPlace;
+
+    implementation Math{
+        
+        static Q passed0 = false;
+        static Q passed1 = false;
+        static Q passed2 = false;
+        static Q passed3 = false;
+
+        if ((backLeftSide - frontLeftSide) > 3m)
+            passed0 = true;
+        end
+
+        if (((frontLeftSide - backLeftSide) > 3m) && passed0)
+            passed1 = true;
+        end
+        
+        if (((backLeftSide - frontLeftSide) > 3m) && passed1)
+            passed2 = true;
+        end
+        
+        if (((frontLeftSide - backLeftSide) > 3m) && passed2)
+            passed3 = truetutorials/controllers/controller03/SearchParkingPlaceController.emam;
+        end
+        
+        foundPlace = passed3;
+    }
+}    
+\end{lstlisting}
+\bigskip
+We are using the side sensors to measure the distances to the cars and the side of the road. Using static variables we can save the states(e.g. the distance has changed from 5m to 1m and then from 1m to 5m, it means we have passed the car). Static variables initialized only once. Now we should create a VelocityController, which controls the speed of the car, during the search parking place process and parking.
+\bigskip
+\begin{lstlisting}
+    package controller03;
+
+    component VelocityController {
+        port                                    
+            in Q(0km/h : 250km/h) velocity,
+            in B reverseMove,
+            in B moveForward,
+            out Q(-2m/s^2:2m/s^2) acceleration; 
+    
+        implementation Math{                    
+    
+            if (velocity > 1 m/s)
+                acceleration = 0m/s^2;
+            else
+                acceleration = 1m/s^2;
+            end
+            
+            if reverseMove
+                acceleration = -0.5 m/s^2;
+            end
+            
+            if (velocity < -0.5 m/s)
+                acceleration = 0m/s^2;
+            end
+            
+            if (reverseMove && moveForward)
+                acceleration = 0.5 m/s^2;
+            end
+            
+            if (reverseMove && moveForward && (velocity > 0.5 m/s))
+                acceleration = 0m/s^2;
+            end
+        }
+    }
+\end{lstlisting}
+\bigskip
+The velocityController has several different states. The first one is a limit for the velocity during searching parking place (1m/s). The next one is the velocity limit during the reverse move, -0.5 m/s it means, that car moves back. The last one, when the car moves forward during the parking process to move closer to the front car. Next controller will be the most important one, because it manages the parking process.
+\bigskip
+\begin{lstlisting}
+package controller03;
+component ParkingController {
+    port
+        in Q(-200m:200m) frontLeftSensor,
+        in Q(-200m:200m) frontRightSensor,
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in Q(-200m:200m) backLeftSensor,
+        in Q(-200m:200m) backRightSensor,
+        in B reverseMove,
+        out Q(-35deg:35deg) steering,
+        out B moveForward,
+        out B status;
+
+    implementation Math{
+        
+        static B forwardState = false;
+        
+        if reverseMove
+            steering = 1 deg;
+        else
+            steering = 0 deg;
+        end
+        
+        if (reverseMove && (backLeftSensor < 2m))
+            steering = -1 deg;
+        end
+        
+        if (reverseMove && ((backRightSensor == backLeftSensor) ||
+            ((backRightSensor < 3m) && (backLeftSensor < 3m))))
+                forwardState = true;
+        end
+        
+        if (((frontRightSensor < 3m) || (frontLeftSensor < 3m)) &&
+            forwardState)
+            status = true;
+        else
+            status = false; 
+        end
+        
+        if(forwardState &&(frontLeftSideSensor > backLeftSideSensor))
+            steering = -0.5 deg;
+        end
+        
+        if(forwardState &&(frontLeftSideSensor < backLeftSideSensor))
+            steering = 0.5 deg;
+        end
+        
+        moveForward = forwardState;
+    }
+}
+\end{lstlisting}
+\bigskip
+The idea is that the car is going back until it reached a certain point, changing an angle of the car. When the car is going back and a distance, from the back left sensor to the road border, is less then 2m, start rotate the car in opposite direction until it is in parallel with the road. Then stop when the limit of the back distance is reached and get closer to the front car. All these steps are nicely illustrated in the picture \ref{fig:parking}. Finally we should connect all these controllers to the interface in the MainController.
+\bigskip
+\begin{lstlisting}
+    package controller03;
+
+    import VelocityController;
+    import SearchParkingPlaceController;
+    import ParkingController;
+    
+    component MainController{
+        ports 
+            in Q(-200m:200m) frontLeftSensor,
+            in Q(-200m:200m) frontRightSensor,
+            in Q(-200m:200m) frontLeftSideSensor,
+            in Q(-200m:200m) frontRightSideSensor,
+            in Q(-200m:200m) backLeftSideSensor,
+            in Q(-200m:200m) backRightSideSensor,
+            in Q(-200m:200m) backLeftSensor,
+            in Q(-200m:200m) backRightSensor,
+    
+            in Q(0s:oos) time,
+            in Q(0km/h:250km/h) velocity,
+    
+            in Q(-200m:200m) xPosition,
+            in Q(-200m:200m) yPosition,
+    
+            out Q(-2m/s^2:2m/s^2) acceleration,
+            out Q(-180deg:180deg) steering,
+            out B status;
+    
+        instance VelocityController velocityController;
+        connect velocity->velocityController.velocity;
+        connect velocityController.acceleration->acceleration;
+    
+        instance SearchParkingPlaceController searchParkingPlace;
+        connect *->searchParkingPlace.*;
+        
+        instance ParkingController parkingController;
+        connect *->parkingController.*;
+        connect searchParkingPlace.foundPlace-> [
+            velocityController.reverseMove,
+            parkingController.reverseMove];
+        connect parkingController.*->*;
+        connect parkingController.*->velocityController.*;
+    }
+\end{lstlisting}
+\bigskip
+All Controllers have been instantiated and then connected to the corresponding ports. The star on the line 33 and later means that the ports, which have similar name are connected to each other. The entire connection scheme is depicted in the figure \ref{fig:parking-scheme}.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/parking-scheme}
+    \caption{Parking controller scheme.}
+    \label{fig:parking-scheme}
+\end{figure}
 \section{Maneuverability test tutorial}
 
 \chapter{Toolchain implementation}
