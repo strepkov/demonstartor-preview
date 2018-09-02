@@ -499,7 +499,27 @@ All Controllers have been instantiated and then connected to the corresponding p
     \label{fig:parking-scheme}
 \end{figure}
 \section{Maneuverability test tutorial}
-
+\textbf{Task:} Implement a model that manages a driving between cones, which emulates the maneuverability test. The model has to have several modules which are responsible for different actions. One of the examples could be:
+\begin{enumerate}
+    \item Module controls the speed of the car.
+    \item Module is responsible for a steering angle of the car, depends on current position.
+\end{enumerate}
+Each module should be as simple as possible.
+To solve this tutorial you may use from 4 to 6 sensors, which measure the distance to objects which are located in front/side of the car. The speed has to be around 1-2 m/s. In the picture \ref{fig:maneuverability} you can see the main idea how the driving has to be done:
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/drive_cones}
+    \caption{Maneuverability test.}
+    \label{fig:maneuverability}
+\end{figure} 
+The parking process can be divided in several steps:
+\begin{enumerate}
+    \item Go straight until a cone is closer then 10m then start to rotate the car to round the cone.
+    \item When a front part of the car is passed the cone, start to rotate in opposite direction.
+    \item When the car is rotated enough to pass the next cone, stop rotation and continue the movement straight.
+    \item Repeat the second step until the car passed all cones.
+\end{enumerate}
+\textbf{Hint:} In this task will be helpful to use the static variables like a counters.
 \chapter{Toolchain implementation}
 \section{3D web-simulator}
 \section{Client-side}
