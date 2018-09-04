@@ -519,7 +519,134 @@ The parking process can be divided in several steps:
     \item When the car is rotated enough to pass the next cone, stop rotation and continue the movement straight.
     \item Repeat the second step until the car passed all cones.
 \end{enumerate}
-\textbf{Hint:} In this task will be helpful to use the static variables like a counters.
+\textbf{Hint:} In this task will be helpful to use the static variables like a counters. \newline \newline
+\textbf{Solution} \newline \newline
+To solve the given task we should use the MainController, which provides an interface for a communication with the car. Nevertheless, let us start from the Velocity controller, which controls the velocity of the car.
+\bigskip
+\begin{lstlisting}
+package controller04;
+
+component VelocityController {
+    ports
+        in Q(0km/h : 250km/h) velocity,
+        out Q(-2m/s^2:2m/s^2) acceleration; 
+
+    implementation Math{                    
+
+        if (velocity > 1 m/s)
+            acceleration = 0m/s^2;
+        else
+            acceleration = 1m/s^2;
+        end
+    }
+}
+\end{lstlisting}
+\bigskip
+The controller set a limit of the car's velocity on 1 m/s during a process of passing the field of cones. The velocity is controlled by an acceleration. The next controller, which will be implemented, controls a steering of the car to maneuver between cones.
+\bigskip
+\begin{lstlisting}
+    package controller04;
+
+    component ConeRunner {
+        port
+            in Q(-200m:200m) frontLeftSensor,
+            in Q(-200m:200m) frontRightSensor,
+            in Q(-200m:200m) frontLeftSideSensor,
+            in Q(-200m:200m) frontRightSideSensor,
+            in Q(-200m:200m) backLeftSideSensor,
+            in Q(-200m:200m) backRightSideSensor,
+            in Q(-200m:200m) xPosition,
+            out Q(-180deg:180deg) steering,
+            out B status;
+    
+        implementation Math{
+            
+            static B passRight = false;
+            static B passLeft = false;
+            static Q(0deg:180deg) count = 0;
+            status = false;
+    
+            if ((frontRightSensor < 10m) && !passLeft && !passRight)
+                steering = -1 deg;
+            else
+                steering = 0 deg;
+            end
+            
+            if (frontRightSideSensor < 1m)
+                passRight = true;
+                passLeft = false;
+                count = 0 deg;
+            end
+            
+            if passRight && (count < 55 deg)
+                steering = 1 deg;
+                count +=1 deg;
+            end
+            
+            if passRight && (frontLeftSideSensor < 1m)
+                passLeft = true;
+                passRight = false;
+                count = 0 deg;
+            end
+            
+            if passLeft && (count < 55 deg)
+                steering = -1 deg;
+                count +=1;
+            end
+            
+            if (xPosition > 30m)
+                status = true;
+            end
+        }
+    }
+\end{lstlisting}
+\bigskip
+The lines 22-26 are in charge of passing the first cone, because it is located at the center, and the car should behave a bit differently. The car starts rotation to the left slowly, when it has 10 meters to the cone. When it reaches the first cone, it changes the rotation to opposite direction. Then, when it has passed the cone from the right side, it start a rotation to the right using the counter, which is counting the rotation angle to be able to pass a next cone from the left side. There is could be another way of solving this tutorial, without using the counter. The approximate trajectory of the car, you can see in the picture \ref{fig:maneuverability}. The car's rotation varies depending on which side a cone has been passed. After passing the field of cones, the simulation process has been stopped, by using the current position of the car. It happens in the last condition check, line 50. When the controllers, which deliver the main functionality have been developed, we should connect them to the car's interface, which is given in the MainController.
+\bigskip
+\begin{lstlisting}
+    package controller04;
+
+    import VelocityController;
+    import ConeRunner;
+    
+    component MainController{
+        ports 
+            in Q(-200m:200m) frontLeftSensor,
+            in Q(-200m:200m) frontRightSensor,
+            in Q(-200m:200m) frontLeftSideSensor,
+            in Q(-200m:200m) frontRightSideSensor,
+            in Q(-200m:200m) backLeftSideSensor,
+            in Q(-200m:200m) backRightSideSensor,
+            in Q(-200m:200m) backLeftSensor,
+            in Q(-200m:200m) backRightSensor,
+    
+            in Q(0s:oos) time,
+            in Q(0km/h:250km/h) velocity,
+            in Q(-200m:200m) xPosition,
+            in Q(-200m:200m) yPosition,
+            
+            out Q(-2m/s^2:2m/s^2) acceleration,
+            out Q(-180deg:180deg) steering,
+            out B status;
+    
+        instance VelocityController velocityController;
+        connect velocity->velocityController.velocity;
+        connect velocityController.acceleration->acceleration;
+    
+        instance ConeRunner coneRunner;
+        connect * -> coneRunner.*;
+        connect coneRunner.*->*; 
+    }
+\end{lstlisting}
+\bigskip
+In the MainController, firstly we import the implemented controllers then instantiate them and connect. Using the star(*) notation, which is one of the convenient and important feature of the EMA, we can connect all ports with equal names between components. It is simplifies the text model of the controller. If we need to connect only one port, it is better to specify it directly, to facilitate connection's understanding. The entire connection scheme is depicted in the figure \ref{fig:maneuverability-scheme}.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/controller04}
+    \caption{Maneuverability controller scheme.}
+    \label{fig:maneuverability-scheme}
+\end{figure}
+From the left hand side of the connection scheme, you can see only the ports in the interface, which is indeed connected to other controllers.
 \chapter{Toolchain implementation}
 \section{3D web-simulator}
 \section{Client-side}
