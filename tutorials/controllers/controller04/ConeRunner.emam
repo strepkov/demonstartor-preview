@@ -2,31 +2,30 @@ package controller04;
 
 component ConeRunner {
     port
-        in Q(-200m:200m) fr,
-        in Q(-200m:200m) fl,
-        in Q(-200m:200m) slf,
-        in Q(-200m:200m) srf,
-        in Q(-200m:200m) slb,
-        in Q(-200m:200m) srb,
-        in Q(-200m:200m) x,
+        in Q(-200m:200m) frontLeftSensor,
+        in Q(-200m:200m) frontRightSensor,
+        in Q(-200m:200m) frontLeftSideSensor,
+        in Q(-200m:200m) frontRightSideSensor,
+        in Q(-200m:200m) backLeftSideSensor,
+        in Q(-200m:200m) backRightSideSensor,
+        in Q(-200m:200m) xPosition,
         out Q(-180:180) steering,
         out B status;
 
     implementation Math{
         
-        static Q passRight = 0;
-        static Q passLeft = 0;
+        static B passRight = 0;
+        static B passLeft = 0;
         static Q count = 0;
         status = 0;
 
-        // deal with the first cone
-        if ((fr < 10) && (passLeft == 0) && (passRight == 0))
+        if ((frontRightSensor < 10m) && passLeft && passRight)
             steering = -1;
         else
             steering = 0;
         end
         
-        if (srf < 1)
+        if (frontRightSideSensor < 1m)
             passRight = 1;
             passLeft = 0;
             count = 0;
@@ -37,7 +36,7 @@ component ConeRunner {
             count +=1;
         end
         
-        if passRight && (slf < 1)
+        if passRight && (frontLeftSideSensor < 1m)
             passLeft = 1;
             passRight = 0;
             count = 0;
@@ -48,8 +47,7 @@ component ConeRunner {
             count +=1;
         end
         
-        // Stop after passing the last cone
-        if (x > 30)
+        if (xPosition > 30m)
             status = 1;
         end
     }
