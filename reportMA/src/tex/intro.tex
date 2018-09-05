@@ -171,9 +171,9 @@ The main purpose of the SVG generator to create single or multiple layers schema
     \centering
     \includegraphics[width=\linewidth]{src/pic/controller03}
     \caption{EMA Parking controller.}
-    \label{fig:parking}
+    \label{fig:parkingCtrl}
 \end{figure}
-In the figure \ref{fig:parking} is depicted the parking controller, which has three internal sub-components. Each of these components can have another components inside. The generator calculates the layout in the way to optimize positions of components and decrease the length of the connectors between them. One of the features, is a possibility to simplify the schema by hiding the ports' names and grouping the connections between components.
+In the figure \ref{fig:parkingCtrl} is depicted the parking controller, which has three internal sub-components. Each of these components can have another components inside. The generator calculates the layout in the way to optimize positions of components and decrease the length of the connectors between them. One of the features, is a possibility to simplify the schema by hiding the ports' names and grouping the connections between components.
 \chapter{Tutorials}
 In this chapter a group of tutorials will be presented. The goal of the tutorials to teach students the basics of the EmbeddedMontiArc language and give a general idea how to build the autopilot's models. The tutorials are given with respect of an increasing the complexity level. Examples are explained step-by-step, to give the best studying experience.
 \section{Zero tutorial}
@@ -671,10 +671,23 @@ To clarify the goal of each component which is shown in the picture, it will be 
     \item Simulator, it receives a compiled model from the server and instantiates it directly in the browser. Then the controller is used to process data from sensors, which located on the car.
     \item Trajectory builder and comparator. It builds in real time a trajectory of the car's movements and does a comparison between a sample trajectory and generated one. The comparator allows having some deviation from the sample trajectory.
 \end{enumerate}
-In this composition of components, some of these were reused from the previous and already successful development. The missing components will be implemented, in the way to accomplish the goal in the most efficient and optimal way.
-\section{Frontend}
-\subsection{Main view}
-\subsection{3D web-simulator}
+In this composition of the components, some of these were reused from the previous successful development. The missing components will be implemented, in the way to accomplish the goal in the most efficient and optimal way.
+\section{Front-End}
+The Front-End "part" of the toolchain consists of the Online IDE, 3D simulator and trajectory builder. The Online IDE has been already implemented and successful used in production. In the following subsections will be described the main page, which manages a communication with the server, loading of tutorials and files' operations. Then the 3D simulator will be described. It demonstrates the car's behaviour, which is controlled by the compiled model. 
+\subsection{Main page}
+The main page consists of four <iframe> tags, which have inside independent web-pages: online IDE, trajectory comparator, 3D web-simulator and description of tutorials. Moreover it ensures the communication between these pages and the Back-End. The functionality which is provided by the main page:
+\begin{itemize}
+    \item Select and load tutorials. One of the given tutorials can be selected. After that the specified description of the tutorial will be loaded from the server. Due to lack of space on the screen, there is the simulator with the trajectory builder or the tutorial description can be shown, not all together.
+    \item Read the data from the Online IDE. It means read files, which were created by the user inside the IDE. All files that were created, are stored in the VFS. If you need to read the data from these files, the special API\cite{FilesystemAPI} has to be used. In this case, an arbitrary number of files and folders can be created. Due to this reason the recursive algorithm has to be implemented for a model reading. Futhermore, JavaScript is an asynchronous programming language and the promises\cite{JSPromise} have to be used, to implement the sequential execution of operations.
+    \item Pack files, which have been read, to decrease the size of the blob and amount of transferred files. To pack files directly in the browser, the special library is used. The file reading functionality, which was described above produces an array of the files, which is used by the JSZip library\cite{JSZip} to create a blob.
+    \item Send and receive the data to/from the server. When the model has been read and packed, it should be sent to the server for further processing. For this purposes XMLHttpRequest \cite{XMLHttpRequest} is used. It uses POST request to send the blob, which was created by the JSZip library, to the server. The response is sent asynchronously. It means, we can continue to interact with the page during the processing the data by the server. When the data was processed on the server and sent back to the browser, the request object has changed the state to the readyState and it starts to receive the binary data and stores it.
+    \item Unpack the incoming data. The browser receives the blob, which is actually just a binary data. Then the blob has to be saved as a .zip archive in the memory. After that, the archive is being extracted. The archive consists of two files. One of them is a .wasm file, which has uint8array encoding. Another one is a .js file, which has string data inside. It is important to differentiate the encoding of these files, due to data consistency inside. During the unpacking process the correctness of received data is checked.
+    \item Transfer the compiled model data to the simulator. After the extraction of the received from the server data, the .wasm binary data is validated, by build in WebAssembly validation function. Only after successful validation, the data is being transferred to the 3D web-simulator, where the .wasm controller will be instantiated for further usage.
+    \item Load the completed text model of the controller into the IDE. There is possible to load the model, which was implemented as a solution for a tutorial. To load the data to the IDE, the Filesystem API is used, besides, extra functions are required. One of them is cleaning the online IDE environment. It means, delete all files, which were loaded or created earlier. And there is the same issue like we had before with reading. There is no an implemented recursive function, which can do it. And it has to be implemented.
+    \item Don't send loaded solution controller to the server if there is no changes in the code. After loading the solution controller, the content of the files can be changed in the IDE. But if the files were not changed, we do not want to spend time waiting the compilation process. Due to this reason, there is pre-compiled controllers, which can be loaded directly to the simulator, to increase usability and convenience of using the product.
+\end{itemize}
+All described functions have an error handling. If user have some problem with the model, an error message from the server will be received. It is related to all functions which is implemented. It could be an error during packing/extracting process, file reading or .wasm file validation.
+\subsection{3D-web-simulator}
 \section{Backend}
 \subsection{Jetty part}
 \subsection{CoCo checker}
