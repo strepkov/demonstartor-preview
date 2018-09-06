@@ -687,8 +687,26 @@ The main page consists of four <iframe> tags, which have inside independent web-
     \item Don't send loaded solution controller to the server if there is no changes in the code. After loading the solution controller, the content of the files can be changed in the IDE. But if the files were not changed, we do not want to spend time waiting the compilation process. Due to this reason, there is pre-compiled controllers, which can be loaded directly to the simulator, to increase usability and convenience of using the product.
 \end{itemize}
 All described functions have an error handling. If user have some problem with the model, an error message from the server will be received. It is related to all functions which is implemented. It could be an error during packing/extracting process, file reading or .wasm file validation.
+\subsection{Tutorial internal organization}
+Using of the configuration files to optimize the preparation of the environment 
 \subsection{3D-web-simulator}
-The simulator uses Three.js \cite{ThreeJS}, that is a lightweight cross-browser JavaScript library/API used to create and display animated 3D computer graphics on a Web-browser. This library uses WebGL \cite{WebGL} to increase performance and smoothness of 3D graphics and reduce the intensity of CPU usage, by using the hardware acceleration of the GPU.
+The simulator uses Three.js\cite{ThreeJS}, that is a lightweight cross-browser JavaScript library/API used to create and display animated 3D computer graphics on a Web-browser. This library uses WebGL\cite{WebGL} to increase performance and smoothness of 3D graphics and reduce the intensity of CPU usage, by using the hardware acceleration of the GPU.\newline
+To actually be able to display anything with three.js, we need three things: scene, camera and renderer, so that we can render the scene with camera. Then we can add objects to the scene. The most important objects for our tutorials are: track, car and other objects, depends on the task(e.g., cones, cars).\newline
+The simulator environment consist of the visual and mathematical model. The visual means the graphic representation that can be seen in the browser. The mathematical one, it is the model base on which is built the graphical representation.
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.7\linewidth]{src/pic/simulator-scheme}
+    \caption{The simulator scheme.}
+    \label{fig:simulator-scheme}
+\end{figure} \newline
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/class-diagram}
+    \caption{The simulator class diagram.}
+    \label{fig:class-diagram}
+\end{figure} \newline
+Some...
+
 \subsection{Trajectory builder}
 \section{Backend}
 \subsection{Jetty part}
