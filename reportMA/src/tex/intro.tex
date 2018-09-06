@@ -692,24 +692,57 @@ Using of the configuration files to optimize the preparation of the environment
 \subsection{3D-web-simulator}
 The simulator uses Three.js\cite{ThreeJS}, that is a lightweight cross-browser JavaScript library/API used to create and display animated 3D computer graphics on a Web-browser. This library uses WebGL\cite{WebGL} to increase performance and smoothness of 3D graphics and reduce the intensity of CPU usage, by using the hardware acceleration of the GPU.\newline
 To actually be able to display anything with three.js, we need three things: scene, camera and renderer, so that we can render the scene with camera. Then we can add objects to the scene. The most important objects for our tutorials are: track, car and other objects, depends on the task(e.g., cones, cars).\newline
-The simulator environment consist of the visual and mathematical model. The visual means the graphic representation, that can be seen in the browser. The mathematical one, it is the model, base on which is built the graphical representation. Then, there is another important part of the chain - Controller. The controller was build in advance, before the simulation has been started. In the picture \ref{fig:simulator-scheme} you can see the interaction between the components.
+The simulator environment consist of the visual and mathematical model. The visual means the graphical representation, that can be seen in the browser. The mathematical one, it is the model, base on which is built the graphical representation. Then, there is another important part of the chain - controller. The controller was build in advance, before the simulation has been started. In the picture \ref{fig:simulator-scheme} you can see the interaction between the components.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.7\linewidth]{src/pic/simulator-scheme}
     \caption{The simulator scheme.}
     \label{fig:simulator-scheme}
-\end{figure} \newline
-The graphical part of the simulator has a main loop. The loop defines how often will be called the move function in the scene, which changes the position of the car in the track. Moreover, inside the loop, the simulator core interacts with the controller. On the each cycle, there is the following sequence of actions is taking place:
+\end{figure}
+\subsubsection{Simulator graphical part}
+The graphical part of the simulator is in charge of displaying the simulation process in the 3D environment. The most important part is a main loop. The loop defines how often will be called the move function in the scene, which changes the position of the car in the track. Moreover, inside the loop, the simulator core interacts with the controller. On every cycle, there is the following sequence of actions is taking place:
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.7\linewidth]{src/pic/main-loop}
     \caption{The main loop.}
     \label{fig:main-loop}
 \end{figure} \newline
-Consider the Simulator core in more details. The simulator has mathematical model of the track. The track has 2 different types of the walls: linear and curved. The linear one is defined by the two points: start point(x,y) and end point(x,y). The curved one has more parameters: start point(x,y), middle point(x,y), end point(x,y) and radius. When the distances for the sensors have been calculating, in fact, the intersections of the vectors which are going from the car's sensors to track walls are calculated.
-\begin{equation}
-    \sqrt{\frac{a}{b}}
-\end{equation}
+Then there are lots of different functions, which do some service tasks. TODO: continue description of the functions inside...
+\subsubsection{Simulator core part}
+Consider the simulator core in more details. The simulator has mathematical model of the track. It means, there is an array of walls, which constantly defined to be equal with the graphical model that was shown during the simulation process. The track has 2 different types of the walls: linear and curved. The linear one is defined by the two points and the curved one has more parameters: start, middle, end points and radius. When the distances to the track's walls have been calculating, in fact, the following occurs:
+\begin{itemize}
+    \item An intersection of a ray and a line is calculated. The initial point of the ray is a sensor position and direction. The line is a wall of the track.
+    \item If the intersection was found, then we calculate the distance between the sensor and intersection line.
+\end{itemize}
+After the calculation of the distances to the track's walls, this data transferred to the controller, which uses it to consider the subsequent behavior of the car. Then the controller passes the result again to the core simulator, which uses this data for further processing. The core simulator has the function - calculate, which uses the data from the controller and executes the next simulation step in the mathematical model. This function controls the main simulation parameters:
+\begin{itemize}
+    \item Time:
+        \begin{equation}
+            time = time + samplingTime
+        \end{equation} \newline
+        where time is simulation time and samplingTime is an increment on each step. 
+    \item Velocity:
+    \begin{equation}
+        velocity = velocity + acceleration * samplingTime
+    \end{equation} \newline
+        where velocity and acceleration are related to the car.
+    \item Rotation:
+    \begin{equation}
+        rotation = rotation + steering
+    \end{equation} \newline
+        where rotation and steering angle are related to the car.
+    \item Position:
+    \begin{equation}
+        x = x_0 + velocity * samplingTime * cos(rotation)
+    \end{equation}
+    \begin{equation}
+        y = y_0 + velocity * samplingTime * sin(rotation)
+    \end{equation} \newline
+    the x0 and y0 are defined the previous position.
+\end{itemize}
+After an execution of this function, the outgoing data is ready to be used by the graphical part of the simulator and during the next execution step.
+
+
 
 \subsection{Trajectory builder}
 \section{Back-End}
