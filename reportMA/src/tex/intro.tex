@@ -642,13 +642,31 @@ The lines 22-26 are in charge of passing the first cone, because it is located a
 In the MainController, firstly we import the implemented controllers then instantiate them and connect. Using the star(*) notation, which is one of the convenient and important feature of the EMA, we can connect all ports with equal names between components. It is simplifies the text model of the controller. If we need to connect only one port, it is better to specify it directly, to facilitate connection's understanding. The entire connection scheme is depicted in the figure \ref{fig:maneuverability-scheme}.
 \begin{figure}[ht]
     \centering
-    \includegraphics[width=\linewidth]{src/pic/controller04}
+    \includegraphics[width=0.8\linewidth]{src/pic/controller04}
     \caption{Maneuverability controller scheme.}
     \label{fig:maneuverability-scheme}
 \end{figure}
 From the left hand side of the connection scheme, you can see only the ports in the interface, which is indeed connected to other controllers.
 \section{Complete track tutorial}
-If there is enough place, then maybe add the description of the tutorial and the source code just place into the appendix! 
+\textbf{Task:} Run through the entire track. \newline \newline
+In this tutorial we are going to use previously created controllers to run the track with different obstacles and actions.
+\begin{figure}[ht]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/track_tutorial11}
+    \caption{Tutorial 11 track.}
+    \label{fig:tutorial11-track}
+\end{figure}
+In the figure \ref{fig:tutorial11-track} the entire track is depicted. We can divide the track into several zones, where different actions are going to happen:
+\begin{enumerate}
+    \item First one will be the curved area where we have to drive, using our previously created controller for running the whole track with optimal trajectory.
+    \item Then on the straight part of the track, a car waiting to start movement, give the possibility firstly to use the follow controller and then the overtaking one.
+    \item After overtaking at the end of the strait part of the track, the obstacle form the cones is waiting for the car. The car should brake before the obstacle and then continue the movement when the obstacle is gone.
+    \item At the curve part of the track we have to use again, the controller which we used in the first part, just drive through the track.
+    \item Next task, will be running across the field of cones.
+    \item The last one is the parallel parking. We should use the controller which measure the gap between the cars.
+\end{enumerate}
+All these controllers were created before in the first ten tutorials and we have to combine all them in one controller which can manage all these actions. Previously we have done some tutorials which use several controllers simultaneously. The main idea that we have an actions controller, which manages actions. This tutorial has to be done in the similar way. \newline \newline
+The solution won't be given with the exception of the resulting controller. The controller combines all previously created controllers and will be given in appendix, due to large size of the text model.
 \chapter{Toolchain}
 In this chapter, will be given a description of the entire toolchain, which is used in the thesis. This toolchain provides the functionality which is required by derived earlier requirements. In the following sections are given the detailed explanation of an architecture and an internal implementation of components from which the toolchain consists.
 \section{Architecture}
@@ -675,7 +693,7 @@ In this composition of the components, some of these were reused from the previo
 \section{Front-End}
 The Front-End "part" of the toolchain consists of the Online IDE, 3D simulator and trajectory builder. The Online IDE has been already implemented and successful used in production. In the following subsections will be described the main page, which manages a communication with the server, loading of tutorials and files' operations. Then the 3D simulator will be described. It demonstrates the car's behaviour, which is controlled by the compiled model. 
 \subsection{Main page}
-The main page consists of four <iframe> tags, which have inside independent web-pages: online IDE, trajectory comparator, 3D web-simulator and description of tutorials. Moreover it ensures the communication between these pages and the Back-End. The functionality which is provided by the main page:
+The main page consists of four iframe tags, which have inside independent web-pages: online IDE, trajectory comparator, 3D web-simulator and description of tutorials. Moreover it ensures the communication between these pages and the Back-End. The functionality which is provided by the main page:
 \begin{itemize}
     \item Select and load tutorials. One of the given tutorials can be selected. After that the specified description of the tutorial will be loaded from the server. Due to lack of space on the screen, there is the simulator with the trajectory builder or the tutorial description can be shown, not all together.
     \item Read the data from the Online IDE. It means read files, which were created by the user inside the IDE. All files that were created, are stored in the VFS. If you need to read the data from these files, the special API\cite{FilesystemAPI} has to be used. In this case, an arbitrary number of files and folders can be created. Due to this reason the recursive algorithm has to be implemented for a model reading. Futhermore, JavaScript is an asynchronous programming language and the promises\cite{JSPromise} have to be used, to implement the sequential execution of operations.
@@ -687,8 +705,40 @@ The main page consists of four <iframe> tags, which have inside independent web-
     \item Don't send loaded solution controller to the server if there is no changes in the code. After loading the solution controller, the content of the files can be changed in the IDE. But if the files were not changed, we do not want to spend time waiting the compilation process. Due to this reason, there is pre-compiled controllers, which can be loaded directly to the simulator, to increase usability and convenience of using the product.
 \end{itemize}
 All described functions have an error handling. If user have some problem with the model, an error message from the server will be received. It is related to all functions which is implemented. It could be an error during packing/extracting process, file reading or .wasm file validation.
-\subsection{Tutorial internal organization}
-Using of the configuration files to optimize the preparation of the environment 
+\subsection{Tutorial internal structure}
+Each tutorial has a textual description, solution and configuration file. The tutorial description has a detailed explanation of the task, which includes some advices and recommendations. The solution gives the step-by-step instructions how to solve the task, and describes why we use particular methods. The configuration files for tutorials have the following data:
+\bigskip
+\begin{lstlisting}
+{
+    "car" : 
+    {
+        "start" : "0:0",
+        "end" : "z43"
+    },
+    "trackObject0" :
+    {
+        "position" : "100:10",
+        "width" : "4",
+        "height" : "5",
+        "type" : "car"
+    },
+    "trackObject1" :
+    {
+        "position" : "z24b",
+        "width" : "1",
+        "height" : "1",
+        "type" : "cone"
+    }
+}
+\end{lstlisting}
+\bigskip
+The configuration is given in .json format. The first object "car" is the main car, which controlled by a controller. It is possible to define start and end positions. When the car reaches the "end" point, the simulation is stopped. If the simulation should run until a controller terminates the execution, "end" point must not be given. The position of objects can be given as coordinates (x,y) or labels, which are written in the track. The next objects are defined like "trackObject" and have the list of parameters:
+\begin{itemize}
+    \item Position of the object, which can be given in the same way like "start" point of the car.
+    \item Width and height define the size of the object, values given in meters.
+    \item Type defines which kind of 3D Objects will be shown in the 3D environment.
+\end{itemize}
+Usage of configuration files is simplify the creation process for new tutorials and managing of objects on the track. To create a new tutorial, we shouldn't change anything in the simulator, just specify new configuration for the tutorial.
 \subsection{3D-web-simulator}
 The simulator uses Three.js\cite{ThreeJS}, that is a lightweight cross-browser JavaScript library/API used to create and display animated 3D computer graphics on a Web-browser. This library uses WebGL\cite{WebGL} to increase performance and smoothness of 3D graphics and reduce the intensity of CPU usage, by using the hardware acceleration of the GPU.\newline
 To actually be able to display anything with three.js, we need three things: scene, camera and renderer, so that we can render the scene with camera. Then we can add objects to the scene. The most important objects for our tutorials are: track, car and other objects, depends on the task(e.g., cones, cars).\newline
@@ -707,7 +757,13 @@ The graphical part of the simulator is in charge of displaying the simulation pr
     \caption{The main loop.}
     \label{fig:main-loop}
 \end{figure} \newline
-Then there are lots of different functions, which do some service tasks. TODO: continue description of the functions inside...
+There are lots of different functions, which do some service tasks. There is shortly described the most important ones:
+\begin{itemize}
+    \item Initializing the core simulator and controllers.
+    \item Resetting the simulation environment after execution, if it is needed to execute the simulation again. All variables, like execution time or sensor's noise have to be set to initial value.
+    \item Reading tutorials' configurations. During loading one of the tutorials, the configuration file is used for instantiation of the track environment. It means, adding the objects to the track and setting up the initial position of the car.
+\end{itemize}
+The graphical part of the simulator is tightly coupled with the core part. It maps all actions which occurs in the mathematical model to the 3D virtual model, which we can observe. 
 \subsubsection{Simulator core part}
 Consider the simulator core in more details. The simulator has mathematical model of the track. It means, there is an array of walls, which constantly defined to be equal with the graphical model that was shown during the simulation process. The track has 2 different types of the walls: linear and curved. The linear one is defined by the two points and the curved one has more parameters: start, middle, end points and radius. When the distances to the track's walls have been calculating, in fact, the following occurs:
 \begin{itemize}
@@ -740,10 +796,14 @@ After the calculation of the distances to the track's walls, this data transferr
     \end{equation} \newline
     the x0 and y0 are defined the previous position.
 \end{itemize}
-After an execution of this function, the outgoing data is ready to be used by the graphical part of the simulator and during the next execution step.
-
-
-
+After the execution of this function, the outgoing data is ready to be used by the graphical part of the simulator and during the next execution step. \newline
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/class-diagram}
+    \caption{The core simulator class diagram.}
+    \label{fig:class-diagram}
+\end{figure}
+To fully understand how the core simulator works, consider a class diagram \ref{fig:class-diagram}. It depicts classes' dependencies and interaction between them. The main simulator class has a class Track, which has Walls and  they can be linear or curved. Moreover, the simulator class has a car, which has eight embedded sensors. The sensors are using the auxiliary class, which helps to calculate the distances. The orientation and rotation classes are used by the car class, to calculate the positions of the sensors when the car changes the angle on the flat. The simulator class uses the structures Sinput and Soutput to fill the input and output data respectively, every execution loop. The simulator works in cooperation with the controller, but for the testing purposes the MOCK controller has been developed. It helps to test the simulator functionality and the body of the MOCK controller can be written in TypeScript.
 \subsection{Trajectory builder}
 \section{Back-End}
 \subsection{Jetty part}
