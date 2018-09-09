@@ -3,8 +3,8 @@
 
 \chapter{Motivation}
 Self-driving vehicles are very important part of our future life. To design and develop this kind of Cyber-physical systems (CPS), Component and connector(C\&C) models are widely used. Using C\&C models, it is easier to represent different feature layers and their logical interactions. The most important feature of C\&C modeling is a possibility to decompose complex models into sub-components and develop and manage, these less complex components, by domain experts.\\
-To inspire students to be involved in the future technology we invented a web-playground which allows creating controllers for a simulator and almost instantly see the result in 3D environment. We believe that visualization will motivate students and make the studying process more attractive due to gamification. This kind of education become more popular recent years due to good learning outcome(link).\\
-To teach students how to develop C\&C models we should use a C\&C modeling language which has all features and tools to satisfy our requirements. EmbeddedMontiArc(EMA)(link) language was picked for this purpose, to achieve the best results in short terms.\\
+To inspire students to be involved in the future technology we invented a web-playground which allows creating controllers for a simulator and almost instantly see the result in 3D environment. We believe that visualization will motivate students and make the studying process more attractive due to gamification. This kind of education become more popular recent years due to good learning outcome\cite{Game}.\newline
+To teach students how to develop C\&C models we should use a C\&C modeling language which has all features and tools to satisfy our requirements. EmbeddedMontiArc(EMA) \cite{Mon10} language was picked for this purpose, to achieve the best results in short terms.\\
 
 Feature description of chapters(should be done later).
 
@@ -16,7 +16,7 @@ In this section, different tutorials will be analyzed to extract the most conven
 In the section \ref{sec:simulink} will be introduced tutorials for the very powerful tool which is used in different areas for building systems with any complexity level - Simulink. In the section \ref{sec:rust}, is presented tutorials for the Rust programming language. In the section \ref{sec:z3}, is shown the theorem prover Z3 Solver from Microsoft. In the section \ref{sec:octave}, the Octave online is considered, web-playground for numerical computation. The next one is the section \ref{sec:wolfram}, where is Wolfram Alpha is reviewed, which can solve various of mathematical tasks. In the section \ref{sec:typescript}, is presented a playground for the Typescript language, which is widespread due to type checking, in contrast to its predecessor JavaScript. The section \ref{sec:swift}, analyzes the Swift Playground, which has the most advanced 3D visualization but limited platform support. After reviewing the different tutorials and playgrounds, the requirements for the future tool will be derived and subsequently used in the development process. Using this approach, it is possible to combine advantages from the reviewed applications in one the most advanced tool.
 
 \section{Simulink} \label{sec:simulink}
-Simulink has been created by Mathworks(link). Simulink is a block diagram environment for various domain simulation and Model-Based Design. It also involves C\&C models into the modeling process. Users create models in a visual way, not writing the code. You can see an example of a fuel calculation subsystem(see figure \ref{fig:simulink}). There are depicted the incoming and outgoing ports of the schema, like est\_airflow or fuel\_rate. And the connections between the components inside. The schema is very useful for visual perception, you can easily see connections between elements and understand the logic behind that. If you had just textual representation of the elements and connections between, it would de much harder to imagine the whole schema and i.e. find some issue with an accidentally connected port or disconnected one.
+Simulink has been created by Mathworks \cite{Mathworks}. Simulink is a block diagram environment for various domain simulation and Model-Based Design. It also involves C\&C models into the modeling process. Users create models in a visual way, not writing the code. You can see an example of a fuel calculation subsystem(see figure \ref{fig:simulink}). There are depicted the incoming and outgoing ports of the schema, like est\_airflow or fuel\_rate. And the connections between the components inside. The schema is very useful for visual perception, you can easily see connections between elements and understand the logic behind that. If you had just textual representation of the elements and connections between, it would de much harder to imagine the whole schema and i.e. find some issue with an accidentally connected port or disconnected one.
 
 \begin{figure}[h!]
     \centering
@@ -767,8 +767,8 @@ The graphical part of the simulator is tightly coupled with the core part. It ma
 \subsubsection{Simulator core part}
 Consider the simulator core in more details. The simulator has mathematical model of the track. It means, there is an array of walls, which constantly defined to be equal with the graphical model that was shown during the simulation process. The track has 2 different types of the walls: linear and curved. The linear one is defined by the two points and the curved one has more parameters: start, middle, end points and radius. When the distances to the track's walls have been calculating, in fact, the following occurs:
 \begin{itemize}
-    \item An intersection of a ray and a line is calculated. The initial point of the ray is a sensor position and direction. The line is a wall of the track.
-    \item If the intersection was found, then we calculate the distance between the sensor and intersection line.
+    \item An intersection of a ray and line is calculated. The initial point of the ray is a sensor position and direction. The line is a wall of the track.
+    \item If the intersection was found, then we calculate the distance between the sensor and intersection line. If it was not found, we assume that intersection point exist but with the value Number.MAX\_VALUE.
 \end{itemize}
 After the calculation of the distances to the track's walls, this data transferred to the controller, which uses it to consider the subsequent behavior of the car. Then the controller passes the result again to the core simulator, which uses this data for further processing. The core simulator has the function - calculate, which uses the data from the controller and executes the next simulation step in the mathematical model. This function controls the main simulation parameters:
 \begin{itemize}
@@ -803,8 +803,32 @@ After the execution of this function, the outgoing data is ready to be used by t
     \caption{The core simulator class diagram.}
     \label{fig:class-diagram}
 \end{figure}
-To fully understand how the core simulator works, consider a class diagram \ref{fig:class-diagram}. It depicts classes' dependencies and interaction between them. The main simulator class has a class Track, which has Walls and  they can be linear or curved. Moreover, the simulator class has a car, which has eight embedded sensors. The sensors are using the auxiliary class, which helps to calculate the distances. The orientation and rotation classes are used by the car class, to calculate the positions of the sensors when the car changes the angle on the flat. The simulator class uses the structures Sinput and Soutput to fill the input and output data respectively, every execution loop. The simulator works in cooperation with the controller, but for the testing purposes the MOCK controller has been developed. It helps to test the simulator functionality and the body of the MOCK controller can be written in TypeScript.
+To fully understand how the core simulator works, consider a class diagram \ref{fig:class-diagram}. It depicts classes' dependencies and interaction between them. The main simulator class has a class Track, which has Walls and they can be linear or curved. Moreover, the simulator class has a car, which has eight embedded sensors. The sensors are using the auxiliary class, which helps to calculate the distances. The orientation and rotation classes are used by the car class, to calculate the positions of the sensors when the car changes the angle on the flat. The simulator class uses the structures Sinput and Soutput to fill the input and output data respectively, every execution loop. The simulator works in cooperation with the controller, but for the testing purposes, the MOCK controller has been developed. It helps to test the simulator functionality and body of the MOCK controller can be written in TypeScript.
 \subsection{Trajectory builder}
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.8\linewidth]{src/pic/trajectory}
+    \caption{Trajectory builder.}
+    \label{fig:trajectory}
+\end{figure}
+Trajectory builder gives a better understanding and a simplicity of analysis the passed way. It is hard to track the whole path of the car and see the controller's errors in real time during the execution. The trajectory helps to solve this problem. In the picture \ref{fig:trajectory} is shown the track with the trajectories. The white one is the sample trajectory while the red one is being drawn in real time, simultaneously with the passing the part of the track by the car. To be able to draw the trajectory a log file is used. It contains all important information about the car in each simulation moment. Information from the log file can be used to analyse the behaviour of the car and reveal problems with the model.
+\bigskip
+\begin{lstlisting}
+logObject.telemetry.push({
+  "Status": simulator.output.triggerStatus,
+  "Time": simulator.output.ti.value,
+  "Position": [simulator.output.xi.value, simulator.output.yi.value],
+  "Rotation": simulator.output.degree.value * 180 / Math.PI,
+  "Velocity": simulator.output.velocity.value,
+  "Sensors": distances
+});
+\end{lstlisting}
+\bigskip
+The listing shows the data which is stored in the log. The Time shows the simulation time. Position, rotation and velocity related to the car. The "Sensors" is an array of sensors with measurements in the current simulation point. To build the trajectory, only positioning data is used. The length of the trajectory is calculated by summing up the lengths of all segments between position points. The length between points is calculated using the distance formula \cite{Distance}:
+\begin{equation}
+    distBetweenPoints += \sqrt{(x_1-x_0)^2 + (y_1-y_0)^2}
+\end{equation}
+After the summing up all the segments, the \textit{distBetweenPoints} has the entire distance of the track, which is used later to compare the trajectories. To draw the trajectory, all points from the log file are mapped to the picture of the track.
 \section{Back-End}
 \subsection{Jetty part}
 \subsection{CoCo checker}
