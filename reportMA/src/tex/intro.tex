@@ -830,5 +830,15 @@ The listing shows the data which is stored in the log. The Time shows the simula
 \end{equation}
 After the summing up all the segments, the \textit{distBetweenPoints} has the entire distance of the track, which is used later to compare the trajectories. To draw the trajectory, all points from the log file are mapped to the picture of the track.
 \section{Back-End}
-\subsection{Jetty part}
+The back-end part of the toolchain is consist of a web-server, EMAM2Wasm generator, testing toolchain and SVG generator. All described component have been implemented and successful used in previous projects. The main goal to connect them all together and implement the web-server, which controls the execution of all services and communicates with the front-end. ?????Additionally, in EMAM language there is a lack of some Context and Conditions checking, which have to be implemented, to obtain better error handling during compilation process.
+\subsection{Web-server}
+Overwhelming majority of tools related to EMA have been written using Java language and uses the .jar containers. Using .jar container, the applications can be executed on different operating systems, it means they are cross-platform. This is a big advantage, since applications can be run on the server, which does not use Windows, instead some Linux-based system. The web-server is based on the Eclipse Jetty \cite{Jetty}. Eclipse Jetty provides a Web server and javax.servlet container. In our case, we create a server, which bind to the specific port. The servlets' container holds servlets inside, which react on incoming requests from the front-end (see the picture \ref{fig:servlet}). \newline
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=0.6\linewidth]{src/pic/servlet-container-life-cycle}
+    \caption{Servlet container.}
+    \label{fig:servlet}
+\end{figure} \newline
+What is really important in our case, that when the request is coming, for each request, a new thread is being created. It means, that we can maintain multiple users, and do not have create manually a multiple user management system. \newline
+The servler receives the request from the front end. The request contains an archive, which has to be unpacked and the model has to be copied for the further processing. For this purpose, a class has been created, which in charge of unpacking .zip archives and can handle any structure of directories/folders. To decrease a number of I/O operations, the incoming archive is being stored in the RAM. Then, after the unpacking, the incoming model is being saved to the folder, where models for EMAM2Wasm compiler are located. The compilation process is initiated by executing the particular batch file with parameter, which is a name of the model, that has to be compiled.
 \subsection{CoCo checker}
