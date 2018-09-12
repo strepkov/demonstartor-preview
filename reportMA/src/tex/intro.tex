@@ -826,7 +826,7 @@ The listing shows the data which is stored in the log. The Time shows the simula
 \end{equation}
 After the summing up all the segments, the \textit{distBetweenPoints} has the entire distance of the track, which is used later to compare the trajectories. To draw the trajectory, all points from the log file are mapped to the picture of the track.
 \section{Back-End}
-The back-end part of the toolchain is consist of a web-server, EMAM2Wasm generator, testing toolchain and SVG generator. All described component have been implemented and successful used in previous projects. The main goal to connect them all together and implement the web-server, which controls the execution of all services and communicates with the front-end. Moreover, in EMAM language there is a lack of some Context and Conditions checking, which have to be implemented, to obtain better error handling during compilation process.
+The back-end part of the toolchain is consist of a web-server, EMAM2Wasm generator, testing toolchain and SVG generator. All described component have been implemented and successful used in previous projects. The main goal to connect them all together and implement the web-server, which controls the execution of all services and communicates with the front-end. Moreover, in EMAM language there is a lack of some context conditions(CoCo) checking, which have to be implemented, to obtain better error handling during compilation process.
 \subsection{Web server}
 Overwhelming majority of tools related to EMA have been written using Java language and uses the .jar containers. Using .jar container, the applications can be executed on different operating systems, it means they are cross-platform. This is a big advantage, since applications can be run on the server, which does not use Windows, instead some Linux-based system. The web-server is based on the Eclipse Jetty \cite{Jetty}. Eclipse Jetty provides a Web server and javax.servlet container. In our case, we create a server, which bind to the specific port. The servlets' container holds servlets inside, which react on incoming requests from the front-end (see the picture \ref{fig:servlet}). \newline
 \begin{figure}[h!]
@@ -845,8 +845,54 @@ Then, consider the steps, which occur on the back-end part of the toolchain:
     \item After sending the response, all temporary data on the server will be deleted, to be sure that one day the server will not run out the disc space, due to the large number of compiled models.
 \end{itemize}
 The web-server, like other EMAM tools is a .jar package and can be installed on different operating systems. Currently, the back end toolchain runs on Windows base OS, but in the future the back end could easily migrate to linux-base environment.
-\subsection{EMAM Context and Condition checking}
-The main description of the EMAM language is written... The new coco were implemented to simplify the development process. Better error handling by the compiler, speedup a process of finding errors during the development.
+\subsection{EMAM Context Conditions}
+The EMA language is based on a context-free grammar. It means, the language does not support the context-sensitive restrictions by default. Context conditions implement such context-sensitive restrictions. In our case, it would be very helpful to check the correctness of written models. Better error handling by the compiler, speedup a process of finding errors during the development. The new context conditions were implemented to simplify the development process for a user. It was decided to implement the following context conditions:
+\begin{enumerate}
+    \item \textbf{Range port check assignment :} the assigned value for a port, has to be given in the specified range.
+    \item \textbf{Range value check assignment :} the value assigned to a variable, has to be given in the specified range.
+    \item \textbf{Range value check declaration :} if an assignment of a value done during a declaration (e.g., type range = value), the value has to be given in the specified range.
+    \item \textbf{Units comparison equal, greater, smaller, smallerEqual, greaterEqual, notEqual :} when values are compared using the given operations, the units of co compared variables/ports must be equal.
+    \item \textbf{Units must be equal assignment :} if a value with units has been assigned to some variable/port, the units have to be equal.  
+\end{enumerate}
+To be able to implement given above context condition, the knowledges of the architecture of the language are required. The detailed description of the language architecture and grammar is given in the following book \cite{Mon10}. Namely in chapters 6, 9 and 10. Let us consider the most important statements for the implementation, which are defined in the book. In the chapter 9 is written that, the CoCo have to be checked after the creation of the symbol table from an abstract syntax(AST). Then we should check, whether the AST has been already created or not. The symbol table provides helpful information to implement CoCos in the efficient way. The symbol table contents an important information, which is used to check the desired data. In our case, during the comparison check, it is important to find a left and right hand side of an expression. Then consider this parts separately, and only when the desired data as a value or units have been found, compare them. During the searching the data like range of units, it must be checked if the rage or units have to de defined or not, to does not end up with an runtime error during the comparison process. Another important statement, that constants and variables have different, which is obvious from the names. But still, it is important to check all possible combinations during the comparison(e.g., var == const, var == var, const == var, const == const). To increase the code reusability and amount of a written code, for the units comparison, was decided to use additional level of abstraction. The helper class, which has done all comparison operations, and receives the type of the node(e.g., ASTMathCompareNotEqualExpression) like a parameter. \newline
+To be able to use the created CoCos, they all have to be added to the EmbeddedMontiArcMathCoCoChecker. Only after registering the CoCos they will be executed. But before using them, the CoCos have to be tested.\newline
+As was advised in the book, tests for valid and invalid models should be created. It makes sure, that valid models do not violate the context condition, whereas invalid models do violate the context condition. Due to these reasons, for each CoCo were created two tests and the test, which involves all CoCos at the same time. There is an example of an invalid model:
+\bigskip
+\begin{lstlisting}
+package test.coco.invalid.units;
+
+component MyComponentMix {
+    ports
+        out Q(0kg: 100kg) out1;
+
+    implementation Math {
+
+        Q(0kg: 10kg) var1 = 100kg;
+        if (var1 <= 10m)              
+            out1 = 10kg;
+        end
+
+        if (10m < var1)
+            out1 = 10kg;
+        end
+
+        Q(0m: 100m) var2 = 10m;
+        if (var1 > var2)
+            out1 = 10kg;
+        end
+
+        if (10kg == 10m)
+            out1 = 10kg;
+        end
+
+        Q(0kg: 10kg) var3;
+        var3 = 100m;
+    }
+}
+\end{lstlisting}
+\bigskip
+Consider the given test example. In the line 9 there is a range error, the value 100 bigger then given range. Lines number 10, 14, 19 and 23 have units errors. Each of these statements use different type of comparison. And finally the line 28 has errors related to different units and values simultaneously. \newline
+After implementing and integrating the CoCos, the chain of projects has to be recompiled, to be able to use implemented innovations.
 \chapter{Usage}
 Students are going to use the web-playground to understand how to work with C\&C models languages like EmbeddedMontiArc. The main idea of the playground to increase interest in the learning process using a gamification of the tutorials. There are several simple steps in the learning process. The first tutorial is a task which already has a solution but the idea behind that to show the main constructions and principles of the language and the playground. Next tutorials have tasks with increasing complexity and every time there is some hint, which motivates students to use particular constructions. The visualization of the process gives the feeling of the language and understanding of the binding between writing the code and real actions which were caused by the written code. The process of writing tests shows the benefits of test-driven development and understanding the importance of independent testing of the components.
 The process of using the web-playground is very simple. Students don't have to install any applications on the computer and it is possible to use it from any platform, whether it is Mac, Windows or Linux. Only one important condition has to be satisfied - to have a "fresh" version of a browser. IDE, tutorial, visualization are located in one window and has a very intuitive interface.
