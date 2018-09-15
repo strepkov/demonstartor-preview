@@ -132,7 +132,7 @@ EmbeddedMontiArc language family consists of the main language EmbeddedMontiArc 
     \caption{EmbeddedMontiArc model of ParkAssistant(copied from \cite{Mon10})}
     \label{fig:embdmontiarc}
 \end{figure}
-The figure \ref{fig:embdmontiarc} shows the ParkAssistant component. This is not the entire component but a main part, which shows the most important features. It has incoming and outgoing ports. All ports must have a type, name and range. The type defines a kind of a signal(e.g., $\mathbb{Q}$,$\mathbb{N}$,$\mathbb{Z}$,$\mathbb{B}$). The range is very important, it helps to control the signal in boundaries, which are defined in advance. Moreover, the range defines not only the boundaries values, but the units(e.g., km/h, m/s and so on). Another option, which is available for ports it is a port size array. There is a possibility to define an array of ports, it can increase the readability of a connection schema and simplify a ports connection. When the component is created and ports have been defined, it is possible to instantiate another components inside the component. Lines 8,9 and 10 illustrate several available features. The first one is to define the generic parameter for a component, to be able to create a more general component, which can be used for different types of incoming signal. The next one is to create an array of components, if it is required several similar components for some reason, like the filter component, which does some signal refining. The last one, it is just a normal component instantiation, without any extra parameters. When all required components have been instantiated, it is time to connect the components together. EmbeddedMontiArc offers several convenient options to do that. Firstly, you can just connect the specific port of one component to another specific port of another component(line 11). Then it is possible to connect an array of ports to another one, to reduce the number of connections between components. Another possibility, to connect one port of some component to a specific port of other components, like one-to-many connection. There were described the most important features which influence on the building process of components. More detailed explanation of the language features can be found in the following book \cite{Mon10}.
+The figure \ref{fig:embdmontiarc} shows the ParkAssistant component. This is not the entire component but a main part, which shows the most important features. It has incoming and outgoing ports. All ports must have a type, name and range. The type defines a kind of a signal(e.g., \texttt{Q},\texttt{N},\texttt{Z},\texttt{B}). The range is very important, it helps to control the signal in boundaries, which are defined in advance. Moreover, the range defines not only the boundaries values, but the units(e.g., km/h, m/s and so on). Another option, which is available for ports it is a port size array. There is a possibility to define an array of ports, it can increase the readability of a connection schema and simplify a ports connection. When the component is created and ports have been defined, it is possible to instantiate another components inside the component. Lines 8,9 and 10 illustrate several available features. The first one is to define the generic parameter for a component, to be able to create a more general component, which can be used for different types of incoming signal. The next one is to create an array of components, if it is required several similar components for some reason, like the filter component, which does some signal refining. The last one, it is just a normal component instantiation, without any extra parameters. When all required components have been instantiated, it is time to connect the components together. EmbeddedMontiArc offers several convenient options to do that. Firstly, you can just connect the specific port of one component to another specific port of another component(line 11). Then it is possible to connect an array of ports to another one, to reduce the number of connections between components. Another possibility, to connect one port of some component to a specific port of other components, like one-to-many connection. There were described the most important features which influence on the building process of components. More detailed explanation of the language features can be found in the following book \cite{Mon10}.
 
 \section{EmbeddedMontiArc Tools} \label{sec:tools}
 This section describes a full stack of components, which have been used in the toolchain. These components have been developed by other students and in this thesis they are combined in the one chain. The first one is Online IDE, which is used in the front end, and another two are EmbeddedMontiArc's WebAssembly generator and Visualisation generator, which are used in the back end.
@@ -408,73 +408,76 @@ A standard sequence of steps is the following:
     \item After the execution, the current trajectory is compared with the sample solution and the student is notified whether he passed the test or not.
 \end{enumerate}
 The studying process is built on a concept from simple to complex. Doing the tutorials one by one, students get closer to the main goal of the creation of the controller for a self-driving car.
+
 \chapter{Tutorials} \label{sec:tutorials}
-In this chapter a group of tutorials will be presented. The goal of the tutorials to teach students the basics of the EmbeddedMontiArc language and give a general idea how to build the autopilot's models. The tutorials are given with respect of an increasing the complexity level. Examples are explained step-by-step, to give the best studying experience.
+Chapter presents a group of tutorials, which can be solved inside the created environment. The goal of the tutorials to teach students the basics of the EmbeddedMontiArc language and give a general idea how to build the autopilot's models. The tutorials are given with respect of an increasing the complexity level. Examples are explained step-by-step, to give the best studying experience. The tutorials' descriptions are presented in the same way, like they were written for students. Zero tutorial shows the basics of the language and simulator. Then, Stream tutorial describes the way of writing test for controllers. The next two tutorials, Parallel parking and Maneuverability test, show the real examples of basic tutorials. The last one, the most complex tutorial, illustrates only the task due to the size of the solution. The solution controller is given in the Appendix. This chapter shows only a part of the created tutorials.
+
 \section{Zero tutorial}
-\textbf{Task:} accelerate to the given speed. \newline
-Implement the model that continuously accelerates to 10 m/s and then stops.\newline \newline
-Basic explanation:\newline
-The car has 8 sensors to measure distances to obstacles. They are located respectively: \newline
+\textbf{Task:} Accelerate to the given speed.\newline
+Implement the model that continuously accelerates to 10 m/s and then stops the simulation.\newline \newline
+\textbf{Explanation of the simulator basics :}\newline
+The main object, which are controlled by the controller, is a car. The car has 8 sensors to measure distances to obstacles. The figure \ref{fig:sensors} show the sensors location. \newline
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\linewidth]{src/pic/car-with-sensors}
+    \includegraphics[width=0.6\linewidth]{src/pic/car-with-sensors}
     \caption{Car with sensors.}
     \label{fig:sensors}
 \end{figure} \newline
-To solve this task it's needed to control only an acceleration of the car. Changing the acceleration you may control the behavior of the car. To be able to reach 10 m/s speed, you have to accelerate the car continuously until it reaches the desired speed. Let's start with a MainController which defines the interface to the simulator. We should create a new file which has the same name like component has, with .emam extension.
+To solve this task, it is needed to control only an acceleration of the car. Changing the acceleration, you may control the behavior of the car. To be able to reach 10 m/s speed, you have to accelerate the car continuously until it reaches the desired speed. Let us start with a \texttt{MainController}, which defines an interface to the simulator. We should create a new file which has the same name like component has, with .emam extension.
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={MainController interface.},captionpos=b]
     package controller;
 
     component MainController{
         ports                                   
-            in Q(-200m:200m) frontLeftSensor,
-            in Q(-200m:200m) frontRightSensor,
-            in Q(-200m:200m) frontLeftSideSensor,
-            in Q(-200m:200m) frontRightSideSensor,
-            in Q(-200m:200m) backLeftSideSensor,
-            in Q(-200m:200m) backRightSideSensor,
-            in Q(-200m:200m) backLeftSensor,
-            in Q(-200m:200m) backRightSensor,
+            in (-200m:200m) frontLeftSensor,
+            in (-200m:200m) frontRightSensor,
+            in (-200m:200m) frontLeftSideSensor,
+            in (-200m:200m) frontRightSideSensor,
+            in (-200m:200m) backLeftSideSensor,
+            in (-200m:200m) backRightSideSensor,
+            in (-200m:200m) backLeftSensor,
+            in (-200m:200m) backRightSensor,
+
+            in (0s:oo s) time,
+            in (0m/s:25m/s) velocity,
+            in (-200m:200m) xPosition,
+            in (-200m:200m) yPosition,
     
-            in Q(0s:oos) time,
-            in Q(0m/s:25m/s) velocity,
-            in Q(-200m:200m) xPosition,
-            in Q(-200m:200m) yPosition,
-    
-            out Q(-2m/s^2:2m/s^2) acceleration,
-            out Q(-180 deg:180 deg) steering,
-            out B status;
+            out (-2m/s^2:2m/s^2) acceleration,
+            out (-180 deg:180 deg) steering,
+            out  status;
     ...
+    }
 \end{lstlisting}
 \bigskip
-The first eight incoming ports, lines from 5 to 12, receive the data from the sensors which are shown in the picture \ref{fig:sensors}. The next port is a simulation time, which starts from zero second to infinity. The velocity incoming port shows a current velocity of the car. And the next two ports give a position of the car on a track. After the incoming ports the outgoing are following. Outgoing ports control a behaviour of the car using the data which is coming to the incoming ports. The acceleration port controls the velocity, it is like you have two pedals in the car. If you push a brake, you have a negative acceleration. But if you push an accelerator pedal, the car accelerates and velocity has been increased. Then following the steering port, which controls the rotation of the car. And finally the status port, which signals the end of a simulation process. The reason to finish the simulation can be a successful completion of an assignment or violating by the car the track or a map borders. \newline
-After examination of the example, we should notice:
+The first eight incoming ports (cf. ll. 5-12) receive the data from the sensors which are shown in the figure \ref{fig:sensors}. The next port is a simulation \texttt{time}, which starts from zero second to infinity. The texttt{velocity} incoming port shows a current velocity of the car. The next two ports give a position of the car on a track. After the incoming ports, the outgoing are following. Outgoing ports control a behaviour of the car using the data which is coming to the incoming ports. The \texttt{acceleration} port controls the velocity, it is like you have two pedals in a car. If you push a brake pedal, you have a negative acceleration. But if you push an accelerator pedal, the car accelerates and velocity has been increased. Then following the \texttt{steering} port, which controls the rotation of the car. And finally the \texttt{status} port, which signals the end of a simulation process. The reason to finish the simulation can be a successful completion of an assignment or violating by the car the track or a map borders. \newline
+After the examination of the example, we should notice:
 \begin{itemize}
-\item Component has ports incoming and outgoing
-\item For each port must be specified a type ( like Q,B) with a valid range.
-\item After each port name has to be a comma and the last one must have a semicolon.
-\item The possible units are:
+\item Component has incoming and outgoing ports.
+\item For each port must be specified a type (like \texttt{Q}, \texttt{B}) with a valid range.
+\item After each port's name has to be a comma and the last one must have a semicolon.
+\item The most common units are:
     \begin{itemize}
-        \item Distance: meters(m), kilometers(km)
-        \item Time: seconds(s), minutes(m), hours(h)
-        \item Velocity: km/h, m/s
-        \item Acceleration: m/s\^2
-        \item Rotation: degrees(deg)
+        \item Distance: meters (\texttt{m}), kilometers (\texttt{km}), miles(\texttt{ml}) and so on.
+        \item Time: seconds(\texttt{s}), minutes(\texttt{m}), hours(\texttt{h}).
+        \item Velocity: \texttt{km/h}, \texttt{m/s}, \texttt{mi/h} and so on.
+        \item Acceleration: $m/s^2$
+        \item Rotation: degrees(\texttt{°})
     \end{itemize}
 \end{itemize}
-It was the default interface for the Simulator. It has to be define for all feature controllers. Then you should create your own components which will be connected to the mainController. Let's create a simple component and connect it to the main one. To do that, we have to create a new file .emam with the following content:
+It was the default interface for the simulator. It has to be define for all feature controllers. Then you should create your own components which will be connected to the \texttt{MainController}. Let us create a simple component and connect it to the main one. To do that, we have to create a new file .emam with the following content:
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={ExampleController.},captionpos=b]
     package controller;
 
     component ExampleController {
 	    ports
-		    in Q(0m/s : 25m/s) velocity,
-		    out Q(-2m/s^2:2m/s^2) acceleration,
+		    in  (0m/s:25m/s) velocity,
+		    out (-2m/s^2:2m/s^2) acceleration,
 		    out B status;
 
-	    implementation Math{
+	    implementation Math {
 		
 		    if (velocity <= 10 m/s)
     	        acceleration = 1m/s^2;
@@ -485,24 +488,24 @@ It was the default interface for the Simulator. It has to be define for all feat
     }
 \end{lstlisting}
 \bigskip
-In this component, which is named - ExampleController, are one incoming port and two outgoing ones. Firstly we should reach the speed 10 m/s then stop the simulation. The logic of the controller is implemented inside the Math{} scope. Inside the Math scope you can see if-else-end constructions and the example how to use it. Moreover, it the Math scope can be used different constructions, which you will see later in the next tutorials. The logic in this controller pretty straightforward, it the velocity of the car is less then 10 m/s then accelerate the car with the acceleration 1 m/s. When the given velocity is reached, stop the simulation by setting the status port to true. \newline
-When we have created the ExampleController we should import it into the MainController and then instantiate it, to have possibility to use it, like a part of the MainController:
+In the \texttt{ExampleController} component, there are one incoming port and two outgoing ones. Firstly, we should reach the speed 10 m/s, then stop the simulation. The logic of the controller is implemented inside the \texttt{Math} scope. Inside the scope, \texttt{if-else-end} construction is given and an example how to use it. Moreover, in the \texttt{Math} scope can be used various constructions, which you will see later in the next tutorials. The logic of this controller is straightforward: if the velocity of the car is less then 10 m/s, then speed up the car with the acceleration 1 m/s. When the given velocity is reached, stop the simulation process by setting up the status port to \texttt{true}. \newline
+After the creation of the \texttt{ExampleController}, we should import it inside the main one and then instantiate it, to have possibility to use it, like a part of the \texttt{MainController}:
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={MainController import.},label={lst:main-import},captionpos=b]
     package controller;
 
     import ExampleController;
 
-    component MainController{ 
+    component MainController { 
     ...
-
     instance ExampleController exampleController;
     ...
+    }
 \end{lstlisting}
 \bigskip
-How you can see, we have imported the ExampleController in the line 3. Then later, after specifying the ports of the MainController we have instantiate the controller with the type ExampleController and the name exampleController. Now we should connect this controller to the main controller using specified ports.
+The listing \ref{lst:main-import} shows the importing of the \texttt{ExampleController} (cf. l. 3). Later, after specifying the ports of the \texttt{MainController}, we have instantiated the controller with the type \texttt{ExampleController} and the name exampleController. Now we should connect this controller to the main controller using specified ports.
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={MainController connection.},label={lst:main-connect},captionpos=b]
     ...
     connect velocity->exampleController.velocity;
     connect exampleController.acceleration->acceleration;
@@ -510,15 +513,16 @@ How you can see, we have imported the ExampleController in the line 3. Then late
 }
 \end{lstlisting}
 \bigskip
-We have connected the incoming port - velocity(mainController) to our instantiated controller and it's corresponding incoming port velocity. Then we connected the outgoing port of velocityController.acceleration to the outgoing port of our MainController. And finally the status port of the ExampleController to status of the MainController.\newline
-Finally the connections scheme should look like is depicted in the figure \ref{fig:controller}.
+We have connected the incoming port, \texttt{velocity} of the \texttt{MainController}, to our instantiated controller and it's corresponding incoming port \texttt{velocity}. Then, we have connected the outgoing port of \texttt{velocityController.acceleration} to the outgoing port of our \texttt{MainController}. Lastly, the \texttt{status} port of the \texttt{ExampleController} to \texttt{status} of the \texttt{MainController}.\newline
+Finally the connections' scheme should look like depicted in the figure \ref{fig:controller}.
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=\linewidth]{src/pic/car-with-controller}
+    \includegraphics[width=0.9\linewidth]{src/pic/car-with-controller}
     \caption{Car with controller.}
     \label{fig:controller}
 \end{figure} \newline
-Eventually we should send these files to the server to process it and then execute in the simulator, to the how the car behaves using our first controller.
+Eventually, we should send these files to the server to process them and later execute in the simulator. During the execution, we can observe how the car behaves using our first created controller.
+
 \section{Stream tests tutorial}
 It is possible to apply test driven development way(link) to create our models for the simulator. It means that we will start from creating tests in advance and only then a controller which satisfy the tests.
 Let's start with simple example:
