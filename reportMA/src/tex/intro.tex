@@ -523,11 +523,11 @@ Finally the connections' scheme should look like depicted in the figure \ref{fig
 \end{figure} \newline
 Eventually, we should send these files to the server to process them and later execute in the simulator. During the execution, we can observe how the car behaves using our first created controller.
 
-\section{Stream tests tutorial}
-It is possible to apply test driven development way(link) to create our models for the simulator. It means that we will start from creating tests in advance and only then a controller which satisfy the tests.
-Let's start with simple example:
+\section{Stream testing tutorial}
+EmbeddedMontiArc generator has a built-in support of stream tests. The stream tests allow to define a sequence of input values for C\&C input ports and the expected output sequences for output ports. It helps to carry out
+unit and integration testing of C\&C models \cite{KRB96}. That gives the big advantage in the development process, test-driven development \cite{TDD} can be applied, to create models for the simulator. It means, that we should start from an implementation of tests firstly, even before we created the controller. After that, a controller,which satisfy the tests, has to be implemented. This is the main principle of Test-driven development. Let us start with simple example:
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={Stream test example.},label={lst:stream-test},captionpos=b]
 package simulatorModel;
 
     stream VelocityControllerTest for VelocityController {
@@ -538,31 +538,31 @@ package simulatorModel;
 }
 \end{lstlisting}
 \bigskip
-We are going to analyse it line by line. From the very beginning we have to declare the package name. If we have a chain of folders then they have to be separated by points. Example: folder1.folder2.folderWithTests.
-Then you can see the reserved word STREAM, which is followed by the name of the test. It has to coincide with the file name where the test is written. After the reserved word FOR must be written the actual controller which will be tested. Inside the test scope should be written incoming and outgoing ports of the controller. Here we have 3 ports: 2 incoming velocity and time and one outgoing acceleration. The reserved word TICK divides "discrete" data on chunks. Then we can see the first value for velocity is 0m/s and 0s for time then we have to have the respective value on the acceleration port. It has to be 1m/s2 in our case.\newline
-When we have eventually created the test for the VelocityController, it is time to  implement the controller. To satisfy the tests the controller could be something like this one:
+Now, we are going to analyse the listing \ref{lst:stream-test}. From the very beginning, we have to declare the package name. If we have a chain of folders, then they have to be separated by points e.g., folder1.folder2.folderWithTests. Then, the reserved word \texttt{stream} is written, which is followed by the name of the test. It has to coincide with the file name, where the test is written. After the reserved word \texttt{for} must be written the actual controller's name, which is tested. Inside the test scope, incoming and outgoing ports of the controller should be given. The controller has three ports: two incoming \texttt{velocity} and \texttt{time} and one outgoing - \texttt{acceleration}. The reserved word \texttt{tick} divides discrete data on chunks. Then, the first value for \texttt{velocity} is 0 m/s and 0 seconds for \texttt{time}. After, we should have the respective value on the \texttt{acceleration} port. It has to be 1 $m/s^2$ in this case.\newline
+When the test for the VelocityController has been created, it is time to implement the controller. To satisfy the test, the controller could be like is shown in the listing \ref{lst:stream-velocity}.
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={Velocity controller for stream testing.},label={lst:stream-velocity},captionpos=b]
 package simulatorModel;
 
 component VelocityController {
     port
-        in Q(0m/s : 25m/s) velocity,
-        in Q(0s:oos) time,
-        out Q(-2m/s^2:2m/s^2) acceleration;
+        in  (0m/s : 25m/s) velocity,
+        in  (0s:oo s) time,
+        out (-2m/s^2:2m/s^2) acceleration;
 
     implementation Math{
 
         if (velocity > 10 m/s)
-            acceleration = 0m/s^2;
+            acceleration = 0 m/s^2;
         else
-            acceleration = 1m/s^2;
+            acceleration = 1 m/s^2;
         end
     }
 }    
 \end{lstlisting}
 \bigskip
-Now we can see, if we pass 0m/s into velocity port then we have 1m/s2 for the outgoing acceleration port and out controller pass the test.
+Currently, if we pass 0 m/s into \texttt{velocity} port, then there is 1 $m/s^2$ for the outgoing \texttt{acceleration} port. If it is true, the controller passed the test.
+
 \section{Parallel parking tutorial}
 \textbf{Task:} To carry out a parallel parking between two cars. \newline
 Implement a model that manages a parking between two cars. The model has to have several modules which are responsible for different actions. One of the examples could be:
