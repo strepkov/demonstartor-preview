@@ -425,7 +425,7 @@ The main object, which are controlled by the controller, is a car. The car has 8
 \end{figure} \newline
 To solve this task, it is needed to control only an acceleration of the car. Changing the acceleration, you may control the behavior of the car. To be able to reach 10 m/s speed, you have to accelerate the car continuously until it reaches the desired speed. Let us start with a \texttt{MainController}, which defines an interface to the simulator. We should create a new file which has the same name like component has, with .emam extension.
 \bigskip
-\begin{lstlisting} [caption={MainController interface.},captionpos=b]
+\begin{lstlisting} [caption={MainController interface.},captionpos=b, mathescape]
     package controller;
 
     component MainController{
@@ -445,7 +445,7 @@ To solve this task, it is needed to control only an acceleration of the car. Cha
             in (-200m:200m) yPosition,
     
             out (-2m/s^2:2m/s^2) acceleration,
-            out (-180 deg:180 deg) steering,
+            out (-180${^\circ}$:180${^\circ}$) steering,
             out  status;
     ...
     }
@@ -572,52 +572,49 @@ Implement a model that manages a parking between two cars. The model has to have
     \item Module which controls a steering of the car during the parking process.
 \end{enumerate}
 Each module should be as simple as possible. \newline
-To solve this task you should use at least 6 sensors, which measure the distance to objects which are located in front, left side and back of the car. The speed has to be around 0.5-1 m/s. In the picture you can see the main idea how the parking has to be done:
+To solve this task you should use at least 6 sensors, which measure the distance to objects which are located in front, left-side and back of the car. The speed has to be around 0.5-1 m/s. The figure \ref{fig:parking} shows the main idea how the parking has to be done:
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\linewidth]{src/pic/parking_process1}
     \caption{Parking process.}
     \label{fig:parking}
-\end{figure}
-The parking process can be divided in 4 steps:
+\end{figure} \newline
+The parking process can be divided into 4 steps:
 \begin{enumerate}
     \item Go straight until a place have been found.
     \item When the place is found, go back and rotate the car.
     \item When the car has reached appropriate point, rotate car in other direction to fit into given gap between the cars.
     \item When the car is close to the car behind, stop and go forward until it reaches certain distance to the front car.
 \end{enumerate}
-Important to know, this wed-simulator is a simplified version and it does not change the angle of front wheels but an angle of the car entirely. \newline \newline
+Important to undertsand that the wed-simulator is a simplified version of the more powerful simulator \cite{GKR17}. When the car is turning, it does not change an angle of the front wheels but the angle of the car entirely. It has to be taken into account during controllers' development process.\newpage
 \textbf{Solution} \newline \newline
-To solve that tutorial we have to use the MainController, like we did in the previous tutorial. But we are going to start from an implementation of a controller which will search the place for the car, between two other cars to carry out the parallel parking. The idea is to pass the first car and find the "end" of the second car to start parking process form a right point, like it is shown in the picture \ref{fig:parking}.
+To solve the task we have to use the \texttt{MainController}, like we did in the previous tutorials. But let us start from an implementation of a controller which searches a place for the car, between two other cars, to carry out the parallel parking. The idea is to pass the first car and find the "end" of the second car to start parking process form a right point, like it is shown in the figure \ref{fig:parking}, step A. Consider one of possible implementations of the controller, listing \ref{lst:search-parking} illustrates it.
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={Searching parking place controller.},label={lst:search-parking},captionpos=b]
 package controller03;
 
 component SearchParkingPlaceController {
     port
-        in Q(-200m:200m) frontLeftSide,
-        in Q(-200m:200m) backLeftSide,
+        in (-200m:200m) frontLeftSide,
+        in (-200m:200m) backLeftSide,
         out B foundPlace;
 
     implementation Math{
         
-        static Q passed0 = false;
-        static Q passed1 = false;
-        static Q passed2 = false;
-        static Q passed3 = false;
+        static B passed0 = false;
+        static B passed1 = false;
+        static B passed2 = false;
+        static B passed3 = false;
 
         if ((backLeftSide - frontLeftSide) > 3m)
             passed0 = true;
         end
-
         if (((frontLeftSide - backLeftSide) > 3m) && passed0)
             passed1 = true;
         end
-        
         if (((backLeftSide - frontLeftSide) > 3m) && passed1)
             passed2 = true;
         end
-        
         if (((frontLeftSide - backLeftSide) > 3m) && passed2)
             passed3 = true;
         end
@@ -627,59 +624,56 @@ component SearchParkingPlaceController {
 }    
 \end{lstlisting}
 \bigskip
-We are using the side sensors to measure the distances to the cars and the side of the road. Using static variables we can save the states(e.g. the distance has changed from 5m to 1m and then from 1m to 5m, it means we have passed the car). Static variables initialized only once. Now we should create a VelocityController, which controls the speed of the car, during the search parking place process and parking.
+The \texttt{SearchParkingPlaceController} has two incoming and one outgoing port. The incoming ones are receive the data from the \texttt{frontLeftSide} and \texttt{backLeftSide} sensors. The out going port \texttt{foundPlace} indicates that the place for parking has been found. The side sensors are used to measure the distances to the cars and the side of the road. Inside the \texttt{Math} scope, the group of \texttt{static} variables defined. Using \texttt{static} variables the states can be saved. Static variables are initialized only once. It means, \texttt{false} value (cf.ll.11-14) initializes the variables \texttt{passedX} only once. The following executions, \texttt{false} does not influence on the variables. Using these static variable, the states, from the analysing the environment from the left hand side of the car, will be saved. In our case we are measuring the difference between the \texttt{frontLeftSide} and \texttt{backLeftSide} sensors. If the value on the \texttt{backLeftSide} sensor greater then the value on the \texttt{frontLeftSide}, then the front part of the car passed the back of the parked car by, and the state will be saved. Then the same technique is applied, measuring the differences in sensors' values to find the parking lot and reach the state A, on the figure \ref{fig:parking}. Then, from this position the parking process can be started. But this controller only searching for a parking lot and we should control the car driving. We should implement a \texttt{VelocityController}, which controls the speed of the car, during the searching of parking place and carrying out the parking of the car. Listing \ref{lst:velocity-parking} demonstrates the controller. 
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={Velocity controller.},label={lst:velocity-parking},captionpos=b,mathescape]
     package controller03;
 
     component VelocityController {
         port                                    
-            in Q(0km/h : 250km/h) velocity,
-            in B reverseMove,
-            in B moveForward,
-            out Q(-2m/s^2:2m/s^2) acceleration; 
+            in  (0 m/s: 25 m/s) velocity,
+            in  B reverseMove,
+            in  B moveForward,
+            out (-2m/s^2: 2m/s^2) acceleration; 
     
         implementation Math{                    
     
             if (velocity > 1 m/s)
-                acceleration = 0m/s^2;
+                acceleration = 0 m/s^2;
             else
-                acceleration = 1m/s^2;
+                acceleration = 1 m/s^2;
             end
-            
             if reverseMove
                 acceleration = -0.5 m/s^2;
             end
-            
             if (velocity < -0.5 m/s)
-                acceleration = 0m/s^2;
+                acceleration = 0 m/s^2;
             end
-            
             if (reverseMove && moveForward)
                 acceleration = 0.5 m/s^2;
             end
-            
             if (reverseMove && moveForward && (velocity > 0.5 m/s))
-                acceleration = 0m/s^2;
+                acceleration = 0 m/s^2;
             end
         }
     }
 \end{lstlisting}
 \bigskip
-The velocityController has several different states. The first one is a limit for the velocity during searching parking place (1m/s). The next one is the velocity limit during the reverse move, -0.5 m/s it means, that car moves back. The last one, when the car moves forward during the parking process to move closer to the front car. Next controller will be the most important one, because it manages the parking process.
+The controller has three incoming ports and only one outgoing. The \texttt{velocity} port helps to control the speed of the car. In general, the velocity of the car is controlled by acceleration, it is like an acceleration and brake pedals. Measuring the current velocity we can change the acceleration and doing that control the speed. Other two incoming ports have influence on the direction and speed of the car, during the different stages of the parking process. Consider the \texttt{Math} scope. There is implemented three different phases of the parking. The first one is a limit for the velocity during searching parking place (cf. ll. 12-16). The next one is the velocity limit during the reverse move, when the car moves back during the parking (cf. ll. 17-22). The last one, when the car moves forward during the parking process, to be closer to the front car (cf. ll. 23-28), state E on the figure \ref{fig:parking}. When we can control the velocity of the car, continue with the most important controller, which manages the parking process. The listing \ref{lst:parking-controller} shows it. 
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={Parking controller.},label={lst:parking-controller},captionpos=b,mathescape]
 package controller03;
+
 component ParkingController {
     port
-        in Q(-200m:200m) frontLeftSensor,
-        in Q(-200m:200m) frontRightSensor,
-        in Q(-200m:200m) frontLeftSideSensor,
-        in Q(-200m:200m) backLeftSideSensor,
-        in Q(-200m:200m) backLeftSensor,
-        in Q(-200m:200m) backRightSensor,
-        in B reverseMove,
-        out Q(-35deg:35deg) steering,
+        in  (-200m:200m) frontLeft,
+        in  (-200m:200m) frontRight,
+        in  (-200m:200m) frontLeftSide,
+        in  (-200m:200m) backLeftSide,
+        in  (-200m:200m) backLeft,
+        in  (-200m:200m) backRight,
+        in  B reverseMove,
+        out (-35${^\circ}$:35${^\circ}$) steering,
         out B moveForward,
         out B status;
 
@@ -688,43 +682,38 @@ component ParkingController {
         static B forwardState = false;
         
         if reverseMove
-            steering = 1 deg;
+            steering = 1${^\circ}$;
         else
-            steering = 0 deg;
+            steering = 0${^\circ}$;
         end
-        
-        if (reverseMove && (backLeftSensor < 2m))
-            steering = -1 deg;
+        if (reverseMove && (backLeft < 2m))
+            steering = -1${^\circ}$;
         end
-        
-        if (reverseMove && ((backRightSensor == backLeftSensor) ||
-            ((backRightSensor < 3m) && (backLeftSensor < 3m))))
+        if (reverseMove && ((backRight == backLeft) ||
+            ((backRight < 3m) && (backLeft < 3m))))
                 forwardState = true;
         end
-        
-        if (((frontRightSensor < 3m) || (frontLeftSensor < 3m)) &&
+        if(forwardState &&(frontLeftSide > backLeftSide) &&
+            frontLeftSide != backLeftSide)
+                steering = -0.5${^\circ}$;
+        else
+                steering = 0.5${^\circ}$;
+        end
+        if (((frontRight < 3m) || (frontLeft < 3m)) &&
             forwardState)
             status = true;
         else
             status = false; 
         end
-        
-        if(forwardState &&(frontLeftSideSensor > backLeftSideSensor))
-            steering = -0.5 deg;
-        end
-        
-        if(forwardState &&(frontLeftSideSensor < backLeftSideSensor))
-            steering = 0.5 deg;
-        end
-        
         moveForward = forwardState;
     }
 }
 \end{lstlisting}
 \bigskip
-The idea is that the car is going back until it reached a certain point, changing an angle of the car. When the car is going back and a distance, from the back left sensor to the road border, is less then 2m, start rotate the car in opposite direction until it is in parallel with the road. Then stop when the limit of the back distance is reached and get closer to the front car. All these steps are nicely illustrated in the picture \ref{fig:parking}. Finally we should connect all these controllers to the interface in the MainController.
+The controller receives data from the six sensors, which is used to control the phases of the parking. The implementation inside the \texttt{Math} scope we can divide into three parts. The first one (cf. ll. 20-31), the car is going back and when the distance from the back left sensor to the road border, is less then 2m, it starts  to rotation in the opposite direction, until it is in parallel with the road or too close to the car behind. Then the car stops if the limit of the distance from the back is reached and changes the state of the \texttt{forwardState} to \texttt{true}. After that, the second part (cf. ll. 32-37) of the controller involved into parking process. The car is getting closer to the front car and at the same time aligns the body to the road. The last part (cf. ll. 38-43) is in charge of finishing the simulation in time, when the car is enough close to the front car. The stop of the simulation happens when the \texttt{status} set to \texttt{true}. All these steps are nicely illustrated in the picture \ref{fig:parking}. 
+Finally, we should instantiate all these controllers in the MainController and then connect to the interface.
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={MainController.},label={lst:parking-main},captionpos=b,mathescape]
     package controller03;
 
     import VelocityController;
@@ -733,23 +722,22 @@ The idea is that the car is going back until it reached a certain point, changin
     
     component MainController{
         ports 
-            in Q(-200m:200m) frontLeftSensor,
-            in Q(-200m:200m) frontRightSensor,
-            in Q(-200m:200m) frontLeftSideSensor,
-            in Q(-200m:200m) frontRightSideSensor,
-            in Q(-200m:200m) backLeftSideSensor,
-            in Q(-200m:200m) backRightSideSensor,
-            in Q(-200m:200m) backLeftSensor,
-            in Q(-200m:200m) backRightSensor,
+            in (-200m:200m) frontLeftSensor,
+            in (-200m:200m) frontRightSensor,
+            in (-200m:200m) frontLeftSideSensor,
+            in (-200m:200m) frontRightSideSensor,
+            in (-200m:200m) backLeftSideSensor,
+            in (-200m:200m) backRightSideSensor,
+            in (-200m:200m) backLeftSensor,
+            in (-200m:200m) backRightSensor,
     
-            in Q(0s:oos) time,
-            in Q(0km/h:250km/h) velocity,
+            in (0s:oo s) time,
+            in (0km/h:250km/h) velocity,
+            in (-200m:200m) xPosition,
+            in (-200m:200m) yPosition,
     
-            in Q(-200m:200m) xPosition,
-            in Q(-200m:200m) yPosition,
-    
-            out Q(-2m/s^2:2m/s^2) acceleration,
-            out Q(-180deg:180deg) steering,
+            out (-2m/s^2:2m/s^2) acceleration,
+            out (-180${^\circ}$:180${^\circ}$) steering,
             out B status;
     
         instance VelocityController velocityController;
@@ -769,13 +757,14 @@ The idea is that the car is going back until it reached a certain point, changin
     }
 \end{lstlisting}
 \bigskip
-All Controllers have been instantiated and then connected to the corresponding ports. The star on the line 33 and later means that the ports, which have similar name are connected to each other. The entire connection scheme is depicted in the figure \ref{fig:parking-scheme}.
+Listing \ref{lst:parking-main} shows the \texttt{MainController}. To be able to use the created controllers, they have to be instantiated (cf. ll. 3-5). Then the controllers have to be instantiated and connected to the corresponding ports(cf. ll. 27-40). The star symbol(cf. l. 33) means that the ports, which have similar name are connected to each other. It simplifies the connection schema, decreases the size and readability. The square brackets(cf. ll. 36-38) denote an array of ports. In this particular case, it means, \texttt{foundPlace} port is connected to the \texttt{reverseMove} ports of the \texttt{velocityController} and \texttt{parkingController} simultaneously. To simplify the visualisation of the connected controllers, the entire connection scheme was depicted in the figure \ref{fig:parking-scheme}.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{src/pic/parking-scheme}
     \caption{Parking controller scheme.}
     \label{fig:parking-scheme}
 \end{figure}
+
 \section{Maneuverability test tutorial}
 \textbf{Task:} Implement a model that manages a driving between cones, which emulates the maneuverability test. The model has to have several modules which are responsible for different actions. One of the examples could be:
 \begin{enumerate}
