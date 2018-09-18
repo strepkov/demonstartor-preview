@@ -766,39 +766,39 @@ Listing \ref{lst:parking-main} shows the \texttt{MainController}. To be able to 
 \end{figure}
 
 \section{Maneuverability test tutorial}
-\textbf{Task:} Implement a model that manages a driving between cones, which emulates the maneuverability test. The model has to have several modules which are responsible for different actions. One of the examples could be:
+\textbf{Task:} Implement a model that manages driving between cones, which emulates the maneuverability test. The model should have several modules which are responsible for different actions. One of the examples could be:
 \begin{enumerate}
-    \item Module controls the speed of the car.
+    \item Module controls the velocity of the car.
     \item Module is responsible for a steering angle of the car, depends on current position.
 \end{enumerate}
 Each module should be as simple as possible.
-To solve this tutorial you may use from 4 to 6 sensors, which measure the distance to objects which are located in front/side of the car. The speed has to be around 1-2 m/s. In the picture \ref{fig:maneuverability} you can see the main idea how the driving has to be done:
+To solve this tutorial, you may use from 4 to 6 sensors, which measure the distance to objects, which are located in front/side of the car. The velocity has to be around 1-2 m/s. The figure \ref{fig:maneuverability} shows the main idea how the driving has to be done:
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{src/pic/drive_cones}
     \caption{Maneuverability test.}
     \label{fig:maneuverability}
-\end{figure} 
-The parking process can be divided in several steps:
+\end{figure} \newpage
+Parking process can be divided in several steps:
 \begin{enumerate}
-    \item Go straight until a cone is closer then 10m then start to rotate the car to round the cone.
-    \item When a front part of the car is passed the cone, start to rotate in opposite direction.
-    \item When the car is rotated enough to pass the next cone, stop rotation and continue the movement straight.
+    \item Go straight, until a cone is closer then 10m then start to rotate the car to round the cone.
+    \item When a front part of the car is passed the cone, start rotation in opposite direction.
+    \item When the car is rotated enough to pass the next cone, stop rotation and continue the straight movement.
     \item Repeat the second step until the car passed all cones.
 \end{enumerate}
-\textbf{Hint:} In this task will be helpful to use the static variables like a counters. \newline \newline
+\textbf{Hint:} In this task will be helpful to use the static variables like a counters, to control a rotation angle of the car. \newline \newline
 \textbf{Solution} \newline \newline
-To solve the given task we should use the MainController, which provides an interface for a communication with the car. Nevertheless, let us start from the Velocity controller, which controls the velocity of the car.
+To solve the given task we should use the \texttt{MainController}, which provides an interface for a communication with the car. Nevertheless, let us start from the \texttt{VelocityController}, which controls the velocity of the car. To drive trough the road with cones, we do not have to change the velocity of the car, just use some constant value. Listing \ref{lst:cones-velocity} shows an example of the \texttt{VelocityController}.
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={VelocityController.},label={lst:cones-velocity},captionpos=b,mathescape]
 package controller04;
 
 component VelocityController {
     ports
-        in Q(0km/h : 250km/h) velocity,
-        out Q(-2m/s^2:2m/s^2) acceleration; 
+        in  (0km/h: 250km/h) velocity,
+        out (-2m/s^2: 2m/s^2) acceleration; 
 
-    implementation Math{                    
+    implementation Math {                    
 
         if (velocity > 1 m/s)
             acceleration = 0m/s^2;
@@ -809,68 +809,64 @@ component VelocityController {
 }
 \end{lstlisting}
 \bigskip
-The controller set a limit of the car's velocity on 1 m/s during a process of passing the field of cones. The velocity is controlled by an acceleration. The next controller, which will be implemented, controls a steering of the car to maneuver between cones.
+The controller has one incoming and one outgoing port. The incoming one, \texttt{velocity} port, serves to control the velocity of the car by changing the value of the \texttt{acceleration} port. Lines 10-14, set the limit of the car's velocity. If the car has not reached the desired velocity (1 m/s), then the car accelerates. When the velocity is reached, the \texttt{acceleration} is equal zero. This simple controller provides constant speed of the car. Then we should implement the most important controller for this task, that controls a steering of the car to maneuver between cones. Listing \ref{lst:cones-runner} shows a possible solution for this task.\newline
 \bigskip
-\begin{lstlisting}
+\begin{minipage}{\linewidth}
+\begin{lstlisting} [caption={ConeRunner.},label={lst:cones-runner},captionpos=b,mathescape]
     package controller04;
 
     component ConeRunner {
         port
-            in Q(-200m:200m) frontLeftSensor,
-            in Q(-200m:200m) frontRightSensor,
-            in Q(-200m:200m) frontLeftSideSensor,
-            in Q(-200m:200m) frontRightSideSensor,
-            in Q(-200m:200m) backLeftSideSensor,
-            in Q(-200m:200m) backRightSideSensor,
-            in Q(-200m:200m) xPosition,
-            out Q(-180deg:180deg) steering,
+            in  (-200m:200m) frontLeftSensor,
+            in  (-200m:200m) frontRightSensor,
+            in  (-200m:200m) frontLeftSideSensor,
+            in  (-200m:200m) frontRightSideSensor,
+            in  (-200m:200m) backLeftSideSensor,
+            in  (-200m:200m) backRightSideSensor,
+            in  (-200m:200m) xPosition,
+            out (-180${^\circ}$:180${^\circ}$) steering,
             out B status;
     
-        implementation Math{
-            
+        implementation Math {
+
             static B passRight = false;
             static B passLeft = false;
-            static Q(0deg:180deg) count = 0;
+            static (0${^\circ}$:180${^\circ}$) count = 0${^\circ}$;
             status = false;
-    
-            if ((frontRightSensor < 10m) && !passLeft && !passRight)
-                steering = -1 deg;
-            else
-                steering = 0 deg;
-            end
             
+            if ((frontRightSensor < 10m) && !passLeft && !passRight)
+                steering = -1${^\circ}$;
+            else
+                steering = 0${^\circ}$;
+            end          
             if (frontRightSideSensor < 1m)
                 passRight = true;
                 passLeft = false;
-                count = 0 deg;
+                count = 0${^\circ}$;
             end
-            
-            if passRight && (count < 55 deg)
-                steering = 1 deg;
-                count +=1 deg;
+            if passRight && (count < 55${^\circ}$)
+                steering = 1${^\circ}$;
+                count +=1${^\circ}$;
             end
-            
             if passRight && (frontLeftSideSensor < 1m)
                 passLeft = true;
                 passRight = false;
-                count = 0 deg;
+                count = 0${^\circ}$;
             end
-            
-            if passLeft && (count < 55 deg)
-                steering = -1 deg;
-                count +=1;
+            if passLeft && (count < 55${^\circ}$)
+                steering = -1${^\circ}$;
+                count +=1${^\circ}$;
             end
-            
             if (xPosition > 30m)
                 status = true;
             end
         }
     }
 \end{lstlisting}
+\end{minipage}
+The controller has seven incoming ports and two outgoing ones. The first six incoming ports are the measuring sensors. The last one, \texttt{xPosition}, the position of the car in the 3D environment. The outgoing ports control the steering of the car and a simulation status. Let us consider the \texttt{Math} scope. Lines 22-26 are in charge of passing the first cone, because it is located in the center, and the car should behave a bit differently. The car is turning to the left(cf. l. 23), when it is 10 meters left to the first cone. When it reaches the cone, it changes the rotation to opposite direction. Then, lines 27-44 describes the main actions, which helps to the car drive around cones. When the car has passed the cone from the right side, it start a rotation to the right, using the counter (cf. l. 34), which is counting the rotation angle to be able to pass a next cone from the left side. When the car reaches the next cone to pass it from the left side, the counter is set to zero, to start calculation to the opposite direction (cf. l. 39). Then the car is passing cones one by one, passing cones from different sides. After passing the field of cones, the simulation process has being stopped, by using the current position of the car. It happens in the last condition check (cf. ll. 45-47). There is could be another way of solving this tutorial, without using counters. The approximate trajectory of the car is shown in the figure \ref{fig:maneuverability}. When the controllers, which deliver the main functionality have been developed, we should connect them to the car's interface, which is given in the \texttt{MainController}. Listing \ref{lst:cones-main} shows an example of it.
 \bigskip
-The lines 22-26 are in charge of passing the first cone, because it is located at the center, and the car should behave a bit differently. The car starts rotation to the left slowly, when it has 10 meters to the cone. When it reaches the first cone, it changes the rotation to opposite direction. Then, when it has passed the cone from the right side, it start a rotation to the right using the counter, which is counting the rotation angle to be able to pass a next cone from the left side. There is could be another way of solving this tutorial, without using the counter. The approximate trajectory of the car, you can see in the picture \ref{fig:maneuverability}. The car's rotation varies depending on which side a cone has been passed. After passing the field of cones, the simulation process has been stopped, by using the current position of the car. It happens in the last condition check, line 50. When the controllers, which deliver the main functionality have been developed, we should connect them to the car's interface, which is given in the MainController.
-\bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={Main Controller.},label={lst:cones-main},captionpos=b,mathescape]
     package controller04;
 
     import VelocityController;
@@ -878,22 +874,22 @@ The lines 22-26 are in charge of passing the first cone, because it is located a
     
     component MainController{
         ports 
-            in Q(-200m:200m) frontLeftSensor,
-            in Q(-200m:200m) frontRightSensor,
-            in Q(-200m:200m) frontLeftSideSensor,
-            in Q(-200m:200m) frontRightSideSensor,
-            in Q(-200m:200m) backLeftSideSensor,
-            in Q(-200m:200m) backRightSideSensor,
-            in Q(-200m:200m) backLeftSensor,
-            in Q(-200m:200m) backRightSensor,
+            in (-200m:200m) frontLeftSensor,
+            in (-200m:200m) frontRightSensor,
+            in (-200m:200m) frontLeftSideSensor,
+            in (-200m:200m) frontRightSideSensor,
+            in (-200m:200m) backLeftSideSensor,
+            in (-200m:200m) backRightSideSensor,
+            in (-200m:200m) backLeftSensor,
+            in (-200m:200m) backRightSensor,
     
-            in Q(0s:oos) time,
-            in Q(0km/h:250km/h) velocity,
-            in Q(-200m:200m) xPosition,
-            in Q(-200m:200m) yPosition,
+            in (0s:oo s) time,
+            in (0km/h:250km/h) velocity,
+            in (-200m:200m) xPosition,
+            in (-200m:200m) yPosition,
             
-            out Q(-2m/s^2:2m/s^2) acceleration,
-            out Q(-180deg:180deg) steering,
+            out (-2m/s^2:2m/s^2) acceleration,
+            out (-180${^\circ}$:180${^\circ}$) steering,
             out B status;
     
         instance VelocityController velocityController;
@@ -906,31 +902,40 @@ The lines 22-26 are in charge of passing the first cone, because it is located a
     }
 \end{lstlisting}
 \bigskip
-In the MainController, firstly we import the implemented controllers then instantiate them and connect. Using the star(*) notation, which is one of the convenient and important feature of the EMA, we can connect all ports with equal names between components. It is simplifies the text model of the controller. If we need to connect only one port, it is better to specify it directly, to facilitate connection's understanding. The entire connection scheme is depicted in the figure \ref{fig:maneuverability-scheme}.
+\texttt{MainController} imports the implemented controllers: \texttt{VelocityController} and \texttt{ConeRunner} (cf. ll. 3-4). After that follows the \texttt{Math} scope, which begins from the interface (cf. ll. 8-24). Later the imported controllers have been instantiated and connected respectively. Usage of the star(*) notation (cf. ll. 31-32) is one of the convenient and important feature of the EmbeddedMontiArc, we can connect all ports with equal names between components. It is simplifies the text model of the controller. If we need to connect only one port, it is better to specify it directly, to facilitate connection's understanding (cf. ll. 27-28). The entire connection scheme is depicted in the figure \ref{fig:maneuverability-scheme}.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\linewidth]{src/pic/controller04}
     \caption{Maneuverability controller scheme.}
     \label{fig:maneuverability-scheme}
-\end{figure}
-From the left hand side of the connection scheme, you can see only the ports in the interface, which is indeed connected to other controllers.
+\end{figure} \newline
+From the left hand side of the connection scheme and the right one (see figure \ref{fig:maneuverability-scheme}), the ports of the interface are depicted. Inside the \texttt{MainController} are shown the controllers, which were instantiated in the listing above(see listing \ref{lst:cones-main}).
+
 \section{Complete track tutorial}
 \textbf{Task:} Run through the entire track. \newline \newline
-In this tutorial we are going to use previously created controllers to run the track with different obstacles and actions.
+In this tutorial we are going to use previously created controllers to run trough the track with different obstacles and sub-tasks. Figure \ref{fig:tutorial11-track} depicts the entire track, which already have some loaded objects on it. We can divide the track into several zones, where different actions are going to happen:
+\begin{enumerate}
+    \item First one is the curved area which we have to drive trough, using our previously created controller for running the whole track with optimal trajectory.
+    \item Then, on the straight part of the track, a car waiting to start movement, gives the possibility firstly to use the follow controller and then the overtaking one.
+    \item After the overtaking, at the end of the strait part of the track, the obstacle form the cones is waiting for the car. The car should brake before the obstacle and then continue movement after the obstacle will be gone.
+    \item At the curve part of the track we have to use again, the controller which we used in the first part, just drive through the track.
+    \item Next task is to drive across the field of cones.
+    \item The last one is the parallel parking. We should use the controller which measure the gap between the cars.
+    \item When the car was successful parked - stop the simulation.
+\end{enumerate}
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\linewidth]{src/pic/track_tutorial11}
-    \caption{Tutorial 11 track.}
+    \caption{Complete track tutorial.}
     \label{fig:tutorial11-track}
 \end{figure}
-In the figure \ref{fig:tutorial11-track} the entire track is depicted. We can divide the track into several zones, where different actions are going to happen:
-\begin{enumerate}
-    \item First one will be the curved area where we have to drive, using our previously created controller for running the whole track with optimal trajectory.
-    \item Then on the straight part of the track, a car waiting to start movement, give the possibility firstly to use the follow controller and then the overtaking one.
-    \item After overtaking at the end of the strait part of the track, the obstacle form the cones is waiting for the car. The car should brake before the obstacle and then continue the movement when the obstacle is gone.
-    \item At the curve part of the track we have to use again, the controller which we used in the first part, just drive through the track.
-    \item Next task, will be running across the field of cones.
-    \item The last one is the parallel parking. We should use the controller which measure the gap between the cars.
-\end{enumerate}
-All these controllers were created before in the first ten tutorials and we have to combine all them in one controller which can manage all these actions. Previously we have done some tutorials which use several controllers simultaneously. The main idea that we have an actions controller, which manages actions. This tutorial has to be done in the similar way. \newline \newline
-The solution won't be given with the exception of the resulting controller. The controller combines all previously created controllers and will be given in appendix, due to large size of the text model.
+All these controllers were created before in the first ten tutorials. This tutorial combines them all in one controller which can manage all these actions. Previously, we have done some tutorials which used several controllers simultaneously. The main idea, that we have an actions controller, which manages some currently active action and changes the active controller, depends on conditions. This tutorial has to be done in the similar way, but a number of the controllers is much greater. \newline \newline
+\textbf{Solution:} \newline \newline
+The solution won't be given here. The controller combines all previously created controllers and will be given in appendix, due to large size of the text model.
+
+\chapter{Future work}
+Introduce some features which was not implemented... \newline
+- compilation directly in a browser \newline
+- using different tracks \newline
+- standalone tutorial builder \newline
+- better objects detection \newline
