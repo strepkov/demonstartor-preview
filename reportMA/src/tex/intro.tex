@@ -265,14 +265,14 @@ The sequence of the actions given above is a loop, which is repeated during the 
     \item Reading tutorials' configurations. During loading one of the tutorials, the configuration file is used for instantiation of the track environment. It means, adding the objects to the track and setting up the initial position of the car.
 \end{itemize}
 The graphical part of the simulator is tightly coupled with the core part. It maps all actions which occurs in the mathematical model to the 3D virtual model, which we can observe during the simulation. 
-TODO: continue here
+
 \subsubsection{Simulator core part}
-Consider the simulator core in more details. The simulator has mathematical model of the track. It means, there is an array of walls, which constantly defined to be equal with the graphical model that was shown during the simulation process. The track has 2 different types of the walls: linear and curved. The linear one is defined by the two points and the curved one has more parameters: start, middle, end points and radius. When the distances to the track's walls have been calculating, in fact, the following occurs:
+Consider the simulator's core in more details. The simulator has mathematical model of the track. It means, there is an array of walls, which constantly defined. The track has two different types of the walls: linear and curved. A linear one is defined by two points and a curved one has more parameters: start, middle, end points and radius. When the distances to the track's walls have been calculating, in fact, the following occurs:
 \begin{itemize}
     \item An intersection of a ray and line is calculated. The initial point of the ray is a sensor position and direction. The line is a wall of the track.
-    \item If the intersection was found, then we calculate the distance between the sensor and intersection line. If it was not found, we assume that intersection point exist but with the value Number.MAX\_VALUE.
+    \item If the intersection was found, then we calculate the distance between the sensor and intersection line. If it was not found, we assume that intersection point exist but with the value \texttt{Number.MAX\_VALUE}.
 \end{itemize}
-After the calculation of the distances to the track's walls, this data transferred to the controller, which uses it to consider the subsequent behavior of the car. Then the controller passes the result again to the core simulator, which uses this data for further processing. The core simulator has the function - calculate, which uses the data from the controller and executes the next simulation step in the mathematical model. This function controls the main simulation parameters:
+After the calculation of the distances to the track's walls, this data transferred to the controller, which uses it to consider the subsequent behavior of the car. Then the controller passes the result again to the simulator's core, which uses this data for further processing. The simulator's core has the function - calculate, which uses the data from the controller and executes the next simulation step in the mathematical model. This function controls the main simulation parameters:
 \begin{itemize}
     \item Time:
         \begin{equation}
@@ -296,27 +296,27 @@ After the calculation of the distances to the track's walls, this data transferr
     \begin{equation}
         y = y_0 + velocity \cdot samplingTime \cdot sin(rotation)
     \end{equation} \newline
-    the x0 and y0 are defined the previous position.
+    the $x_0$ and $y_0$ are defined the previous position of the car.
 \end{itemize}
-After the execution of this function, the outgoing data is ready to be used by the graphical part of the simulator and during the next execution step. \newline
+After the execution of this function, the outgoing data is ready to be used by the graphical part of the simulator and during the next execution step. To better understand how the core simulator works, consider a figure \ref{fig:class-diagram}. It depicts classes' dependencies and interaction between them. \newline
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{src/pic/class-diagram}
-    \caption{The core simulator class diagram.}
+    \caption{The simulator's core class diagram.}
     \label{fig:class-diagram}
-\end{figure}
-To fully understand how the core simulator works, consider a class diagram \ref{fig:class-diagram}. It depicts classes' dependencies and interaction between them. The main simulator class has a class Track, which has Walls and they can be linear or curved. Moreover, the simulator class has a car, which has eight embedded sensors. The sensors are using the auxiliary class, which helps to calculate the distances. The orientation and rotation classes are used by the car class, to calculate the positions of the sensors when the car changes the angle on the flat. The simulator class uses the structures Sinput and Soutput to fill the input and output data respectively, every execution loop. The simulator works in cooperation with the controller, but for the testing purposes, the MOCK controller has been developed. It helps to test the simulator functionality and body of the MOCK controller can be written in TypeScript.
+\end{figure} \newline
+The main simulator class has a class \texttt{Track}, which has \texttt{Walls} and they can be linear or curved. Moreover, the simulator class has a class \texttt{Car}, which has eight embedded sensors. The sensors are using the auxiliary class \texttt{CoordHelper}, which helps to calculate the distances. The \texttt{Orientation} and \texttt{Rotation} classes are used by the \texttt{Car} class, to calculate the positions of the sensors when the car changes the angle on the flat. The \texttt{Simulator} class uses the structures \texttt{Sinput} and \texttt{Soutput} to fill the input and output data respectively, every execution loop. The simulator works in cooperation with the controller, but for the testing purposes, the MOCK controller - \texttt{ControllerMOCK} has been developed. It helps to test the simulator functionality and body of the MOCK controller can be written in TypeScript.
 
 \subsection{Trajectory builder}
 \begin{figure}[h!]
     \centering
-    \includegraphics[width=0.8\linewidth]{src/pic/trajectory}
+    \includegraphics[width=\linewidth]{src/pic/trajectory}
     \caption{Trajectory builder.}
     \label{fig:trajectory}
 \end{figure}
-Trajectory builder gives a better understanding and a simplicity of analysis the passed way. It is hard to track the whole path of the car and see the controller's errors in real time during the execution. The trajectory helps to solve this problem. In the picture \ref{fig:trajectory} is shown the track with the trajectories. The white one is the sample trajectory while the red one is being drawn in real time, simultaneously with the passing the part of the track by the car. To be able to draw the trajectory a log file is used. It contains all important information about the car in each simulation moment. Information from the log file can be used to analyse the behaviour of the car and reveal problems with the model.
+Trajectory builder gives a better understanding and a simplicity of analysis the passed way. It is hard to track the whole path of the car and see the controller's errors in real time during the execution. The trajectory helps to solve this problem. In the figure \ref{fig:trajectory} is shown the track with the trajectories. The white one is the sample trajectory while the red one is being drawn in real time, simultaneously with the passing the part of the track by the car. To be able to draw the trajectory a log file is used. It contains all important information about the car in each simulation moment. Information from the log file can be used to analyse the behaviour of the car and reveal problems with the model. 
 \bigskip
-\begin{lstlisting}
+\begin{lstlisting} [caption={Simulation log data.},label={lst:log},captionpos=b, mathescape]
 logObject.telemetry.push({
   "Status": simulator.output.triggerStatus,
   "Time": simulator.output.ti.value,
@@ -327,11 +327,45 @@ logObject.telemetry.push({
 });
 \end{lstlisting}
 \bigskip
-The listing shows the data which is stored in the log. The Time shows the simulation time. Position, rotation and velocity related to the car. The "Sensors" is an array of sensors with measurements in the current simulation point. To build the trajectory, only positioning data is used. The length of the trajectory is calculated by summing up the lengths of all segments between position points. The length between points is calculated using the distance formula \cite{Distance}:
+The listing \ref{lst:log} shows the information which is stored in the log. \texttt{Time} shows the simulation time. \texttt{Position}, \texttt{Rotation} and \texttt{Velocity} related to the car. \texttt{Sensors} is an array of sensors with measurements in the current simulation moment. To build the trajectory, only positioning data is used. The length of the trajectory is calculated by summing up the lengths of all segments between position points. The length between points is calculated using the distance formula \cite{Distance}:
 \begin{equation}
-    distBetweenPoints += \sqrt{(x_1-x_0)^2 + (y_1-y_0)^2}
+    distBetweenPoints\quad+= \sqrt{(x_1-x_0)^2 + (y_1-y_0)^2}
 \end{equation}
-After the summing up all the segments, the \textit{distBetweenPoints} has the entire distance of the track, which is used later to compare the trajectories. To draw the trajectory, all points from the log file are mapped to the picture of the track.
+After the summing up all the segments, the \textit{distBetweenPoints} has the entire distance of the track, which is used later to compare the trajectories. To draw the trajectory, all points from the log file are mapped to the picture of the track.\newline
+Futhermore, we can analyse the movement trajectory, using the the acceleration vectors in each point. It reveals issues related to twisting motion of the car. It can be caused by incorrect computation of a car's angle. Figure \ref{fig:trajectory-acc} shows an example of this kind trajectory.\newline
+\begin{figure}[h!]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/trajectory-acceleration}
+    \caption{Trace analyser.}
+    \label{fig:trajectory-acc}
+\end{figure}\newline
+A vector's angle is calculated using the following formula \cite{Atan2}:
+\begin{equation}
+    angle\quad=\quad atan2(y_1 - y_0, x_1 -x_0) 
+\end{equation}
+Where the $(x_0, y_0)$ related to the point, which is a start point for the acceleration vector and $(x_1, y_1)$ the next point. Then the length of the vector is calculated using the standard distance formula, which is shown before. Figure \ref{fig:trajectory-acc} illustrates an example of the incorrect controller behaviour and ability to see this. The constantly changing the steering angle during passing the sectors 21-31 on the track. This analysis method is not computationally expensive but very efficient for visual analysis purposes.\newline
+Finally we have to analyse a trajectory after passing the required part of the track to decide whether the task is solved correctly or not. For this purposes other formulas are used:
+\begin{equation}
+    D_1 = \sqrt{(C1_x - S1_x)^2 + (C1_y - S1_y)^2}
+\end{equation}
+\begin{equation}
+    D_2 = \sqrt{(C2_x - S2_x)^2 + (C2_y - S2_y)^2}
+\end{equation}
+\begin{equation}
+    sectorArea = \sqrt{((C2_x - C1_x)^2 + (C2_y - C1_y)^2) * 0.5 * (D_1 + D_2)}
+\end{equation}
+\begin{equation}
+    deviation = \frac{\sum_{n=1}^{sectors} sectorArea_n}{drivenDistance}
+\end{equation}
+
+Where \texttt{C1}, \texttt{C2} are point which belong to current trajectory. \texttt{S1} and \texttt{S2} belong to sample trajectory. Using the given formulas, the square between four points is calculated. Depends on the deviation from the sample trajectory, the task is counted as solved or failed. Figure \ref{fig:trajectory-comparator} shows the graphical representation of the calculation.
+\begin{figure}[ht!]
+    \centering
+    \includegraphics[width=\linewidth]{src/pic/trajectory-comparison}
+    \caption{Trajectories comparator.}
+    \label{fig:trajectory-comparator}
+\end{figure} \newline
+The area, which is marked between the current trajectory and the sample one is a deviation. This square is influence on the tutorial's result, whether it will be passed of failed.
 
 \section{Back-End}
 The back-end part of the toolchain is consist of a web-server, EMAM2Wasm generator, testing toolchain and SVG generator. All described component have been implemented and successful used in previous projects. The main goal to connect them all together and implement the web-server, which controls the execution of all services and communicates with the front-end. Moreover, in EMAM language there is a lack of some context conditions(CoCo) checking, which have to be implemented, to obtain better error handling during compilation process.
