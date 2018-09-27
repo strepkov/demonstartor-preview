@@ -190,7 +190,7 @@ In this composition of components, some of these were reused from the previous s
 The front end part of the toolchain consists of the Online IDE, 3D simulator and trajectory builder. The Online IDE has been already implemented and successful used in production. In the following subsections will be described the main page, which manages a communication with the server, loading of tutorials and files' operations. Then the 3D simulator will be presented. It demonstrates the car's behaviour, which is controlled by the compiled controller. 
 
 \subsection{Main Page}
-The main page consists of four \texttt{iframe} tags, which have inside independent web-pages: online IDE, trajectory comparator, 3D web-simulator and description of tutorials. Moreover, it ensures the communication between these pages and the Back-End. The functionality which is provided by the main page:
+The main page (see Figure \ref{fig:web-interface-task} and Figure \ref{fig:web-interface} in Appendix) consists of four \texttt{iframe} tags, which have inside independent web-pages: online IDE, trajectory comparator, 3D web-simulator and description of tutorials. Moreover, it ensures the communication between these pages and the Back-End. The functionality which is provided by the main page:
 \begin{itemize}
     \item Select and load tutorials. One of the given tutorials can be selected. After that the specified description of the tutorial will be loaded from the server. Due to lack of space on the screen, there is the simulator with the trajectory builder or the tutorial description can be shown, not all together.
     \item Read the data from the Online IDE. It means, read files, which were created by the user inside the IDE. All files, that were created, are stored in the Virtual File System. If you need to read the data from these files, the special API \cite{FilesystemAPI} has to be used. In this case, an arbitrary number of files and folders can be created. Due to this reason the recursive algorithm has to be implemented for a model reading. Futhermore, JavaScript is an asynchronous programming language and the promises \cite{JSPromise} have to be used, to implement the sequential execution of operations.
@@ -203,7 +203,7 @@ The main page consists of four \texttt{iframe} tags, which have inside independe
 \end{itemize}
 All described functions have an error handling. If users have some problem with a EmbeddedMontiArc model, an error message from the server will be received. It is related to all functions, which is implemented. It could be an error during packing/extracting process, file reading or WebAssembly file validation.
 
-\subsection{Tutorial internal structure}
+\subsection{Tutorial's Internal Structure}
 Each tutorial has a textual description, solution and configuration file. The tutorial description has a detailed explanation of the task, which includes some advices and recommendations. The solution gives the step-by-step instructions how to solve the task, and describes why we use particular methods. Listing \ref{lst:configuration} presents an example of the configuration file for tutorials.
 \bigskip
 \begin{lstlisting} [caption={Configuration file example.},label={lst:configuration},captionpos=b, mathescape]
@@ -250,7 +250,7 @@ The simulator environment consists of the visual and mathematical model. The vis
 \end{figure} \newline
 It is very important, that we separate the implementation of the simulator from the visualisation and controller. It benefits by being able to replace one of the components. We can have a different visualisation e.g., using another graphical library, or change the simulator core. It can be written using another language or implement more advanced mathematical model. 
 
-\subsubsection{Simulator graphical part}
+\subsubsection{Simulator Graphical Part}
 The graphical part of the simulator is in charge of displaying the simulation process in the 3D environment. The most important part is a main loop. The loop defines how often the \texttt{move} function in the scene is called. It changes the position of the car in the track. Moreover, inside the loop, the simulator core interacts with the controller. On every cycle, the following sequence of actions is taking place:
 \begin{enumerate}
     \item Read environment data. It contains information, from the car's sensors, velocity, position and execution time.
@@ -266,7 +266,7 @@ The sequence of the actions given above is a loop, which is repeated during the 
 \end{itemize}
 The graphical part of the simulator is tightly coupled with the core part. It maps all actions which occurs in the mathematical model to the 3D virtual model, which we can observe during the simulation. 
 
-\subsubsection{Simulator core part}
+\subsubsection{Simulator Core}
 The next paragraphs consider the the simulator's core in more details. The simulator has mathematical model of the track. It means, there is an array of walls, which constantly defined. The track has two different types of the walls: linear and curved. A linear one is defined by two points and a curved one has more parameters: start, middle, end points and radius. When the distances to the track's walls have been calculating, in fact, the following occurs:
 \begin{itemize}
     \item An intersection of a ray and line is calculated. The initial point of the ray is a sensor position and direction. The line is a wall of the track.
@@ -307,7 +307,7 @@ After the execution of this function, the outgoing data is ready to be used by t
 \end{figure} \newline
 The main simulator class has a class \texttt{Track}, which has \texttt{Walls} and they can be linear or curved. Moreover, the simulator class has a class \texttt{Car}, which has eight embedded sensors. The sensors are using the auxiliary class \texttt{CoordHelper}, which helps to calculate the distances. The \texttt{Orientation} and \texttt{Rotation} classes are used by the \texttt{Car} class, to calculate the positions of the sensors when the car changes the angle on the flat. The \texttt{Simulator} class uses the structures \texttt{Sinput} and \texttt{Soutput} to fill the input and output data respectively, every execution loop. The simulator works in cooperation with the controller, but for the testing purposes, the MOCK \cite{doglio2018testing} controller - \texttt{ControllerMOCK} has been developed. It helps to test the simulator functionality and body of the MOCK controller can be written in TypeScript.
 
-\subsection{Trajectory builder}
+\subsection{Trajectory Builder}
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{src/pic/trajectory}
@@ -370,7 +370,7 @@ The area, which is marked between the current trajectory and the sample one is a
 \section{Back End}
 The back end part of the toolchain is consist of a web server, EmbeddedMontiArc's WebAssembly generator, testing toolchain and visualisation generator. All described component, except the web server, have been implemented and successful used in previous projects. The main goal to connect them all together and implement the web server, which controls the execution of all services and communicates with the front end. Moreover, in EmbeddedMontiArc language there is a lack of some context conditions checking, which have to be implemented, to obtain better error handling during compilation process.
 
-\subsection{Web server}
+\subsection{Web Server}
 Overwhelming majority of tools related to EmbeddedMontiArc have been written using Java language and use the .jar containers. Using JAR container, the applications can be executed on different operating systems, it means they are cross-platform. This is a big advantage, since applications can be run on the server, which does not use Windows, instead some Linux-based system. The web server is based on Eclipse Jetty \cite{Jetty}. Eclipse Jetty provides a web server and Java Servlet container \cite{hunter2001java, coward2003java}. In our case, we create a server, which bind to the specific port. The servlets' container holds servlets inside, which react on incoming requests from the front end (c.f. figure \ref{fig:servlet}). \newline
 What is important in our case, that when the request is coming, for each request, a new thread is being created. It means, that we can maintain multiple users, and do not have to create manually a multiple user management system. Let us consider the steps, which occur on the back end part of the toolchain:
 \begin{figure}[h!]
@@ -398,7 +398,7 @@ The EmbeddedMontiArc language is based on a context-free grammar \cite{bundy1984
     \item \textbf{Units must be equal assignment :} if a value with units has been assigned to some variable/port, the units have to be equal.  
 \end{enumerate}
 To be able to implement given above context condition, the knowledges of the architecture of the language are required. The detailed description of the language architecture and grammar is given in the following book \cite{HR17}. Namely in chapters 6, 9 and 10. Let us consider the most important statements for the implementation, which are defined in the book. In the chapter 9 is written that, the context conditions have to be checked after the creation of the symbol table from an abstract syntax. Then we should check, whether the abstract syntax has been already created or not. The symbol table provides helpful information to implement context conditions in the efficient way. In our case, during the comparison check, it is important to find a left and right hand side of an expression. Then consider this parts separately, and only when the desired data as a value or units have been found, compare them. Searching the data like range of units, it must be checked whether the rage or units have been defined or not, to does not end up with an runtime error during the comparison process. Another important statement, that constants and variables have difference in type, which is obvious from the names. But still, it is important to check all possible combinations during the comparison(e.g., var == const, var == var, const == var, const == const). To increase the code reusability and decrease amount of written code, for the units comparison, was decided to use additional level of abstraction. The helper class, which does all comparison operations, and receives the type of the node(e.g., \texttt{ASTMathCompareNotEqualExpression}) like a parameter. \newline
-To be able to use the created context conditions, they all have to be added to the \texttt{EmbeddedMontiArcMathCoCoChecker}. Only after registering the context conditions, they will be taken into account during the checking process. But before using them, the context conditions must be tested. As was advised in the book, tests for valid and invalid models should be created. It makes sure, that valid models do not violate the context condition, whereas invalid models do violate them. Due to these reasons, for each context condition was created two tests and the global test, which involves all context conditions at the same time. Listing \ref{lst:coc-test} presents the invalid global test, which checks different conditions.
+To be able to use the created context conditions, they all have to be added to the \texttt{EmbeddedMontiArcMathCoCoChecker}. Only after registering the context conditions, they will be taken into account during the checking process. But before using them, the context conditions must be tested. As was advised in the book, tests for valid and invalid models should be created. It makes sure, that valid models do not violate the context condition, whereas invalid models do violate them. Due to these reasons, for each context condition was created two tests and the global test, which involves all context conditions at the same time. Listing \ref{lst:coc-test} presents the invalid global test, which checks different conditions. The valid global test is given in Appendix, Listing \ref{lst:valid-test}.
 \bigskip
 \begin{lstlisting} [caption={Example of an invalid test.},label={lst:coc-test},captionpos=b]
 package test.coco.invalid.units;
@@ -453,9 +453,9 @@ Then let us consider the standard sequence of steps, which have to be made, to d
 The studying process is built on a concept from simple to complex. Doing the tutorials one by one, students get closer to the main goal, which is a creation of a controller for a self-driving car. The final tutorial summarizes all knowledges which were obtained during the education and uses it for implementing the controller with highest complexity.
 
 \chapter{Tutorials} \label{sec:tutorials}
-Chapter presents a group of tutorials, which can be solved inside the created environment. The goal of the tutorials to teach students the basics of the EmbeddedMontiArc language and give a general idea how to build the autopilot's models. The tutorials are given with respect of an increasing the complexity level. Examples are explained step-by-step, to give the best studying experience. The tutorials' descriptions are presented in the same way, like they were written for students. Zero tutorial shows the basics of the language and simulator. Then, Stream tutorial describes the way of writing test for controllers. The next two tutorials, Parallel parking and Maneuverability test, show the real examples of basic tutorials. The last one, the most complex tutorial, illustrates only the task due to the size of the solution. The solution controller is given in the Appendix. This chapter shows only a part of the created tutorials.
+Chapter presents a group of tutorials, which can be solved inside the created environment. The goal of the tutorials to teach students the basics of the EmbeddedMontiArc language and give a general idea how to build the autopilot's models. The tutorials are given with respect of an increasing the complexity level. Examples are explained step-by-step, to give the best studying experience. The tutorials' descriptions are presented in the same way, like they were written for students. Beginner's tutorial shows the basics of the language and simulator. Then, Stream tutorial describes the way of writing test for controllers. The next two tutorials, Parallel parking and Maneuverability test, show the real examples of basic tutorials. The last one, the most complex tutorial, illustrates only the task due to the size of the solution. This chapter shows only a part of the created tutorials, because of the amount of space, which is required for all tutorials.
 
-\section{Zero tutorial}
+\section{Beginner's Tutorial}
 \textbf{Task:} Accelerate to the given speed.\newline
 Implement the model that continuously accelerates to 10 m/s and then stops the simulation.\newline \newline
 \textbf{Explanation of the simulator basics :}\newline
@@ -466,7 +466,7 @@ The main object, which are controlled by the controller, is a car. The car has 8
     \caption{Car with sensors.}
     \label{fig:sensors}
 \end{figure} \newline
-To solve this task, it is needed to control only an acceleration of the car. Changing the acceleration, you may control the behavior of the car. To be able to reach 10 m/s speed, you have to accelerate the car continuously until it reaches the desired speed. Let us start with a \texttt{MainController}, which defines an interface to the simulator. We should create a new file which has the same name like component has, with .emam extension.
+To solve this task, it is needed to control only an acceleration of the car. Changing the acceleration, you may control the behavior of the car. To be able to reach 10 m/s speed, the car must accelerate continuously until it reaches the desired speed. Let us start with a \texttt{MainController}, which defines an interface to the simulator. A new file should be created, which has the same name like component has, with .emam extension.
 \bigskip
 \begin{lstlisting} [caption={MainController interface.},captionpos=b, mathescape]
     package controller;
@@ -546,7 +546,7 @@ After the creation of the \texttt{ExampleController}, we should import it inside
     }
 \end{lstlisting}
 \bigskip
-The listing \ref{lst:main-import} shows the importing of the \texttt{ExampleController} (cf. l. 3). Later, after specifying the ports of the \texttt{MainController}, we have instantiated the controller with the type \texttt{ExampleController} and the name exampleController. Now we should connect this controller to the main controller using specified ports.
+Listing \ref{lst:main-import} shows the importing of the \texttt{ExampleController} (cf. l. 3). Later, after specifying the ports of the \texttt{MainController}, we have instantiated the controller with the type \texttt{ExampleController} and the name exampleController. Now we should connect this controller to the main controller using specified ports.
 \bigskip
 \begin{lstlisting} [caption={MainController connection.},label={lst:main-connect},captionpos=b]
     ...
@@ -557,16 +557,16 @@ The listing \ref{lst:main-import} shows the importing of the \texttt{ExampleCont
 \end{lstlisting}
 \bigskip
 We have connected the incoming port, \texttt{velocity} of the \texttt{MainController}, to our instantiated controller and it's corresponding incoming port \texttt{velocity}. Then, we have connected the outgoing port of \texttt{velocityController.acceleration} to the outgoing port of our \texttt{MainController}. Lastly, the \texttt{status} port of the \texttt{ExampleController} to \texttt{status} of the \texttt{MainController}.\newline
-Finally the connections' scheme should look like depicted in the figure \ref{fig:controller}.
+Finally the connections' scheme should look like depicted in figure \ref{fig:controller}.
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.9\linewidth]{src/pic/car-with-controller}
     \caption{Car with controller.}
     \label{fig:controller}
 \end{figure} \newline
-Eventually, we should send these files to the server to process them and later execute in the simulator. During the execution, we can observe how the car behaves using our first created controller.
+Eventually, these files have to be sent to the server to process them and later execute in the simulator. During the execution, we can observe how the car behaves using our first created controller.
 
-\section{Stream testing tutorial}
+\section{Stream Testing Tutorial}
 EmbeddedMontiArc generator has a built-in support of stream tests. The stream tests allow to define a sequence of input values for C\&C input ports and the expected output sequences for output ports. It helps to carry out
 unit and integration testing of C\&C models \cite{KRB96}. That gives the big advantage in the development process, test driven development \cite{TDD, beck2003test} can be applied, to create models for the simulator. It means, that we should start from an implementation of tests firstly, even before we created the controller. After that, a controller,which satisfy the tests, has to be implemented. This is the main principle of test driven development. Let us start with simple example:
 \bigskip
@@ -606,7 +606,7 @@ component VelocityController {
 \bigskip
 Currently, if we pass 0 m/s into \texttt{velocity} port, then there is 1 $m/s^2$ for the outgoing \texttt{acceleration} port. If it is true, the controller passed the test.
 
-\section{Parallel parking tutorial}
+\section{Parallel Parking Tutorial}
 \textbf{Task:} To carry out a parallel parking between two cars. \newline
 Implement a model that manages a parking between two cars. The model has to have several modules which are responsible for different actions. One of the examples could be:
 \begin{enumerate}
@@ -615,23 +615,23 @@ Implement a model that manages a parking between two cars. The model has to have
     \item Module which controls a steering of the car during the parking process.
 \end{enumerate}
 Each module should be as simple as possible. \newline
-To solve this task you should use at least 6 sensors, which measure the distance to objects which are located in front, left-side and back of the car. The speed has to be around 0.5-1 m/s. The figure \ref{fig:parking} shows the main idea how the parking has to be done:
+To solve this task you should use at least 6 sensors, which measure the distance to objects which are located in front, left-side and back of the car. The speed has to be between 0.5 m/s and 1.0 m/s. The figure \ref{fig:parking} shows the main idea how the parking has to be done:
 \begin{figure}[h!]
     \centering
     \includegraphics[width=0.8\linewidth]{src/pic/parking_process1}
     \caption{Parking process.}
     \label{fig:parking}
 \end{figure} \newline
-The parking process can be divided into 4 steps:
+The parking process can be divided into four steps:
 \begin{enumerate}
     \item Go straight until a place have been found.
     \item When the place is found, go back and rotate the car.
     \item When the car has reached appropriate point, rotate car in other direction to fit into given gap between the cars.
     \item When the car is close to the car behind, stop and go forward until it reaches certain distance to the front car.
 \end{enumerate}
-Important to undertsand that the wed-simulator is a simplified version of the more powerful simulator \cite{GKR17}. When the car is turning, it does not change an angle of the front wheels but the angle of the car entirely. It has to be taken into account during controllers' development process.\newpage
+Important to understand that the wed-simulator is a simplified version of the more powerful simulator \cite{GKR17}. When the car is turning, it does not change an angle of the front wheels but the angle of the car entirely. It has to be taken into account during controllers' development process.\newpage
 \textbf{Solution} \newline \newline
-To solve the task we have to use the \texttt{MainController}, like we did in the previous tutorials. But let us start from an implementation of a controller which searches a place for the car, between two other cars, to carry out the parallel parking. The idea is to pass the first car and find the "end" of the second car to start parking process form a right point, like it is shown in the figure \ref{fig:parking}, step A. Consider one of possible implementations of the controller, listing \ref{lst:search-parking} illustrates it.
+To solve the task, the \texttt{MainController} has to be used, like we did in the previous tutorials. But let us start from an implementation of a controller which searches a place for the car, between two other cars, to carry out the parallel parking. The idea is to pass the first car and find the "end" of the second car to start parking process form a right point, like it is shown in the figure \ref{fig:parking}, step A. Consider one of possible implementations of the controller, listing \ref{lst:search-parking} illustrates it.
 \bigskip
 \begin{lstlisting} [caption={Searching parking place controller.},label={lst:search-parking},captionpos=b]
 package controller03;
@@ -667,7 +667,7 @@ component SearchParkingPlaceController {
 }    
 \end{lstlisting}
 \bigskip
-The \texttt{SearchParkingPlaceController} has two incoming and one outgoing port. The incoming ones are receive the data from the \texttt{frontLeftSide} and \texttt{backLeftSide} sensors. The out going port \texttt{foundPlace} indicates that the place for parking has been found. The side sensors are used to measure the distances to the cars and the side of the road. Inside the \texttt{Math} scope, the group of \texttt{static} variables defined. Using \texttt{static} variables the states can be saved. Static variables are initialized only once. It means, \texttt{false} value (cf.ll.11-14) initializes the variables \texttt{passedX} only once. The following executions, \texttt{false} does not influence on the variables. Using these static variable, the states, from the analysing the environment from the left hand side of the car, will be saved. In our case we are measuring the difference between the \texttt{frontLeftSide} and \texttt{backLeftSide} sensors. If the value on the \texttt{backLeftSide} sensor greater then the value on the \texttt{frontLeftSide}, then the front part of the car passed the back of the parked car by, and the state will be saved. Then the same technique is applied, measuring the differences in sensors' values to find the parking lot and reach the state A, on the figure \ref{fig:parking}. Then, from this position the parking process can be started. But this controller only searching for a parking lot and we should control the car driving. We should implement a \texttt{VelocityController}, which controls the speed of the car, during the searching of parking place and carrying out the parking of the car. Listing \ref{lst:velocity-parking} demonstrates the controller. 
+The \texttt{SearchParkingPlaceController} has two incoming and one outgoing port. The incoming ones are receive the data from the \texttt{frontLeftSide} and \texttt{backLeftSide} sensors. The out going port \texttt{foundPlace} indicates that the place for parking has been found. The side sensors are used to measure the distances to the cars and the side of the road. Inside the \texttt{Math} scope, the group of \texttt{static} variables defined. Using \texttt{static} variables the states can be saved. Static variables are initialized only once. It means, \texttt{false} value (cf. ll. 11-14) initializes the variables \texttt{passedX} only once. The following executions, \texttt{false} does not influence on the variables. Using these static variable, the states, from the analysing the environment from the left hand side of the car, will be saved. In our case we are measuring the difference between the \texttt{frontLeftSide} and \texttt{backLeftSide} sensors. If the value on the \texttt{backLeftSide} sensor greater then the value on the \texttt{frontLeftSide}, then the front part of the car passed the back of the parked car by, and the state will be saved. Then the same technique is applied, measuring the differences in sensors' values to find the parking lot and reach the state A, on the figure \ref{fig:parking}. Then, from this position the parking process can be started. But this controller only searching for a parking lot and we should control the car driving. We should implement a \texttt{VelocityController}, which controls the speed of the car, during the searching of parking place and carrying out the parking of the car. Listing \ref{lst:velocity-parking} demonstrates the controller. 
 \bigskip
 \begin{lstlisting} [caption={Velocity controller.},label={lst:velocity-parking},captionpos=b,mathescape]
     package controller03;
@@ -788,10 +788,10 @@ Finally, we should instantiate all these controllers in the MainController and t
         connect velocityController.acceleration->acceleration;
     
         instance SearchParkingPlaceController searchParkingPlace;
-        connect *->searchParkingPlace.*;
+        connect this.*->searchParkingPlace.*;
         
         instance ParkingController parkingController;
-        connect *->parkingController.*;
+        connect this.*->parkingController.*;
         connect searchParkingPlace.foundPlace-> [
             velocityController.reverseMove,
             parkingController.reverseMove];
@@ -808,14 +808,14 @@ Listing \ref{lst:parking-main} shows the \texttt{MainController}. To be able to 
     \label{fig:parking-scheme}
 \end{figure}
 
-\section{Maneuverability test tutorial}
+\section{Maneuverability Test Tutorial}
 \textbf{Task:} Implement a model that manages driving between cones, which emulates the maneuverability test. The model should have several modules which are responsible for different actions. One of the examples could be:
 \begin{enumerate}
     \item Module controls the velocity of the car.
     \item Module is responsible for a steering angle of the car, depends on current position.
 \end{enumerate}
 Each module should be as simple as possible.
-To solve this tutorial, you may use from 4 to 6 sensors, which measure the distance to objects, which are located in front/side of the car. The velocity has to be around 1-2 m/s. The figure \ref{fig:maneuverability} shows the main idea how the driving has to be done:
+To solve this tutorial, you may use from 4 to 6 sensors, which measure the distance to objects, which are located in front/side of the car. The velocity has to be from 1 m/s to 2 m/s. The figure \ref{fig:maneuverability} shows the main idea how the driving has to be done:
 \begin{figure}[h!]
     \centering
     \includegraphics[width=\linewidth]{src/pic/drive_cones}
@@ -907,7 +907,7 @@ The controller has one incoming and one outgoing port. The incoming one, \texttt
     }
 \end{lstlisting}
 \end{minipage}
-The controller has seven incoming ports and two outgoing ones. The first six incoming ports are the measuring sensors. The last one, \texttt{xPosition}, the position of the car in the 3D environment. The outgoing ports control the steering of the car and a simulation status. Let us consider the \texttt{Math} scope. Lines 22-26 are in charge of passing the first cone, because it is located in the center, and the car should behave a bit differently. The car is turning to the left(cf. l. 23), when it is 10 meters left to the first cone. When it reaches the cone, it changes the rotation to opposite direction. Then, lines 27-44 describes the main actions, which helps to the car drive around cones. When the car has passed the cone from the right side, it start a rotation to the right, using the counter (cf. l. 34), which is counting the rotation angle to be able to pass a next cone from the left side. When the car reaches the next cone to pass it from the left side, the counter is set to zero, to start calculation to the opposite direction (cf. l. 39). Then the car is passing cones one by one, passing cones from different sides. After passing the field of cones, the simulation process has being stopped, by using the current position of the car. It happens in the last condition check (cf. ll. 45-47). There is could be another way of solving this tutorial, without using counters. The approximate trajectory of the car is shown in the figure \ref{fig:maneuverability}. When the controllers, which deliver the main functionality have been developed, we should connect them to the car's interface, which is given in the \texttt{MainController}. Listing \ref{lst:cones-main} shows an example of it.
+The controller has seven incoming ports and two outgoing ones. The first six incoming ports are the measuring sensors. The last one, \texttt{xPosition}, the position of the car in the 3D environment. The outgoing ports control the steering of the car and a simulation status. Let us consider the \texttt{Math} scope. Lines 22-26 are in charge of passing the first cone, because it is located in the center, and the car should behave a bit differently. The car is turning to the left(cf. l. 23), when it is 10 meters left to the first cone. When it reaches the cone, it changes the rotation to opposite direction. Then, lines 27-44 describes the main actions, which helps to the car drive around cones. When the car has passed the cone from the right side, it start a rotation to the right, using the counter (cf. l. 34), which is counting the rotation angle to be able to pass a next cone from the left side. When the car reaches the next cone to pass it from the left side, the counter is set to zero, to start calculation to the opposite direction (cf. l. 39). Then the car is passing cones one by one, passing cones from different sides. After passing the field of cones, the simulation process has being stopped, by using the current position of the car. It happens in the last condition check (cf. ll. 45-47). There may be other ways of solving this tutorial, without using counters. The approximate trajectory of the car is shown in the figure \ref{fig:maneuverability}. When the controllers, which deliver the main functionality have been developed, we should connect them to the car's interface, which is given in the \texttt{MainController}. Listing \ref{lst:cones-main} shows an example of it.
 \bigskip
 \begin{lstlisting} [caption={Main Controller.},label={lst:cones-main},captionpos=b,mathescape]
     package controller04;
@@ -940,12 +940,12 @@ The controller has seven incoming ports and two outgoing ones. The first six inc
         connect velocityController.acceleration->acceleration;
     
         instance ConeRunner coneRunner;
-        connect * -> coneRunner.*;
-        connect coneRunner.*->*; 
+        connect this.* -> coneRunner.*;
+        connect coneRunner.*->this.*; 
     }
 \end{lstlisting}
 \bigskip
-\texttt{MainController} imports the implemented controllers: \texttt{VelocityController} and \texttt{ConeRunner} (cf. ll. 3-4). After that follows the \texttt{Math} scope, which begins from the interface (cf. ll. 8-24). Later the imported controllers have been instantiated and connected respectively. Usage of the star(*) notation (cf. ll. 31-32) is one of the convenient and important feature of the EmbeddedMontiArc, we can connect all ports with equal names between components. It is simplifies the text model of the controller. If we need to connect only one port, it is better to specify it directly, to facilitate connection's understanding (cf. ll. 27-28). The entire connection scheme is depicted in the figure \ref{fig:maneuverability-scheme}.
+\texttt{MainController} imports the implemented controllers: \texttt{VelocityController} and \texttt{ConeRunner} (cf. ll. 3-4). After that follows the \texttt{Math} scope, which begins from the interface (cf. ll. 8-24). Later the imported controllers have been instantiated and connected respectively. Usage of the dot-star(.*) notation (cf. ll. 31-32) is one of the convenient and important feature of the EmbeddedMontiArc, we can connect all ports with equal names between components. It is simplifies the text model of the controller. If we need to connect only one port, it is better to specify it directly, to facilitate connection's understanding (cf. ll. 27-28). The entire connection scheme is depicted in the figure \ref{fig:maneuverability-scheme}.
 \begin{figure}[ht]
     \centering
     \includegraphics[width=0.8\linewidth]{src/pic/controller04}
@@ -954,7 +954,7 @@ The controller has seven incoming ports and two outgoing ones. The first six inc
 \end{figure} \newline
 From the left hand side of the connection scheme and the right one (see figure \ref{fig:maneuverability-scheme}), the ports of the interface are depicted. Inside the \texttt{MainController} are shown the controllers, which were instantiated in the listing above(see listing \ref{lst:cones-main}).
 
-\section{Complete track tutorial}
+\section{Complete Track Tutorial}
 \textbf{Task:} Run through the entire track. \newline \newline
 In this tutorial we are going to use previously created controllers to run trough the track with different obstacles and sub-tasks. Figure \ref{fig:tutorial11-track} depicts the entire track, which already have some loaded objects on it. We can divide the track into several zones, where different actions are going to happen:
 \begin{enumerate}
@@ -974,15 +974,4 @@ In this tutorial we are going to use previously created controllers to run troug
 \end{figure}
 All these controllers were created before in the first ten tutorials. This tutorial combines them all in one controller which can manage all these actions. Previously, we have done some tutorials which used several controllers simultaneously. The main idea, that we have an actions controller, which manages some currently active action and changes the active controller, depends on conditions. This tutorial has to be done in the similar way, but a number of the controllers is much greater. \newline \newline
 \textbf{Solution:} \newline \newline
-The solution won't be given here. The controller combines all previously created controllers and will be given in appendix, due to large size of the text model.
-
-\chapter{Future work}
-This chapter introduces some features which were not implemented, due to the amount of time given for a thesis implementation, or third part applications, that currently do not support required features. Let us consider some possible improvements: \newline
-\begin{itemize}
-    \item \textbf{Compilation in a web browser :} currently, the toolchain is using the dedicated server for compilation of models. It would be better to simplify the compilation process and carry out it directly on a client side. Clang in browser can not manage the liking of the required mathematical library, details provided in the Architecture chapter.
-    \item \textbf{Using different tracks :} in the simulator's core, the integrated track is used, which consists of different kinds of walls, like linear or curved. It would be an improvement to separate the track from the core part, to be able to load different tracks. Even better to have external track constructor, which can build new tracks, like a configuration file for these tracks. In this configuration file, the data related to walls' positions should be stored. Then, it will be possible to construct not only the new tutorials, but new tutorials with various tracks. It increases variability of possible tasks, e.g., we can create a track with some intersections and develop an absolutely new controller. It will be able to manage the crossroad passing.
-    \item \textbf{Several controllers in one 3D environment :} the simulator uses only one controller, which is in charge of the car driving. In the future versions, the simulator could manage several controllers, which being executed simultaneously. It let us to create more complex tutorials with much wider variety of tasks.
-    \item \textbf{Standalone tutorials builder :} create tutorials directly in 3D environment, then the tutorial builder will generate the configuration file, which will be used in the simulator. Currently, a configuration file for a tutorial has to be created manually. Moreover, the creation process of new tutorials takes longer, because all data related to objects should be entered manually in a text form. The 3D tutorials' builder could increase the building time significantly.
-    \item \textbf{Better objects detection :} currently, the car is uses eight sensors, which measure the distance to objects that located only at the line which begins from the sensor's position and directed strictly like a ray with a given angle. Using this type of measuring, we can not detect types of objects. Moreover, an object can be located just between the measuring sensors and consequently it can not be detected. It would be an significant improvement, if we could detects the shapes of object or some characteristics of objects, which give us an opportunity to determine a type of objects.
-\end{itemize}
-All offered changes could greatly improve the functionally of the simulator and the education toolchaing in general. A possible disadvantage might be the performance requirements for client side. Currently the car in the simulator runs smoothly even on the PC which has integrated graphical adapter.
+The solution won't be given here, due to large size of the text model. The controller combines all previously created controllers in eleven tutorials.
