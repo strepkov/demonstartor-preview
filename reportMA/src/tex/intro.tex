@@ -829,7 +829,7 @@ Parking process can be divided in several steps:
     \item When the car is rotated enough to pass the next cone, stop rotation and continue the straight movement.
     \item Repeat the second step until the car passed all cones.
 \end{enumerate}
-\textbf{Hint:} In this task will be helpful to use the static variables like a counters, to control a rotation angle of the car. \newline \newline
+\textbf{Hint:} In this task will be helpful to use static variables like a counters, to control a rotation angle of the car. \newline \newline
 \textbf{Solution} \newline \newline
 To solve the given task we should use the \texttt{MainController}, which provides an interface for a communication with the car. Nevertheless, let us start from the \texttt{VelocityController}, which controls the velocity of the car. To drive trough the road with cones, we do not have to change the velocity of the car, just use some constant value. Listing \ref{lst:cones-velocity} shows an example of the \texttt{VelocityController}.
 \bigskip
