@@ -5,8 +5,7 @@ import PassObjectsController;
 import ActiveController;
 import SearchParkingPlaceController;
 import ParkingController;
-import RunTrackController;
-import RunTrackVelocityController;
+import controller11.runTrack.RunTrack;
 import SteeringAlignController;
 import FollowController;
 import FollowVelocityController;
@@ -99,18 +98,16 @@ component MainController{
     connect backRightSideSensor -> passObjectsController.backRightSideSensor;
     connect passObjectsController.steering -> steeringSwitch.steeringPassObjects;
 
-    instance RunTrackController runTrackController;
-    connect frontLeftSensor -> runTrackController.frontLeft;
-    connect frontRightSensor ->  runTrackController.frontRight;
-    connect frontLeftSideSensor -> runTrackController.frontLeftSide;
-    connect frontRightSideSensor -> runTrackController.frontRightSide;
-    connect backLeftSideSensor -> runTrackController.backLeftSide;
-    connect backRightSideSensor -> runTrackController.backRightSide;
-    connect runTrackController.steering -> steeringSwitch.steeringTrack;
-
-    instance RunTrackVelocityController runTrackVelocity;
-    connect velocity -> runTrackVelocity.velocity;
-    connect runTrackVelocity.acceleration -> velocitySwitch.accelerationRunTrack;
+    instance RunTrack runTrack;
+    connect frontLeftSensor -> runTrack.frontLeft;
+    connect frontRightSensor ->  runTrack.frontRight;
+    connect frontLeftSideSensor -> runTrack.frontLeftSide;
+    connect frontRightSideSensor -> runTrack.frontRightSide;
+    connect backLeftSideSensor -> runTrack.backLeftSide;
+    connect backRightSideSensor -> runTrack.backRightSide;
+    connect runTrack.steering -> steeringSwitch.steeringTrack;
+    connect velocity -> runTrack.velocity;
+    connect runTrack.acceleration -> velocitySwitch.accelerationRunTrack;
 
     instance SteeringAlignController steeringAlign;
     connect frontLeftSideSensor -> steeringAlign.frontLeftSide;
