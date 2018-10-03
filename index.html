@@ -106,7 +106,7 @@
 
         function cleanOnLoad(){
             setTimeout(function(){
-                if (document.getElementById("ide").contentWindow.api) clearAllFiles();
+                if (document.getElementById("ide").contentWindow.api) removeAllFiles();
             },2000);
         }
 
@@ -190,6 +190,52 @@
             if (checkWasmBinaryData(rawFileData[1])) loadWasmData();
             else enableCompileBtn();
         }
+
+        //recursive files removing
+        function removeAllFiles() {
+
+            folders = [];
+            var dirRoot = '/';
+            var apiFs = document.getElementById("ide").contentWindow.api.fs;
+            
+            function recursiveReadDir(file) {
+                apiFs.readdir(file.fullPath, function (err, internal) {
+                    for (var i = 0; i <= internal.length; i++) {
+                        if (internal[i] != undefined) {
+                            if (internal[i].mime == "folder") {
+                                recursiveReadDir(internal[i]);
+                                folders.push(internal[i]);
+                            }
+                            else {
+                                if ((internal[i].name).includes(".emam") || (internal[i].name).includes(".stream")) {
+                                    removeFile(internal[i]);
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+            
+            apiFs.readdir(dirRoot, function (err, dir) {
+                if (err) throw err;
+                dir.forEach(function (item) {
+                    // Find the folder which is a root directory for a model
+                    if (item.mime == "folder" && !(item.name).includes(".")) {
+                        recursiveReadDir(item);
+                        folders.push(item);
+                    }
+                });
+                setTimeout( async function () {
+                    if (folders.length > 0) {
+                        for (var i = folders.length; i >= 0; i--) {
+                            if (folders[i] != undefined){
+                                await removeDir(folders[i]);
+                            }
+                        }
+                    }
+                }, 500);
+            });
+        }
         
         // functions for working with VFS
         function clearAllFiles() {
@@ -224,7 +270,7 @@
                     // filesArray.push(dirInternal);
                     const removeFiles = async () =>{
                             await Promise.all(dirInternal.map(async file => {
-                                await removeFile(apiFs,file);
+                                await removeFile(file);
                             }));
                     }
                     removeFiles();
@@ -232,7 +278,7 @@
                 })});
         }
 
-        function removeFile(apiFs, file) {
+        function removeFile(file) {
             return new Promise(r => {
                 document.getElementById("ide").contentWindow.api.fs.rmfile(file.fullPath, err => {
                     if (err) throw err;
@@ -481,7 +527,7 @@
 
         function appendTestTutorial11() {
 
-            clearAllFiles();
+            // clearAllFiles();
             document.getElementById('tutorialFrame').src = "tutorials/html/tutorial11.md.html";
             setTimeout(function () {
                 filesFromDiskData = [];
