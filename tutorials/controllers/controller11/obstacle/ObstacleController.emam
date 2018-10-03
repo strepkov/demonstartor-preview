@@ -1,4 +1,4 @@
-package controller11;
+package controller11.obstacle;
 
 component ObstacleController<Q distance = 30>{
     port

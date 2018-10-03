@@ -1,4 +1,4 @@
-package controller11;
+package controller11.obstacle;
 
 component ObstacleVelocityController<Q maxVel = 5 m/s> {
 	port

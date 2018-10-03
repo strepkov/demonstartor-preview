@@ -6,14 +6,13 @@ import ActiveController;
 import SearchParkingPlaceController;
 import ParkingController;
 import SteeringAlignController;
-import ObstacleController;
-import ObstacleVelocityController;
 import VelocitySwitchController;
 import SteeringSwitchController;
 
 import controller11.follow.Follow;
 import controller11.overtake.Overtake;
 import controller11.runTrack.RunTrack;
+import controller11.obstacle.Obstacle;
 
 component MainController{
     ports 
@@ -28,7 +27,6 @@ component MainController{
 
         in Q time,
         in Q(0km/h:250km/h) velocity,
-
         in Q(-200m:200m) xPosition,
         in Q(-200m:200m) yPosition,
 
@@ -132,15 +130,12 @@ component MainController{
     connect overtake.activatePassChecker -> velocitySwitch.activeOvertake;
     connect overtake.acceleration -> velocitySwitch.accOvertake;
 
-    instance ObstacleController<30m> obstacle;
+    instance Obstacle obstacle;
     connect frontLeftSensor -> obstacle.frontLeftSensor;
     connect frontRightSensor -> obstacle.frontRightSensor;
-    connect obstacle.brake -> obstacleVelocity.brake;
-
-    instance ObstacleVelocityController<5m/s> obstacleVelocity;
-    connect velocity -> obstacleVelocity.velocity;
-    connect obstacleVelocity.acceleration -> velocitySwitch.accObstacle;
-
+    connect velocity -> obstacle.velocity;
+    connect obstacle.acceleration -> velocitySwitch.accObstacle;
+    
     instance SteeringSwitchController steeringSwitch;
     connect steeringSwitch.steering -> steering;
 

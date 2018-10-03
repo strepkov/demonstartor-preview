@@ -561,9 +561,14 @@
                     readFileFromDisk("tutorials/controllers/controller11/overtake/OvertakeVelocityController.emam"));
                 appendFile("controller11/overtake/PassCarController.emam",
                     readFileFromDisk("tutorials/controllers/controller11/overtake/PassCarController.emam"));
-
-                appendFile("controller11/ObstacleController.emam", readFileFromDisk("tutorials/controllers/controller11/ObstacleController.emam"));
-                appendFile("controller11/ObstacleVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/ObstacleVelocityController.emam"));
+                
+                appendDir("/controller11/obstacle");
+                appendFile("controller11/obstacle/Obstacle.emam", 
+                    readFileFromDisk("tutorials/controllers/controller11/obstacle/Obstacle.emam"));
+                appendFile("controller11/obstacle/ObstacleController.emam",
+                    readFileFromDisk("tutorials/controllers/controller11/obstacle/ObstacleController.emam"));
+                appendFile("controller11/obstacle/ObstacleVelocityController.emam",
+                    readFileFromDisk("tutorials/controllers/controller11/obstacle/ObstacleVelocityController.emam"));
             }, 1000);
             document.getElementById("indexSimulator").contentWindow.loadTutorial(11);
         }
