@@ -7,8 +7,7 @@ import SearchParkingPlaceController;
 import ParkingController;
 import controller11.runTrack.RunTrack;
 import SteeringAlignController;
-import FollowController;
-import FollowVelocityController;
+import controller11.follow.Follow;
 import PassCarController;
 import OvertakeController;
 import OvertakeVelocityController;
@@ -116,15 +115,11 @@ component MainController{
     connect backRightSideSensor -> steeringAlign.backRightSide;
     connect steeringAlign.steering -> steeringSwitch.steeringAlign;
 
-    instance FollowController<15m> follow;
+    instance Follow follow;
     connect frontLeftSensor -> follow.frontLeftSensor;
     connect frontRightSensor -> follow.frontRightSensor;
-    connect follow.follow -> followVelocity.follow;
-    connect follow.run -> followVelocity.run;
-
-    instance FollowVelocityController<2m/s> followVelocity;
-    connect velocity -> followVelocity.velocity;
-    connect followVelocity.acceleration -> velocitySwitch.accFollow;
+    connect velocity -> follow.velocity;
+    connect follow.acceleration -> velocitySwitch.accFollow;
 
     instance PassCarController passCar;
     connect frontRightSideSensor -> passCar.frontRightSideSensor;

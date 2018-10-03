@@ -1,4 +1,4 @@
-package controller11;
+package controller11.follow;
 
 component FollowVelocityController<Q velMAX = 2m/s> {
 	port                                    
