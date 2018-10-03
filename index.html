@@ -540,18 +540,28 @@
                 appendFile("controller11/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller11/ParkingController.emam"));
                 appendFile("controller11/SteeringSwitchController.emam", readFileFromDisk("tutorials/controllers/controller11/SteeringSwitchController.emam"));
                 appendFile("controller11/VelocitySwitchController.emam", readFileFromDisk("tutorials/controllers/controller11/VelocitySwitchController.emam"));
+                appendFile("controller11/SteeringAlignController.emam", readFileFromDisk("tutorials/controllers/controller11/SteeringAlignController.emam"));
+                
                 appendDir("/controller11/runTrack");
                 appendFile("controller11/runTrack/RunTrackVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/runTrack/RunTrackVelocityController.emam"));
                 appendFile("controller11/runTrack/RunTrack.emam", readFileFromDisk("tutorials/controllers/controller11/runTrack/RunTrack.emam"));
                 appendFile("controller11/runTrack/RunTrackController.emam", readFileFromDisk("tutorials/controllers/controller11/runTrack/RunTrackController.emam"));
-                appendFile("controller11/SteeringAlignController.emam", readFileFromDisk("tutorials/controllers/controller11/SteeringAlignController.emam"));
+                
                 appendDir("/controller11/follow");
                 appendFile("controller11/follow/Follow.emam", readFileFromDisk("tutorials/controllers/controller11/follow/Follow.emam"));
                 appendFile("controller11/follow/FollowController.emam", readFileFromDisk("tutorials/controllers/controller11/follow/FollowController.emam"));
                 appendFile("controller11/follow/FollowVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/follow/FollowVelocityController.emam"));
-                appendFile("controller11/OvertakeController.emam", readFileFromDisk("tutorials/controllers/controller11/OvertakeController.emam"));
-                appendFile("controller11/PassCarController.emam", readFileFromDisk("tutorials/controllers/controller11/PassCarController.emam"));
-                appendFile("controller11/OvertakeVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/OvertakeVelocityController.emam"));
+                
+                appendDir("/controller11/overtake");
+                appendFile("controller11/overtake/Overtake.emam",
+                    readFileFromDisk("tutorials/controllers/controller11/overtake/Overtake.emam"));
+                appendFile("controller11/overtake/OvertakeController.emam",
+                    readFileFromDisk("tutorials/controllers/controller11/overtake/OvertakeController.emam"));
+                appendFile("controller11/overtake/OvertakeVelocityController.emam",
+                    readFileFromDisk("tutorials/controllers/controller11/overtake/OvertakeVelocityController.emam"));
+                appendFile("controller11/overtake/PassCarController.emam",
+                    readFileFromDisk("tutorials/controllers/controller11/overtake/PassCarController.emam"));
+
                 appendFile("controller11/ObstacleController.emam", readFileFromDisk("tutorials/controllers/controller11/ObstacleController.emam"));
                 appendFile("controller11/ObstacleVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/ObstacleVelocityController.emam"));
             }, 1000);

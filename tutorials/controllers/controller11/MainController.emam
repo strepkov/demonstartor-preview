@@ -5,16 +5,15 @@ import PassObjectsController;
 import ActiveController;
 import SearchParkingPlaceController;
 import ParkingController;
-import controller11.runTrack.RunTrack;
 import SteeringAlignController;
-import controller11.follow.Follow;
-import PassCarController;
-import OvertakeController;
-import OvertakeVelocityController;
 import ObstacleController;
 import ObstacleVelocityController;
 import VelocitySwitchController;
 import SteeringSwitchController;
+
+import controller11.follow.Follow;
+import controller11.overtake.Overtake;
+import controller11.runTrack.RunTrack;
 
 component MainController{
     ports 
@@ -121,25 +120,17 @@ component MainController{
     connect velocity -> follow.velocity;
     connect follow.acceleration -> velocitySwitch.accFollow;
 
-    instance PassCarController passCar;
-    connect frontRightSideSensor -> passCar.frontRightSideSensor;
-    connect backRightSideSensor -> passCar.backRightSideSensor;
-    connect passCar.done -> overtake.passed;
-
-    instance OvertakeController<50m> overtake;
+    instance Overtake overtake;
     connect frontLeftSensor -> overtake.frontLeftSensor;
     connect frontRightSensor -> overtake.frontRightSensor;
     connect frontRightSideSensor -> overtake.frontRightSideSensor;
     connect frontLeftSideSensor -> overtake.frontLeftSideSensor;
     connect backLeftSideSensor -> overtake.backLeftSideSensor;
     connect backRightSideSensor -> overtake.backRightSideSensor;
+    connect velocity -> overtake.velocity;
     connect overtake.steering -> steeringSwitch.steeringOvertake;
-    connect overtake.activatePassChecker -> passCar.active;
     connect overtake.activatePassChecker -> velocitySwitch.activeOvertake;
-
-    instance OvertakeVelocityController overtakeVelocity;
-    connect velocity -> overtakeVelocity.velocity;
-    connect overtakeVelocity.acceleration -> velocitySwitch.accOvertake;
+    connect overtake.acceleration -> velocitySwitch.accOvertake;
 
     instance ObstacleController<30m> obstacle;
     connect frontLeftSensor -> obstacle.frontLeftSensor;

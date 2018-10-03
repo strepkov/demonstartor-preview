@@ -4,8 +4,8 @@ component FollowController<Q distance = 10m> {
 	port                                    
 		in Q(-200m:200m) frontLeftSensor,
         in Q(-200m:200m) frontRightSensor,
-        out Q follow,
-		out Q run; 
+        out B follow,
+		out B run; 
 
 	implementation Math{
 		

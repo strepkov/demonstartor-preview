@@ -3,8 +3,8 @@ package controller11.follow;
 component FollowVelocityController<Q velMAX = 2m/s> {
 	port                                    
 		in Q(0km/h : 250km/h) velocity,
-		in Q run,
-		in Q follow,
+		in B run,
+		in B follow,
 		out Q(-2m/s^2:2m/s^2) acceleration; 
 
 	implementation Math{                    

@@ -1,17 +1,17 @@
-package controller11;
+package controller11.overtake;
 
 component PassCarController {
 	port                                    
 		in Q(-200m:200m) frontRightSideSensor,
         in Q(-200m:200m) backRightSideSensor,
         in B active,
-		out B done; 
+		out B passed; 
 
 	implementation Math{
 	    
 	    static B passed0 = 0;
 	    static B passed1 = 0;
-	    done = 0;
+	    passed = 0;
 	    
 	    if active
 	    
@@ -24,7 +24,7 @@ component PassCarController {
             end
             
             if (passed0 && passed1 && ((frontRightSideSensor - backRightSideSensor) < 2))
-	        	done = 1;
+	        	passed = 1;
 	        end
 	    end
 	}
