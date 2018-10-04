@@ -3,10 +3,11 @@ package controller11;
 component VelocitySwitchController {
 	port                                    
 		in Q(-2m/s^2:2m/s^2) accelerationRunTrack,
-        in Q(-2m/s^2:2m/s^2) accelerationLast,
+        in Q(-2m/s^2:2m/s^2) accParking,
         in Q(-2m/s^2:2m/s^2) accFollow,
         in Q(-2m/s^2:2m/s^2) accOvertake,
         in Q(-2m/s^2:2m/s^2) accObstacle,
+        in Q(-2m/s^2:2m/s^2) accPassCones,
         in B activeRunTrack,
         in B activePassObject,
         in B activeParking,
@@ -24,8 +25,12 @@ component VelocitySwitchController {
             acceleration = accelerationRunTrack;
         end
 
-        if (activePassObject || activeParking)
-            acceleration = accelerationLast;
+        if activeParking
+            acceleration = accParking;
+        end
+
+        if activePassObject
+            acceleration = accPassCones;
         end
         
         if activeAlign

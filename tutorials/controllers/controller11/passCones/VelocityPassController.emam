@@ -1,0 +1,20 @@
+package controller11.passCones;
+
+component VelocityPassController {
+	port                                    
+		in Q(0km/h : 250km/h) velocity,
+		out Q(-2m/s^2:2m/s^2) acceleration;
+
+	implementation Math{                    
+
+    	if (velocity < 1 m/s)
+			acceleration = 0.2 m/s^2;
+        else
+			if (velocity > 1.5 m/s)
+	    	    acceleration = -0.5 m/s;
+	    	else
+        		acceleration = 0 m/s^2;
+			end
+        end
+	}
+}

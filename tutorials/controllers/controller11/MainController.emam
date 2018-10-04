@@ -1,6 +1,5 @@
 package controller11;
 
-import PassObjectsController;
 import ActiveController;
 import SteeringAlignController;
 import VelocitySwitchController;
@@ -11,6 +10,7 @@ import controller11.overtake.Overtake;
 import controller11.runTrack.RunTrack;
 import controller11.obstacle.Obstacle;
 import controller11.parking.Parking;
+import controller11.passCones.PassCones;
 
 component MainController{
     ports 
@@ -38,7 +38,7 @@ component MainController{
     connect activeController.activeSearchParkingPlace -> parking.active;
     connect activeController.activeSearchParkingPlace -> velocitySwitch.activeParking;
     connect activeController.activeSearchParkingPlace -> steeringSwitch.activeParking;
-    connect activeController.activePassObject -> passObjectsController.active;
+    connect activeController.activePassObject -> passCones.active;
     connect activeController.activePassObject -> velocitySwitch.activePassObject;
     connect activeController.activePassObject -> steeringSwitch.activePassObject;
     connect activeController.activeTrack -> velocitySwitch.activeRunTrack;
@@ -52,7 +52,6 @@ component MainController{
     connect activeController.obstacleWait -> velocitySwitch.activeObstacle;
     connect activeController.obstacleWait -> steeringSwitch.activeObstacle;
 
-
     instance Parking parking;
     connect frontLeftSensor -> parking.frontLeftSensor;
     connect frontRightSensor -> parking.frontRightSensor;
@@ -63,16 +62,18 @@ component MainController{
     connect velocity -> parking.velocity;
     connect parking.status -> status;
     connect parking.steering -> steeringSwitch.steeringParking;
-    connect parking.acceleration->velocitySwitch.accelerationLast;
+    connect parking.acceleration -> velocitySwitch.accParking;
     
-    instance PassObjectsController passObjectsController;
-    connect frontLeftSensor -> passObjectsController.frontLeftSensor;
-    connect frontRightSensor -> passObjectsController.frontRightSensor;
-    connect frontLeftSideSensor -> passObjectsController.frontLeftSideSensor;
-    connect frontRightSideSensor -> passObjectsController.frontRightSideSensor;
-    connect backLeftSideSensor ->passObjectsController.backLeftSideSensor;
-    connect backRightSideSensor -> passObjectsController.backRightSideSensor;
-    connect passObjectsController.steering -> steeringSwitch.steeringPassObjects;
+    instance PassCones passCones;
+    connect frontLeftSensor -> passCones.frontLeftSensor;
+    connect frontRightSensor -> passCones.frontRightSensor;
+    connect frontLeftSideSensor -> passCones.frontLeftSideSensor;
+    connect frontRightSideSensor -> passCones.frontRightSideSensor;
+    connect backLeftSideSensor ->passCones.backLeftSideSensor;
+    connect backRightSideSensor -> passCones.backRightSideSensor;
+    connect velocity -> passCones.velocity;
+    connect passCones.steering -> steeringSwitch.steeringPassObjects;
+    connect passCones.acceleration -> velocitySwitch.accPassCones;
 
     instance RunTrack runTrack;
     connect frontLeftSensor -> runTrack.frontLeft;

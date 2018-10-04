@@ -532,12 +532,11 @@
             setTimeout(function () {
                 filesFromDiskData = [];
                 appendDir("/controller11");
-                appendFile("controller11/MainController.emam", readFileFromDisk("tutorials/controllers/controller11/MainController.emam"));
-                appendFile("controller11/PassObjectsController.emam", readFileFromDisk("tutorials/controllers/controller11/PassObjectsController.emam"));
-                appendFile("controller11/ActiveController.emam", readFileFromDisk("tutorials/controllers/controller11/ActiveController.emam"));
-                appendFile("controller11/SteeringSwitchController.emam", readFileFromDisk("tutorials/controllers/controller11/SteeringSwitchController.emam"));
-                appendFile("controller11/VelocitySwitchController.emam", readFileFromDisk("tutorials/controllers/controller11/VelocitySwitchController.emam"));
-                appendFile("controller11/SteeringAlignController.emam", readFileFromDisk("tutorials/controllers/controller11/SteeringAlignController.emam"));
+                appendFile("controller11/MainController.emam",              readFileFromDisk("tutorials/controllers/controller11/MainController.emam"));
+                appendFile("controller11/ActiveController.emam",            readFileFromDisk("tutorials/controllers/controller11/ActiveController.emam"));
+                appendFile("controller11/SteeringSwitchController.emam",    readFileFromDisk("tutorials/controllers/controller11/SteeringSwitchController.emam"));
+                appendFile("controller11/VelocitySwitchController.emam",    readFileFromDisk("tutorials/controllers/controller11/VelocitySwitchController.emam"));
+                appendFile("controller11/SteeringAlignController.emam",     readFileFromDisk("tutorials/controllers/controller11/SteeringAlignController.emam"));
                 
                 appendDir("/controller11/runTrack");
                 appendFile("controller11/runTrack/RunTrackVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/runTrack/RunTrackVelocityController.emam"));
@@ -559,6 +558,11 @@
                 appendFile("controller11/obstacle/Obstacle.emam",                   readFileFromDisk("tutorials/controllers/controller11/obstacle/Obstacle.emam"));
                 appendFile("controller11/obstacle/ObstacleController.emam",         readFileFromDisk("tutorials/controllers/controller11/obstacle/ObstacleController.emam"));
                 appendFile("controller11/obstacle/ObstacleVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/obstacle/ObstacleVelocityController.emam"));
+
+                appendDir("/controller11/passCones");
+                appendFile("controller11/passCones/PassCones.emam",                 readFileFromDisk("tutorials/controllers/controller11/passCones/PassCones.emam"));
+                appendFile("controller11/passCones/PassObjectsController.emam",     readFileFromDisk("tutorials/controllers/controller11/passCones/PassObjectsController.emam"));
+                appendFile("controller11/passCones/VelocityPassController.emam",    readFileFromDisk("tutorials/controllers/controller11/passCones/VelocityPassController.emam"));
 
                 appendDir("/controller11/parking");
                 appendFile("controller11/parking/Parking.emam",                         readFileFromDisk("tutorials/controllers/controller11/parking/Parking.emam"));
