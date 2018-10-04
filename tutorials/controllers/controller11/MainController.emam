@@ -1,10 +1,7 @@
 package controller11;
 
-import VelocityController;
 import PassObjectsController;
 import ActiveController;
-import SearchParkingPlaceController;
-import ParkingController;
 import SteeringAlignController;
 import VelocitySwitchController;
 import SteeringSwitchController;
@@ -13,6 +10,7 @@ import controller11.follow.Follow;
 import controller11.overtake.Overtake;
 import controller11.runTrack.RunTrack;
 import controller11.obstacle.Obstacle;
+import controller11.parking.Parking;
 
 component MainController{
     ports 
@@ -34,56 +32,38 @@ component MainController{
         out Q(-180:180) steering,
         out B status;
 
-
-    instance VelocityController velocityController;
-    connect velocity->velocityController.velocity;
-    connect velocityController.acceleration->velocitySwitch.accelerationLast;
-
-    instance SearchParkingPlaceController searchParkingPlaceController;
-    connect frontLeftSideSensor -> searchParkingPlaceController.frontLeftSideSensor;
-    connect backLeftSideSensor -> searchParkingPlaceController.backLeftSideSensor;
-    connect searchParkingPlaceController.foundPlace -> velocityController.reverseMove;
-    connect searchParkingPlaceController.foundPlace -> parkingController.reverseMove;
-
-    
     instance ActiveController activeController;
     connect xPosition -> activeController.xPosition;
     connect yPosition -> activeController.yPosition;
-    
-    connect activeController.activeSearchParkingPlace -> searchParkingPlaceController.active;
+    connect activeController.activeSearchParkingPlace -> parking.active;
     connect activeController.activeSearchParkingPlace -> velocitySwitch.activeParking;
     connect activeController.activeSearchParkingPlace -> steeringSwitch.activeParking;
-    
     connect activeController.activePassObject -> passObjectsController.active;
     connect activeController.activePassObject -> velocitySwitch.activePassObject;
     connect activeController.activePassObject -> steeringSwitch.activePassObject;
-    
     connect activeController.activeTrack -> velocitySwitch.activeRunTrack;
     connect activeController.activeTrack -> steeringSwitch.activeTrack;
-
     connect activeController.activeAlign -> velocitySwitch.activeAlign;
     connect activeController.activeAlign -> steeringSwitch.activeAlign;
-
     connect activeController.followCar -> velocitySwitch.activeFollow;
     connect activeController.followCar -> steeringSwitch.activeFollow;
-
     connect activeController.overtakeCar -> overtake.active;
     connect activeController.overtakeCar -> steeringSwitch.activeOvertake;
-
     connect activeController.obstacleWait -> velocitySwitch.activeObstacle;
     connect activeController.obstacleWait -> steeringSwitch.activeObstacle;
 
 
-    instance ParkingController parkingController;
-    connect frontLeftSensor -> parkingController.frontLeftSensor;
-    connect frontRightSensor -> parkingController.frontRightSensor;
-    connect frontLeftSideSensor -> parkingController.frontLeftSideSensor;
-    connect backLeftSideSensor -> parkingController.backLeftSideSensor;
-    connect backLeftSensor -> parkingController.backLeftSensor;
-    connect backRightSensor -> parkingController.backRightSensor;
-    connect parkingController.status -> status;
-    connect parkingController.moveForward -> velocityController.moveForward;
-    connect parkingController.steeringAngle -> steeringSwitch.steeringParking;
+    instance Parking parking;
+    connect frontLeftSensor -> parking.frontLeftSensor;
+    connect frontRightSensor -> parking.frontRightSensor;
+    connect frontLeftSideSensor -> parking.frontLeftSideSensor;
+    connect backLeftSideSensor -> parking.backLeftSideSensor;
+    connect backLeftSensor -> parking.backLeftSensor;
+    connect backRightSensor -> parking.backRightSensor;
+    connect velocity -> parking.velocity;
+    connect parking.status -> status;
+    connect parking.steering -> steeringSwitch.steeringParking;
+    connect parking.acceleration->velocitySwitch.accelerationLast;
     
     instance PassObjectsController passObjectsController;
     connect frontLeftSensor -> passObjectsController.frontLeftSensor;

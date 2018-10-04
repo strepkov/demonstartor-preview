@@ -1,4 +1,4 @@
-package controller11;
+package controller11.parking;
 
 component ParkingController {
     port
@@ -9,7 +9,7 @@ component ParkingController {
         in Q frontLeftSideSensor,
         in Q backLeftSideSensor,
         in B reverseMove,
-        out Q steeringAngle,
+        out Q steering,
         out B moveForward,
         out B status;
 
@@ -17,17 +17,17 @@ component ParkingController {
     
     // fix the state of moving direction
     static Q forwardState = 0;
-    steeringAngle = 0;
+    steering = 0;
     status = 0;
         
     if(reverseMove)
             
         if reverseMove
-            steeringAngle = 1;
+         steering = 1;
         end
         
         if (reverseMove && (backLeftSensor < 2))
-            steeringAngle = -1;
+         steering = -1;
         end
         
         // Car has to be parallel to the road edge
@@ -45,16 +45,16 @@ component ParkingController {
         
         // if car moving forward, does not change the car angle
         if forwardState
-            steeringAngle = 0;
+         steering = 0;
         end
         
         // align the car
         if (forwardState && (frontLeftSideSensor > backLeftSideSensor))
-            steeringAngle = -0.5;
+         steering = -0.5;
         end
         
         if (forwardState && (frontLeftSideSensor < backLeftSideSensor))
-            steeringAngle = 0.5;
+         steering = 0.5;
         end
     end
     
