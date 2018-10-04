@@ -8,6 +8,7 @@ component VelocitySwitchController {
         in Q(-2m/s^2:2m/s^2) accOvertake,
         in Q(-2m/s^2:2m/s^2) accObstacle,
         in Q(-2m/s^2:2m/s^2) accPassCones,
+        in Q(-2m/s^2:2m/s^2) accAlignCar,
         in B activeRunTrack,
         in B activePassObject,
         in B activeParking,
@@ -34,7 +35,7 @@ component VelocitySwitchController {
         end
         
         if activeAlign
-            acceleration = -0.7;
+            acceleration = accAlignCar;
         end
 
         if activeFollow

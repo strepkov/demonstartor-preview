@@ -1,7 +1,6 @@
 package controller11;
 
 import ActiveController;
-import SteeringAlignController;
 import VelocitySwitchController;
 import SteeringSwitchController;
 
@@ -11,6 +10,7 @@ import controller11.runTrack.RunTrack;
 import controller11.obstacle.Obstacle;
 import controller11.parking.Parking;
 import controller11.passCones.PassCones;
+import controller11.alignCar.AlignCar;
 
 component MainController{
     ports 
@@ -86,12 +86,13 @@ component MainController{
     connect velocity -> runTrack.velocity;
     connect runTrack.acceleration -> velocitySwitch.accelerationRunTrack;
 
-    instance SteeringAlignController steeringAlign;
-    connect frontLeftSideSensor -> steeringAlign.frontLeftSide;
-    connect frontRightSideSensor -> steeringAlign.frontRightSide;
-    connect backLeftSideSensor -> steeringAlign.backLeftSide;
-    connect backRightSideSensor -> steeringAlign.backRightSide;
-    connect steeringAlign.steering -> steeringSwitch.steeringAlign;
+    instance AlignCar alignCar;
+    connect frontLeftSideSensor -> alignCar.frontLeftSide;
+    connect frontRightSideSensor -> alignCar.frontRightSide;
+    connect backLeftSideSensor -> alignCar.backLeftSide;
+    connect backRightSideSensor -> alignCar.backRightSide;
+    connect alignCar.steering -> steeringSwitch.steeringAlign;
+    connect alignCar.acceleration -> velocitySwitch.accAlignCar;
 
     instance Follow follow;
     connect frontLeftSensor -> follow.frontLeftSensor;

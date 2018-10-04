@@ -1,4 +1,4 @@
-package controller11;
+package controller11.alignCar;
 
 component SteeringAlignController {
     port
