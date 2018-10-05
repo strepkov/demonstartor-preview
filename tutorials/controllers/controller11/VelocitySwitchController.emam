@@ -2,7 +2,7 @@ package controller11;
 
 component VelocitySwitchController {
 	port                                    
-		in Q(-2m/s^2:2m/s^2) accelerationRunTrack,
+		in Q(-2m/s^2:2m/s^2) accRunTrack,
         in Q(-2m/s^2:2m/s^2) accParking,
         in Q(-2m/s^2:2m/s^2) accFollow,
         in Q(-2m/s^2:2m/s^2) accOvertake,
@@ -20,32 +20,27 @@ component VelocitySwitchController {
 
 	implementation Math{
 
+        // default value
         acceleration = 0;
 
         if activeRunTrack
-            acceleration = accelerationRunTrack;
+            acceleration = accRunTrack;
         end
-
         if activeParking
             acceleration = accParking;
         end
-
         if activePassObject
             acceleration = accPassCones;
         end
-        
         if activeAlign
             acceleration = accAlignCar;
         end
-
         if activeFollow
             acceleration = accFollow;
         end
-
         if activeOvertake
             acceleration = accOvertake;
         end
-
         if activeObstacle
             acceleration = accObstacle;
         end

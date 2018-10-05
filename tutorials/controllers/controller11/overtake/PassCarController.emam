@@ -14,15 +14,12 @@ component PassCarController {
 	    passed = 0;
 	    
 	    if active
-	    
 	        if ((frontRightSideSensor - backRightSideSensor) < -3)
                 passed0 = 1;
             end
-        
             if (((backRightSideSensor - frontRightSideSensor) < -3) && passed0 )
                 passed1 = 1;
             end
-            
             if (passed0 && passed1 && ((frontRightSideSensor - backRightSideSensor) < 2))
 	        	passed = 1;
 	        end

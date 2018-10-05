@@ -2,8 +2,8 @@ package controller11;
 
 component ActiveController {
 	port                                    
-		in Q xPosition,
-        in Q yPosition,
+		in Q(-200m:200m) xPosition,
+        in Q(-200m:200m) yPosition,
 		out B activePassObject,
         out B activeSearchParkingPlace,
         out B activeTrack,
@@ -14,43 +14,37 @@ component ActiveController {
 
 	implementation Math{
 
-        activeTrack = 0;
-        activePassObject = 0;
-        activeSearchParkingPlace = 0;
-        activeAlign = 0;
         followCar = 0;
+        activeAlign = 0;
         overtakeCar = 0;
         obstacleWait = 0;
+        activePassObject = 0;
+        activeSearchParkingPlace = 0;
   	
         // default controller
         activeTrack = 1;
 
-        if ((xPosition < 15) && (xPosition > -130) && (yPosition > -8) && (yPosition < 8))
+        if ((xPosition < 15m) && (xPosition > -130m) && (yPosition > -8m) && (yPosition < 8m))
             activePassObject = 1;
             activeTrack = 0;
         end
-        
-        if ((xPosition >= 15) && (xPosition < 50) && (yPosition > -8) && (yPosition < 8))
+        if ((xPosition >= 15m) && (xPosition < 50m) && (yPosition > -8m) && (yPosition < 8m))
            activeSearchParkingPlace = 1;
            activeTrack = 0;
         end
-
-        if ((xPosition >= 45 ) && (xPosition < 60) && (yPosition > 90) && (yPosition < 110))
+        if ((xPosition >= 45m) && (xPosition < 60m) && (yPosition > 90m) && (yPosition < 110m))
            activeAlign = 1;
            activeTrack = 0;
         end
-
-        if ((xPosition < 45 ) && (xPosition > 20 ) && (yPosition > 90) && (yPosition < 110))
+        if ((xPosition < 45m) && (xPosition > 20m) && (yPosition > 90m) && (yPosition < 110m))
            followCar = 1;
            activeTrack = 0;
         end
-
-        if ((xPosition < 20) && (xPosition > -100) && (yPosition > 90) && (yPosition < 110))
+        if ((xPosition < 20m) && (xPosition > -100m) && (yPosition > 90m) && (yPosition < 110m))
            overtakeCar = 1;
            activeTrack = 0;
         end
-
-        if ((xPosition < -90) && (xPosition > -130) && (yPosition > 90) && (yPosition < 110))
+        if ((xPosition < -90m) && (xPosition > -130m) && (yPosition > 90m) && (yPosition < 110m))
            obstacleWait = 1;
            activeTrack = 0;
         end

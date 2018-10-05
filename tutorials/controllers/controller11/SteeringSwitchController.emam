@@ -14,34 +14,28 @@ component SteeringSwitchController {
         in B activeFollow,
         in B activeOvertake,
         in B activeObstacle,
-        out Q steering;
+        out Q(-180:180) steering;
 
     implementation Math{
         
         if activeTrack
             steering = steeringTrack;
         end
-        
         if activePassObject
             steering = steeringPassObjects;
         end
-        
         if activeParking
             steering = steeringParking;
         end
-
         if activeAlign
             steering = steeringAlign;
         end
-        
         if activeFollow
             steering = steeringAlign;
         end
-
         if activeOvertake
             steering = steeringOvertake;
         end
-
         if activeObstacle
             steering = steeringTrack;
         end

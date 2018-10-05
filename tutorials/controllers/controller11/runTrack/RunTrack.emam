@@ -11,7 +11,7 @@ component RunTrack {
         in  Q(-200m:200m) frontRightSide,
         in  Q(-200m:200m) backLeftSide,
         in  Q(-200m:200m) backRightSide,
-        in  Q(0m/s : 10m/s) velocity,
+        in  Q(0m/s:10m/s) velocity,
         out Q(-180:180) steering,
 		out Q(-2m/s^2:2m/s^2) acceleration;
 

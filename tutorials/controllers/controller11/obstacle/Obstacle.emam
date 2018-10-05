@@ -7,7 +7,7 @@ component Obstacle {
     port
         in Q(-200m:200m) frontLeftSensor,
         in Q(-200m:200m) frontRightSensor,
-        in Q(0m/s : 10m/s) velocity,
+        in Q(0m/s:10m/s) velocity,
 		out Q(-2m/s^2:2m/s^2) acceleration;
 
     instance ObstacleController<30m> obc;

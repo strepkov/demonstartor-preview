@@ -22,7 +22,6 @@ component RunTrackController {
         if (comp2)
             steering = 3;
         end
-
         if (comp1)
             steering = -3;
         end

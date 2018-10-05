@@ -23,15 +23,12 @@ component SteeringAlignController {
         if comp3
             steering = -1;
         end
-        
         if comp4
             steering = 1;
         end
-
         if comp1
             steering = -3;
         end
-        
         if comp2
             steering = 3;
         end 

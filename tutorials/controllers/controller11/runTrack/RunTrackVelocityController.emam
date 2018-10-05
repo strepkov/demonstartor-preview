@@ -2,7 +2,7 @@ package controller11.runTrack;
 
 component RunTrackVelocityController {
 	port
-		in Q(0m/s : 10m/s) velocity,
+		in Q(0m/s:10m/s) velocity,
 		out Q(-2m/s^2:2m/s^2) acceleration;
 
 	implementation Math{

@@ -12,7 +12,7 @@ component Overtake {
         in Q(-200m:200m) frontLeftSideSensor,
         in Q(-200m:200m) backLeftSideSensor,
         in Q(-200m:200m) backRightSideSensor,
-        in Q(0km/h : 250km/h) velocity,
+        in Q(0km/h:250km/h) velocity,
         in B active,
         out B activatePassChecker,
 		out Q(-2m/s^2:2m/s^2) acceleration,
