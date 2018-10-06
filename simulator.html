@@ -187,7 +187,7 @@
 
 		var coneN;
 
-		function addObjectsOnTrack(modelJSON, x, y, z) {
+		function addObjectsOnTrackVisual(modelJSON, x, y, z) {
 			coneLoader.load(modelJSON, function (object) {
 				objectsOnTrack.push(object);
 				scene.add(object);
@@ -200,25 +200,25 @@
 
 		// now we can read objects from configuration and add them
 		function showCones() {
-			addObjectsOnTrack(modelObject, 4, 0.3, -97);
-			addObjectsOnTrack(modelObject, -2, 0.3, -97);
-			addObjectsOnTrack(modelObject, 1, 0.3, -75);
-			addObjectsOnTrack(modelObject, 1, 0.3, -50);
-			addObjectsOnTrack(modelObject, 1, 0.3, -25);
-			addObjectsOnTrack(modelObject, 1, 0.3, 0);
-			addObjectsOnTrack(modelObject, 1, 0.3, 25);
+			addObjectsOnTrackVisual(modelObject, 4, 0.3, -97);
+			addObjectsOnTrackVisual(modelObject, -2, 0.3, -97);
+			addObjectsOnTrackVisual(modelObject, 1, 0.3, -75);
+			addObjectsOnTrackVisual(modelObject, 1, 0.3, -50);
+			addObjectsOnTrackVisual(modelObject, 1, 0.3, -25);
+			addObjectsOnTrackVisual(modelObject, 1, 0.3, 0);
+			addObjectsOnTrackVisual(modelObject, 1, 0.3, 25);
 		}
 
 		function showCones2() {
-			addObjectsOnTrack(modelObject, -1, 0.3, -85);
-			addObjectsOnTrack(modelObject, 5, 0.3, -60);
-			addObjectsOnTrack(modelObject, 1, 0.3, -35);
-			addObjectsOnTrack(modelObject, -6, 0.3, -10);
-			addObjectsOnTrack(modelObject, -3, 0.3, 10);
+			addObjectsOnTrackVisual(modelObject, -1, 0.3, -85);
+			addObjectsOnTrackVisual(modelObject, 5, 0.3, -60);
+			addObjectsOnTrackVisual(modelObject, 1, 0.3, -35);
+			addObjectsOnTrackVisual(modelObject, -6, 0.3, -10);
+			addObjectsOnTrackVisual(modelObject, -3, 0.3, 10);
 		}
 
 		function showCones3() {
-			addObjectsOnTrack(modelObject, -1, 0.3, -100);
+			addObjectsOnTrackVisual(modelObject, -1, 0.3, -100);
 		}
 
 		function showCarTutorial6() {
@@ -1126,7 +1126,10 @@
 
 			// TODO: if there was other tutorials loaded
 			if (presentationObjects != 0){
-				
+				// TODO: set some init value for objects
+				deleteCones();
+				hideCars();
+				carCounter = 0;
 			}
 			// set variable to read tutorial's configuration
 			if (tutorial < 10)
@@ -1164,10 +1167,10 @@
 					}
 
 					if ((trackObjects[i])[4] == "cone") {
-						addObjectsOnTrack(modelObject, +(trackObjects[i])[0], 0.3, +(trackObjects[i])[1]);
+						addObjectsOnTrackVisual(modelObject, +(trackObjects[i])[0], 0.3, +(trackObjects[i])[1]);
 					}
 				}
-			}
+			}	
 		}
 
 		function initSimulator() {
@@ -1245,8 +1248,8 @@
 
 			// 	deleteCones();
 
-			// 	addObjectsOnTrack(modelObject, 95, 0.3, -8);
-			// 	addObjectsOnTrack(modelObject, 108, 0.3, -8);
+			// 	addObjectsOnTrackVisual(modelObject, 95, 0.3, -8);
+			// 	addObjectsOnTrackVisual(modelObject, 108, 0.3, -8);
 			// }
 
 			// Related to the tutorial with the car
@@ -1265,8 +1268,8 @@
 				changeObjectPosition(8, [95, -122], 2, 2);
 				changeObjectPosition(9, [108, -122], 2, 2);
 				deleteConesMove();
-				addObjectsOnTrack(modelObject, 95, 0.3, -122);
-				addObjectsOnTrack(modelObject, 108, 0.3, -122);
+				addObjectsOnTrackVisual(modelObject, 95, 0.3, -122);
+				addObjectsOnTrackVisual(modelObject, 108, 0.3, -122);
 			}
 			
 			//
