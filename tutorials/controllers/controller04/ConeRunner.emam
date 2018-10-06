@@ -19,7 +19,7 @@ component ConeRunner {
         static Q count = 0;
         status = 0;
 
-        if ((frontRightSensor < 10m) && passLeft && passRight)
+        if ((frontRightSensor < 10m) && (passLeft == 0) && (passRight == 0))
             steering = -1;
         else
             steering = 0;
