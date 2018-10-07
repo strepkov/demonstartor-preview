@@ -34,7 +34,7 @@
             <table>
                 <tr>
                     <!-- <th><button onclick="appendTestTutorial3()"><b>1a Step</b> : Parking tutorial</button></th> -->
-                    <th>
+                    <th>Step 1:
                         <select id="tutorialSelect" onchange="showSelectedTutorial()">
                             <option value="0">Tutorial0</option>
                             <option value="1">Tutorial1</option>
@@ -44,39 +44,13 @@
                             <option value="5">Tutorial5</option>
                             <option value="6">Tutorial6</option>
                             <option value="7">Tutorial7</option>
+                            <option value="8">Tutorial8</option>
                         </select>
                     </th>
-                    <th rowspan="9"><button onclick="showTutorial()"><b>2 Step</b> : Show tutorial/simulator</button></th>
-                    <th rowspan="9"><button id="start" onclick="readAllFiles()"><b>3 Step</b> : Read, pack and send files</button></th>
+                    <th><button onclick="showTutorial()"><b>Step 2:</b> Show tutorial/simulator</button></th>
+                    <th><button id="start" onclick="readAllFiles()"><b>Step 3:</b> Read, pack and send files</button></th>
                 </tr>
-                <!-- <tr>
-                    <td><button onclick="appendTestTutorial4()"><b>1b Step</b> : Elk-Test tutorial</button></td>
-                </tr>
-                <tr>
-                    <td><button onclick="appendTestTutorial5()"><b>1c Step</b> : FreeRide tutorial</button></td>
-                </tr>
-                <tr>
-                    <td><button onclick="appendTestTutorial6()"><b>1d Step</b> : Following</button></td>
-                </tr>
-                <tr>
-                    <td><button onclick="appendTestTutorial7()"><b>1e Step</b> : Overtaking</button></td>
-                </tr>
-                <tr>
-                    <td><button onclick="appendTestTutorial8()"><b>1f Step</b> : Measuring parking lot</button></td>
-                </tr>
-                <tr>
-                    <td><button onclick="appendTestTutorial9()"><b>1g Step</b> : Run the track</button></td>
-                </tr>
-                <tr>
-                    <td><button onclick="appendTestTutorial10()"><b>1h Step</b> : Pass an obstacle</button></td>
-                </tr>
-                <tr>
-                    <td><button onclick="appendTestTutorial11()"><b>1h Step</b> : Full track</button></td>
-                </tr> -->
             </table>
-        <div style="width:200px;">
-            
-        </div>
     </div>
 
     <script>
@@ -128,6 +102,7 @@
                 case 5: appendTestTutorial5(); break;
                 case 6: appendTestTutorial6(); break;
                 case 7: appendTestTutorial7(); break;
+                case 8: appendTestTutorial8(); break;
             }
 
             removeAllFiles();
@@ -446,8 +421,6 @@
 
         function appendTestTutorial8() {
 
-            clearAllFiles();
-            // document.getElementById('tutorialFrame').src = "tutorials/html/tutorial04.md.html";
             setTimeout(function () {
                 filesFromDiskData = [];
                 appendDir("/controller08");
@@ -458,7 +431,8 @@
                 appendFile("controller08/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller08/SearchParkingPlaceController.emam"));
             }, 500);
             
-            document.getElementById("indexSimulator").contentWindow.loadTutorial(8);
+            activeTutorial = 8;
+            document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
         }
 
         function appendTestTutorial9() {
