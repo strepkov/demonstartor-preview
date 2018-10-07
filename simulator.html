@@ -1062,6 +1062,9 @@
 		var trackObjects;	
 		var trackCarPosition;
 
+		// extra moving object positioning
+		var indexMove;
+
 		// Fill the initial data from the configuration file
 		function readTutorialConfig() {
 			
@@ -1123,6 +1126,9 @@
 		}
 
 		function loadTutorial(tutorial){
+			
+			document.getElementById("notready").innerHTML = "Not Ready!";
+			notReadyToGo();
 
 			// TODO: if there was other tutorials loaded
 			if (presentationObjects != 0){
@@ -1170,7 +1176,16 @@
 						addObjectsOnTrackVisual(modelObject, +(trackObjects[i])[0], 0.3, +(trackObjects[i])[1]);
 					}
 				}
-			}	
+			}
+
+			if (presentationObjects == 6)
+				indexMove = -80;
+			if (presentationObjects == 7)
+				indexMove = -100;
+			if (presentationObjects == 11)
+				indexMove = 30;
+
+			resetTrajectoryOnly();
 		}
 
 		function initSimulator() {
@@ -1202,7 +1217,6 @@
 					}
 				}
 			}
-
 			// Set math model init position
 			simulatorInitPosition(carInitialPosition[0], carInitialPosition[1]);
 			// Set visualization position
@@ -1211,22 +1225,6 @@
 
 			readyToGo();
 		}
-
-		// Intermidiate point for interpolation
-		// var x_previous = 0;
-		// var y_previous = 0;
-
-		// extra moving object positioning
-		var indexMove = 30;
-
-		// (function () {
-		// 	if (presentationObjects == 6)
-		// 		indexMove = -80;
-		// 	if (presentationObjects == 7)
-		// 		indexMove = -100;
-		// })();
-
-
 
 		function move() {
 
@@ -1252,24 +1250,34 @@
 			// 	addObjectsOnTrackVisual(modelObject, 108, 0.3, -8);
 			// }
 
-			// Related to the tutorial with the car
-			// changeObjectPosition(0, [1, indexMove], 4, 4);
-			// indexMove += 0.4;
-			// setPosition(currentCar2, 1, 0.3, indexMove);
-
-			if((simulator.output.xi.value < 60) && (simulator.output.xi.value > -60) && (simulator.output.yi.value > 90)){
-				changeObjectPosition(7, [101, indexMove], 4, 4);
-				setPosition(currentCar4, 101, 0.3, indexMove);
-				indexMove -= 0.4;
+			if (presentationObjects == 6) {
+				changeObjectPosition(0, [1, indexMove], 4, 4);
+				indexMove += 0.4;
+				setPosition(currentCar2, 1, 0.3, indexMove);
 			}
 
-			if (simulator.output.ti.value >= 140 && simulator.output.ti.value <= 140.4){
+			if (presentationObjects == 7) {
+				changeObjectPosition(0, [-1, indexMove], 4, 4);
+				indexMove += 0.3;
+				setPosition(currentCar2, -1, 0.3, indexMove);
+			}
 
-				changeObjectPosition(8, [95, -122], 2, 2);
-				changeObjectPosition(9, [108, -122], 2, 2);
-				deleteConesMove();
-				addObjectsOnTrackVisual(modelObject, 95, 0.3, -122);
-				addObjectsOnTrackVisual(modelObject, 108, 0.3, -122);
+			if (presentationObjects == 11) {
+
+				if ((simulator.output.xi.value < 60) && (simulator.output.xi.value > -60) && (simulator.output.yi.value > 90)) {
+					changeObjectPosition(7, [101, indexMove], 4, 4);
+					setPosition(currentCar4, 101, 0.3, indexMove);
+					indexMove -= 0.4;
+				}
+
+				if (simulator.output.ti.value >= 140 && simulator.output.ti.value <= 140.4) {
+
+					changeObjectPosition(8, [95, -122], 2, 2);
+					changeObjectPosition(9, [108, -122], 2, 2);
+					deleteConesMove();
+					addObjectsOnTrackVisual(modelObject, 95, 0.3, -122);
+					addObjectsOnTrackVisual(modelObject, 108, 0.3, -122);
+				}
 			}
 			
 			//

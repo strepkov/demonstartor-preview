@@ -1,6 +1,6 @@
 package controller07;
 
-component OvertakeController<Q distance = 80m> {
+component OvertakeController {
 	port                                    
 		in Q(-200m:200m) frontLeftSensor,
         in Q(-200m:200m) frontRightSensor,

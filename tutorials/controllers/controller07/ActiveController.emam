@@ -8,7 +8,7 @@ component ActiveController {
 
 	implementation Math{                    
 
-    	if (xPosition > -50)
+    	if (xPosition > -70)
             active = 1;
         else
             active = 0; 
