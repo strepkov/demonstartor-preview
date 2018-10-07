@@ -1361,15 +1361,18 @@
 				, 16);
 
 			// Calculate status is zones is used
-			// var zone = jsonSimulationConf.car.end;
-			// var endX = zone2Coord.get(zone)[0];
-			// var endY = zone2Coord.get(zone)[1];
+			if (jsonSimulationConf.car.end != undefined) {
 
-			// There are taking in to account deviations from the central point of the end zone
-			// if(simulator.output.xi.value >= (endX - 6) && simulator.output.xi.value <= (endX + 6) 
-			// 	&& simulator.output.yi.value >= (endY - 6) && simulator.output.yi.value <= (endY + 6)){
-			// 		simulationStatus = true;
-			// 	}
+				var zone = jsonSimulationConf.car.end;
+				var endX = zone2Coord.get(zone)[0];
+				var endY = zone2Coord.get(zone)[1];
+
+				// There are taking in to account deviations from the central point of the end zone
+				if (simulator.output.xi.value >= (endX - 6) && simulator.output.xi.value <= (endX + 6)
+					&& simulator.output.yi.value >= (endY - 6) && simulator.output.yi.value <= (endY + 6)) {
+					simulationStatus = true;
+				}
+			}
 
 			// simulationStatus flag controls the ending of the simulation
 			if (simulator.output.ti.value >= simulationTimeLimit) {
