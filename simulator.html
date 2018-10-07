@@ -1237,18 +1237,6 @@
 			// change object position - now related only to following and overtaking
 			var moveObject = simulator.changeObjectPosition;
 			var changeObjectPosition = moveObject.bind(simulator);
-			
-			// related to obstacle tutorial
-			// if (simulator.output.ti.value >= 100 && simulator.output.ti.value <= 100.4){
-
-			// 	changeObjectPosition(0, [95, -8], 2, 2);
-			// 	changeObjectPosition(1, [108, -8], 2, 2);
-
-			// 	deleteCones();
-
-			// 	addObjectsOnTrackVisual(modelObject, 95, 0.3, -8);
-			// 	addObjectsOnTrackVisual(modelObject, 108, 0.3, -8);
-			// }
 
 			if (presentationObjects == 6) {
 				changeObjectPosition(0, [1, indexMove], 4, 4);
@@ -1260,6 +1248,19 @@
 				changeObjectPosition(0, [-1, indexMove], 4, 4);
 				indexMove += 0.3;
 				setPosition(currentCar2, -1, 0.3, indexMove);
+			}
+
+			if (presentationObjects == 10) {
+				if (simulator.output.ti.value >= 100 && simulator.output.ti.value <= 100.4) {
+
+					changeObjectPosition(0, [95, -8], 2, 2);
+					changeObjectPosition(1, [108, -8], 2, 2);
+
+					deleteCones();
+
+					addObjectsOnTrackVisual(modelObject, 95, 0.3, -8);
+					addObjectsOnTrackVisual(modelObject, 108, 0.3, -8);
+				}
 			}
 
 			if (presentationObjects == 11) {
@@ -1280,7 +1281,6 @@
 				}
 			}
 			
-			//
 			var getDistances = simulator.getDistances;
 			var simulatorGetDistances = getDistances.bind(simulator);
 

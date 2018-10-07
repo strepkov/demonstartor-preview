@@ -46,6 +46,8 @@
                             <option value="7">Tutorial7</option>
                             <option value="8">Tutorial8</option>
                             <option value="9">Tutorial9</option>
+                            <option value="10">Tutorial10</option>
+                            <option value="10">Tutorial11</option>
                         </select>
                     </th>
                     <th><button onclick="showTutorial()"><b>Step 2:</b> Show tutorial/simulator</button></th>
@@ -87,6 +89,9 @@
 
         function showSelectedTutorial(){
 
+            removeAllFiles();
+            filesFromDiskData = [];
+
             var tutorialList = document.getElementById("tutorialSelect");
             var selectedTutorial = tutorialList.options[tutorialList.selectedIndex].value;
             
@@ -96,7 +101,8 @@
             var link = ["00","01","02","03","04","05","06","07","08","09","10","11"];
             document.getElementById('tutorialFrame').src = tutorialPath + link[selectedTutorial] + tutorialExtension;
 
-            // init the selected tutorial
+            // init the selected tutorial, load files in IDE
+            activeTutorial = tutorialList.selectedIndex;
             switch(tutorialList.selectedIndex){
                 case 3: appendTestTutorial3(); break;
                 case 4: appendTestTutorial4(); break;
@@ -105,9 +111,10 @@
                 case 7: appendTestTutorial7(); break;
                 case 8: appendTestTutorial8(); break;
                 case 9: appendTestTutorial9(); break;
+                case 10: appendTestTutorial10(); break;
+                case 11: appendTestTutorial11(); break;
             }
-
-            removeAllFiles();
+            document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
         }
 
         function showTutorial(){
@@ -333,36 +340,27 @@
         function appendTestTutorial3(){
 
             setTimeout(function(){
-                filesFromDiskData = [];
                 appendDir("/controller03");
                 appendFile("/controller03/MainController.emam",                 readFileFromDisk("tutorials/controllers/controller03/MainController.emam"));
                 appendFile("/controller03/ParkingController.emam",              readFileFromDisk("tutorials/controllers/controller03/ParkingController.emam"));
                 appendFile("/controller03/SearchParkingPlaceController.emam",   readFileFromDisk("tutorials/controllers/controller03/SearchParkingPlaceController.emam"));
                 appendFile("/controller03/VelocityController.emam",             readFileFromDisk("tutorials/controllers/controller03/VelocityController.emam"));
             },500);
-
-            activeTutorial = 3;
-            document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
         }
 
         function appendTestTutorial4(){
 
             setTimeout(function(){
-                filesFromDiskData = [];
                 appendDir("/controller04");
                 appendFile("controller04/MainController.emam",      readFileFromDisk("tutorials/controllers/controller04/MainController.emam"));
                 appendFile("controller04/ConeRunner.emam",          readFileFromDisk("tutorials/controllers/controller04/ConeRunner.emam"));
                 appendFile("controller04/VelocityController.emam",  readFileFromDisk("tutorials/controllers/controller04/VelocityController.emam"));
             },500);
-
-            activeTutorial = 4;
-            document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
         }
 
         function appendTestTutorial5() {
             
             setTimeout(function () {
-                filesFromDiskData = [];
                 appendDir("/controller05");
                 appendFile("controller05/MainController.emam",                  readFileFromDisk("tutorials/controllers/controller05/MainController.emam"));
                 appendFile("controller05/PassObjectsController.emam",           readFileFromDisk("tutorials/controllers/controller05/PassObjectsController.emam"));
@@ -372,31 +370,23 @@
                 appendFile("controller05/ParkingController.emam",               readFileFromDisk("tutorials/controllers/controller05/ParkingController.emam"));
                 appendFile("controller05/SteeringProxyController.emam",         readFileFromDisk("tutorials/controllers/controller05/SteeringProxyController.emam"));
             }, 500);
-            
-            activeTutorial = 5;
-            document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
         }
 
 
         function appendTestTutorial6() {
         
             setTimeout(function () {
-                filesFromDiskData = [];
                 appendDir("/controller06");
                 appendFile("controller06/MainController.emam",      readFileFromDisk("tutorials/controllers/controller06/MainController.emam"));
                 appendFile("controller06/VelocityController.emam",  readFileFromDisk("tutorials/controllers/controller06/VelocityController.emam"));
                 appendFile("controller06/DistanceController.emam",  readFileFromDisk("tutorials/controllers/controller06/DistanceController.emam"));
                 appendFile("controller06/StatusController.emam",    readFileFromDisk("tutorials/controllers/controller06/StatusController.emam"));
             }, 500);
-
-            activeTutorial = 6;
-            document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
         }
 
         function appendTestTutorial7() {
             
             setTimeout(function () {
-                filesFromDiskData = [];
                 appendDir("/controller07");
                 appendFile("controller07/MainController.emam", readFileFromDisk("tutorials/controllers/controller07/MainController.emam"));
                 appendFile("controller07/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller07/VelocityController.emam"));
@@ -405,15 +395,11 @@
                 appendFile("controller07/OvertakeController.emam", readFileFromDisk("tutorials/controllers/controller07/OvertakeController.emam"));
                 appendFile("controller07/PassObjectController.emam", readFileFromDisk("tutorials/controllers/controller07/PassObjectController.emam"));
             }, 500);
-
-            activeTutorial = 7;
-            document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
         }
 
         function appendTestTutorial8() {
 
             setTimeout(function () {
-                filesFromDiskData = [];
                 appendDir("/controller08");
                 appendFile("controller08/MainController.emam", readFileFromDisk("tutorials/controllers/controller08/MainController.emam"));
                 appendFile("controller08/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller08/VelocityController.emam"));
@@ -421,32 +407,22 @@
                 appendFile("controller08/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller08/ParkingController.emam"));
                 appendFile("controller08/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller08/SearchParkingPlaceController.emam"));
             }, 500);
-            
-            activeTutorial = 8;
-            document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
         }
 
         function appendTestTutorial9() {
             
             setTimeout(function () {
-                filesFromDiskData = [];
                 appendDir("/controller09");
                 appendFile("controller09/MainController.emam", readFileFromDisk("tutorials/controllers/controller09/MainController.emam"));
                 appendFile("controller09/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller09/VelocityController.emam"));
                 appendFile("controller09/StatusController.emam", readFileFromDisk("tutorials/controllers/controller09/StatusController.emam"));
                 appendFile("controller09/SteeringController.emam", readFileFromDisk("tutorials/controllers/controller09/SteeringController.emam"));
             }, 500);
-
-            activeTutorial = 9;
-            document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
         }
 
         function appendTestTutorial10() {
 
-            clearAllFiles();
-            // document.getElementById('tutorialFrame').src = "tutorials/html/tutorial04.md.html";
             setTimeout(function () {
-                filesFromDiskData = [];
                 appendDir("/controller10");
                 appendFile("controller10/MainController.emam", readFileFromDisk("tutorials/controllers/controller10/MainController.emam"));
                 appendFile("controller10/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller10/VelocityController.emam"));
@@ -454,15 +430,11 @@
                 appendFile("controller10/SteeringController.emam", readFileFromDisk("tutorials/controllers/controller10/SteeringController.emam"));
                 appendFile("controller10/ObstacleController.emam", readFileFromDisk("tutorials/controllers/controller10/ObstacleController.emam"));
             }, 500);
-            document.getElementById("indexSimulator").contentWindow.loadTutorial(10);
         }
 
         function appendTestTutorial11() {
 
-            clearAllFiles();
-            document.getElementById('tutorialFrame').src = "tutorials/html/tutorial11.md.html";
             setTimeout(function () {
-                filesFromDiskData = [];
                 appendDir("/controller11");
                 appendFile("controller11/MainController.emam",              readFileFromDisk("tutorials/controllers/controller11/MainController.emam"));
                 appendFile("controller11/ActiveController.emam",            readFileFromDisk("tutorials/controllers/controller11/ActiveController.emam"));
@@ -507,7 +479,6 @@
                 appendFile("controller11/parking/VelocityController.emam",              readFileFromDisk("tutorials/controllers/controller11/parking/VelocityController.emam"));
 
             }, 1000);
-            document.getElementById("indexSimulator").contentWindow.loadTutorial(11);
         }
 
         // Files from tutorial folder
