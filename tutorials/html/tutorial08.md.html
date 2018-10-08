@@ -112,32 +112,22 @@
   </head>
   <body>
     <div class="beginning-of-doc"></div>
-    <h1 id="tutorial11">Tutorial (11)</h1>
+    <h1 id="tutorial08">Tutorial (08)</h1>
 
-<h3 id="runfullcircle">Run full circle</h3>
+<h3 id="enhancethepreviouslycreatedparkingcontroller">Enhance the previously created parking controller.</h3>
 
-<p>In this tutorial we are going to use all previously created controllers to run the track with different obstacles and actions.</p>
-
-<p><img src="../img/track_tutorial11.png" alt="alt text" /></p>
-
-<p>We can divide the track into several zones, where different actions are going to happen:</p>
+<p>In this tutorial we a going to enhance the parking controller to add the possibility of measuring the gap between cars, whether it is sufficient for the parking or not. We are using here the sensors from the left side of the car and coordinates, like from GPS to measure the size of the gap for parking. Or the second possibility use the velocity of the car and time, which are given on incoming ports. The previously created solution could have the following modules:  </p>
 
 <ol>
-<li>First one will be the curved area where we have to drive using our previously created controller for running the whole track with optimal trajectory.</li>
+<li>Module which controls the speed of the car, depends on the current action(e.g. parking, searching a parking place).</li>
 
-<li>Then on the straight part of the track a car waiting for us to start movement, give us possibility firstly to use the follow controller and then the overtaking one.</li>
+<li>Module which looking for a gap between cars for the parking.</li>
 
-<li>After overtaking at the end of the strait part of the track, the obstacle form the cones is waiting for the car. The car should brake before the obstacle and then continue the movement when the obstacle is gone.</li>
-
-<li>At the curve part of the track we have to use again the controller which we used in the first part, just drive through the track.</li>
-
-<li>Next test will be running across the field of cones.</li>
-
-<li>The last one will be the parallel parking. We should use here the controller which measure the gap between the cars.</li>
+<li>Module which controls a steering of the car during the parking process.  </li>
 </ol>
 
-<p>All these controllers were created before in the first ten tutorials and here we have to combine all them in one controller which can manage all these actions. Previously we have done some tutorials which use several controllers simultaneously. The main idea that we have an actions controller, which manages actions. This tutorial has to be done in the similar way.</p>
+<p>And we may enhance the module, which is looking for a gap between cars. To solve this tutorial you need two sensors, which are located on the side where the car searching for a place. You can define the maximum velocity around 1 m/s or even less. The previously created modules can be reused here.</p>
 
-<p>Show the <a href="solutions/solution11.md.html">solution</a>.</p>
+<p>Show the <a href="solutions/solution08.md.html">solution</a>.</p>
   </body>
 </html>

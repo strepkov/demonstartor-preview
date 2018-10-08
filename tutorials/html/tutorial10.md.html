@@ -112,32 +112,26 @@
   </head>
   <body>
     <div class="beginning-of-doc"></div>
-    <h1 id="tutorial11">Tutorial (11)</h1>
+    <h1 id="tutorial10">Tutorial (10)</h1>
 
-<h3 id="runfullcircle">Run full circle</h3>
+<h3 id="reactonanobstacleonthetrack">React on an obstacle on the track.</h3>
 
-<p>In this tutorial we are going to use all previously created controllers to run the track with different obstacles and actions.</p>
-
-<p><img src="../img/track_tutorial11.png" alt="alt text" /></p>
-
-<p>We can divide the track into several zones, where different actions are going to happen:</p>
+<p>In this tutorial we are going to extend a functionality of the previously created controller, which helps to drive the track. The car must stop if there is an obstacle on the track, in front of the car, and if it is gone, continue moving. We should add the functionality which helps to brake before an obstacle and detect the obstacle. We may reuse here the following controllers:</p>
 
 <ol>
-<li>First one will be the curved area where we have to drive using our previously created controller for running the whole track with optimal trajectory.</li>
+<li>The controller which checks the boundaries of the track</li>
 
-<li>Then on the straight part of the track a car waiting for us to start movement, give us possibility firstly to use the follow controller and then the overtaking one.</li>
+<li>The controller which in charge of the velocity control.</li>
 
-<li>After overtaking at the end of the strait part of the track, the obstacle form the cones is waiting for the car. The car should brake before the obstacle and then continue the movement when the obstacle is gone.</li>
-
-<li>At the curve part of the track we have to use again the controller which we used in the first part, just drive through the track.</li>
-
-<li>Next test will be running across the field of cones.</li>
-
-<li>The last one will be the parallel parking. We should use here the controller which measure the gap between the cars.</li>
+<li>And the last one, that controls the steering of the car.</li>
 </ol>
 
-<p>All these controllers were created before in the first ten tutorials and here we have to combine all them in one controller which can manage all these actions. Previously we have done some tutorials which use several controllers simultaneously. The main idea that we have an actions controller, which manages actions. This tutorial has to be done in the similar way.</p>
+<p>We may modify the velocity controller to have a brake function and then add another controller which will detect the obstacle on the track. It should be enough to have just four controllers. It is sufficient to use for this purposes just two sensors. The obstacle will be located in the following place :</p>
 
-<p>Show the <a href="solutions/solution11.md.html">solution</a>.</p>
+<p><img src="../img/obstacle_on_track.jpg" alt="alt text" /> </p>
+
+<p>An approximate position of the obstacle is (-8:100 or z24). The car should reach the obstacle and stop, when it disappears(100 seconds after simulation has started) the car must continue the movement.</p>
+
+<p>Show the <a href="solutions/solution10.md.html">solution</a>.</p>
   </body>
 </html>
