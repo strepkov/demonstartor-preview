@@ -47,6 +47,5 @@ component MainController{
     instance ObstacleController<30m> obstacleController;
     connect frontLeftSensor->obstacleController.frontLeftSensor;
     connect frontRightSensor->obstacleController.frontRightSensor;
-    connect obstacleController.status -> status;
     connect obstacleController.brake -> velocityController.brake;
 }
