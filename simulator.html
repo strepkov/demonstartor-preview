@@ -233,10 +233,10 @@
 			console.log("All objects were deleted!");
 		}
 
-		function deleteConesMove() {	
+		function deleteConesMove() {
 			scene.remove(objectsOnTrack[5]);
 			scene.remove(objectsOnTrack[6]);
-		
+
 			console.log("Cones were deleted!");
 		}
 		// Global Car Variable
@@ -1058,9 +1058,9 @@
 		var tutorialConfiguration;
 		var carInitialPosition = [];
 		var carCounter = 0;
-		
+
 		// Data from .json
-		var trackObjects;	
+		var trackObjects;
 		var trackCarPosition;
 
 		// extra moving object positioning
@@ -1068,7 +1068,7 @@
 
 		// Fill the initial data from the configuration file
 		function readTutorialConfig() {
-			
+
 			readJSONFile(tutorialConfiguration);
 			// Clean a data is there was some
 			trackObjects = [];
@@ -1126,13 +1126,13 @@
 			}
 		}
 
-		function loadTutorial(tutorial){
-			
+		function loadTutorial(tutorial) {
+
 			document.getElementById("notready").innerHTML = "Not Ready!";
 			notReadyToGo();
 
 			// TODO: if there was other tutorials loaded
-			if (presentationObjects != 0){
+			if (presentationObjects != 0) {
 				// TODO: set some init value for objects
 				deleteCones();
 				hideCars();
@@ -1141,32 +1141,32 @@
 			// set variable to read tutorial's configuration
 			if (tutorial < 10)
 				tutorialConfiguration = "tutorials/initialData/tutorial0" + tutorial + ".json";
-			else 
+			else
 				tutorialConfiguration = "tutorials/initialData/tutorial" + tutorial + ".json";
 
 			console.log(tutorialConfiguration);
-			
+
 			readTutorialConfig();
 			// influences on the scene for tutorials
 			presentationObjects = tutorial;
 			// directly set the position of the car visually
-			if (trackCarPosition != undefined){
+			if (trackCarPosition != undefined) {
 				setPosition(currentCar, +trackCarPosition[1], 0.2, +trackCarPosition[0]);
-            	rotateCar(currentCar, 0);
+				rotateCar(currentCar, 0);
 			} else console.error("func loadTutorial: trackCarPosition == undefined");
 
 			// Load models on the track visually
-			if (trackObjects != undefined){
+			if (trackObjects != undefined) {
 				console.log("Number of objects in current tutorial json config : ", trackObjects.length);
-				for(var i in trackObjects){
+				for (var i in trackObjects) {
 					if ((trackObjects[i])[4] == "car") {
-						if (carCounter == 0){
+						if (carCounter == 0) {
 							setPosition(currentCar2, +(trackObjects[i])[0], 0.2, +(trackObjects[i])[1]);
 						}
-						if (carCounter == 1){
+						if (carCounter == 1) {
 							setPosition(currentCar3, +(trackObjects[i])[0], 0.2, +(trackObjects[i])[1]);
 						}
-						if (carCounter == 2){
+						if (carCounter == 2) {
 							setPosition(currentCar4, +(trackObjects[i])[0], 0.2, +(trackObjects[i])[1]);
 							rotateCar(currentCar4, 180);
 						}
@@ -1209,9 +1209,9 @@
 			if (presentationObjects != 0) {
 				console.log("Number of objects in current tutorial json config : ", trackObjects.length);
 				carInitialPosition = trackCarPosition;
-				for(var i in trackObjects){
+				for (var i in trackObjects) {
 					// if object does not have width/hide -> don't add into math model
-					if((trackObjects[i])[2] != 0 && (trackObjects[i])[3] != 0){
+					if ((trackObjects[i])[2] != 0 && (trackObjects[i])[3] != 0) {
 						// Math model
 						addObjectOnTrack([+(trackObjects[i])[0], +(trackObjects[i])[1]], (trackObjects[i])[2], (trackObjects[i])[3]);
 						console.log("Added object : ", trackObjects[i]);
@@ -1281,7 +1281,7 @@
 					addObjectsOnTrackVisual(modelObject, 108, 0.3, -122);
 				}
 			}
-			
+
 			var getDistances = simulator.getDistances;
 			var simulatorGetDistances = getDistances.bind(simulator);
 
@@ -1431,12 +1431,12 @@
 
 		function resetSimulation() {
 
-			if (presentationObjects == 6){
+			if (presentationObjects == 6) {
 
 				indexMove = -80;
 				setPosition(currentCar2, 1, 0.3, -80);
 			}
-			if (presentationObjects == 7){
+			if (presentationObjects == 7) {
 
 				indexMove = -100;
 				setPosition(currentCar2, 1, 0.3, -100);
@@ -1471,7 +1471,7 @@
 			var simulationTimeLimit = 3600; // reset time to max
 		}
 
-		function resetTrajectoryOnly(){
+		function resetTrajectoryOnly() {
 
 			// clean the logObject
 			while (logObject.telemetry.length) {
