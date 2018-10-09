@@ -95,6 +95,7 @@
 
             removeAllFiles();
             filesFromDiskData = [];
+            filesFromDiskDataLength = 0;
 
             var tutorialList = document.getElementById("tutorialSelect");
             var selectedTutorial = tutorialList.options[tutorialList.selectedIndex].value;
@@ -306,6 +307,7 @@
                     if (e) throw e;
                 });
                 filesFromDiskData.push(fileContent); // Save data from disk to array
+                filesFromDiskDataLength += fileContent.length;
                 console.log("Added file : " + fileName);
                 r();
             });
@@ -489,20 +491,31 @@
 
         // Files from tutorial folder
         var filesFromDiskData = Array();
+        var filesFromDiskDataLength = 0;
 
         function isContentWasChanged() {
             var check = true;
-            if (filesData.length == filesFromDiskData.length) {
-                check = false;
-                for (var i = 0; i < filesData.length; i++) {
-                    if (filesData[i] != filesFromDiskData[i]) {
-                        check = true;
-                        console.log("file ", fileNames[i], " was changed!");
-                    }
-                }
+            var fileDataLength = 0;
+            // if (filesData.length == filesFromDiskData.length) {
+            //     check = false;
+            //     for (var i = 0; i < filesData.length; i++) {
+            //         if (filesData[i] != filesFromDiskData[i]) {
+            //             check = true;
+            //             console.log("file ", fileNames[i], " was changed!");
+            //         }
+            //     }
+            // }
+            for (var i = 0; i < filesData.length; i++) {
+                fileDataLength += filesData[i].length;
             }
-            // return check;
-            return true;
+
+            if (filesFromDiskDataLength == fileDataLength) {
+                check = false;
+                console.log("Content was NOT changed!");
+            }  else
+                console.log("Content was changed!");
+
+            return check;
         }
 
         // related to the issue with HTTPS certificate
@@ -582,16 +595,17 @@
                     // we can just read data from folder
                     filesFromDisk = [];
 
-                    if (activeTutorial == 3) {
-                        console.log("activeTutorial ", activeTutorial);
-                        readFileFromDiskBlob("tutorials/compiledControllers/parkingTutorial/mainController.wasm");
-                        filesFromDisk[1] = readFileFromDisk("tutorials/compiledControllers/parkingTutorial/mainController.js");
-                    }
-                    if (activeTutorial == 4) {
-                        console.log("activeTutorial ", activeTutorial);
-                        readFileFromDiskBlob("tutorials/compiledControllers/elkTestTutorial/mainController.wasm");
-                        filesFromDisk[1] = readFileFromDisk("tutorials/compiledControllers/elkTestTutorial/mainController.js");
-                    }
+                    var tutorialNumber = "";
+                    if(activeTutorial < 10) 
+                        tutorialNumber = "0"+ activeTutorial;
+                    else 
+                        tutorialNumber = activeTutorial;
+                    
+                    var tutorialPath = "tutorials/compiledControllers/controller" +  tutorialNumber + "/";
+
+                    console.log("activeTutorial ", activeTutorial);
+                    readFileFromDiskBlob(tutorialPath + "mainController.wasm");
+                    filesFromDisk[1] = readFileFromDisk(tutorialPath + "mainController.js");
 
                     setTimeout(function () {
 
