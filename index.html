@@ -83,19 +83,29 @@
             }, 1000);
         }
 
-
         function cleanOnLoad() {
             setTimeout(function () {
                 if (document.getElementById("ide").contentWindow.api) removeAllFiles();
             }, 2000);
         }
 
+        String.prototype.hashCode = function () {
+            var hash = 0, i, chr;
+            if (this.length === 0) return hash;
+            for (i = 0; i < this.length; i++) {
+                chr = this.charCodeAt(i);
+                hash = ((hash << 5) - hash) + chr;
+                hash |= 0; // Convert to 32bit integer
+            }
+            return hash;
+        };
+
 
         function showSelectedTutorial() {
 
             removeAllFiles();
-            filesFromDiskData = [];
-            filesFromDiskDataLength = 0;
+            hashesFromDisk = [];
+            hashesFromIDE = [];
 
             var tutorialList = document.getElementById("tutorialSelect");
             var selectedTutorial = tutorialList.options[tutorialList.selectedIndex].value;
@@ -306,9 +316,8 @@
                 document.getElementById("ide").contentWindow.api.fs.appendFile(fileName, fileContent, e => {
                     if (e) throw e;
                 });
-                filesFromDiskData.push(fileContent); // Save data from disk to array
-                filesFromDiskDataLength += fileContent.length;
                 console.log("Added file : " + fileName);
+                hashesFromDisk[fileName] = fileContent.hashCode();
                 r();
             });
         }
@@ -349,10 +358,10 @@
 
             setTimeout(function () {
                 appendDir("/controller03");
-                appendFile("/controller03/MainController.emam", readFileFromDisk("tutorials/controllers/controller03/MainController.emam"));
-                appendFile("/controller03/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller03/ParkingController.emam"));
-                appendFile("/controller03/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller03/SearchParkingPlaceController.emam"));
-                appendFile("/controller03/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller03/VelocityController.emam"));
+                appendFile("controller03/MainController.emam", readFileFromDisk("tutorials/controllers/controller03/MainController.emam"));
+                appendFile("controller03/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller03/ParkingController.emam"));
+                appendFile("controller03/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller03/SearchParkingPlaceController.emam"));
+                appendFile("controller03/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller03/VelocityController.emam"));
             }, 500);
         }
 
@@ -490,31 +499,17 @@
         }
 
         // Files from tutorial folder
-        var filesFromDiskData = Array();
-        var filesFromDiskDataLength = 0;
+        var hashesFromDisk = [];
+        var hashesFromIDE = [];
 
         function isContentWasChanged() {
-            var check = true;
-            var fileDataLength = 0;
-            // if (filesData.length == filesFromDiskData.length) {
-            //     check = false;
-            //     for (var i = 0; i < filesData.length; i++) {
-            //         if (filesData[i] != filesFromDiskData[i]) {
-            //             check = true;
-            //             console.log("file ", fileNames[i], " was changed!");
-            //         }
-            //     }
-            // }
-            for (var i = 0; i < filesData.length; i++) {
-                fileDataLength += filesData[i].length;
+            var check = false;
+            for (var i = 0; i < fileNames.length; i++) {
+                if (hashesFromIDE[fileNames[i]] != hashesFromDisk[fileNames[i]]) {
+                    check = true;
+                    console.log(fileNames[i], " was changed!");
+                }
             }
-
-            if (filesFromDiskDataLength == fileDataLength) {
-                check = false;
-                console.log("Content was NOT changed!");
-            }  else
-                console.log("Content was changed!");
-
             return check;
         }
 
@@ -539,6 +534,7 @@
                 if (err) throw err;
                 filesData.push(data);
                 fileNames.push(name.fullPath.slice(1));
+                hashesFromIDE[name.fullPath.slice(1)] = data.hashCode();
             });
         }
 
@@ -665,7 +661,7 @@
             oReq.send(null);
         }
 
-        // show the content which was red from IDE
+        // show the content which was read from IDE
         function showContent() {
 
             fileNames.forEach(function (item, index) {
