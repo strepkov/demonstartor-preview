@@ -1048,7 +1048,7 @@
 		}
 
 		// Run logic using Simulator class
-		var presentationObjects = 0;
+		var presentationObjects = -1;
 		var jsonSimulationConf;
 		var rawWebAssembly;
 		var delayBetweenExecution = 16;
@@ -1132,7 +1132,7 @@
 			notReadyToGo();
 
 			// TODO: if there was other tutorials loaded
-			if (presentationObjects != 0) {
+			if (presentationObjects != -1) {
 				// TODO: set some init value for objects
 				deleteCones();
 				hideCars();
@@ -1206,7 +1206,7 @@
 			var addObjectOnTrack = addObject.bind(simulator);
 
 			// add objects depends on the task
-			if (presentationObjects != 0) {
+			if (presentationObjects != -1) {
 				console.log("Number of objects in current tutorial json config : ", trackObjects.length);
 				carInitialPosition = trackCarPosition;
 				for (var i in trackObjects) {

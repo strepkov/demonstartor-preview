@@ -34,12 +34,12 @@
         </div>
     </div>
     <div>
-
         <table>
             <tr>
                 <!-- <th><button onclick="appendTestTutorial3()"><b>1a Step</b> : Parking tutorial</button></th> -->
                 <th>Step 1:
-                    <select id="tutorialSelect" onchange="showSelectedTutorial()">
+                    <select id="tutorialSelect" onchange="selectTutorial()">
+                        <option value="-1">Select Tutorial</option>
                         <option value="0">Tutorial0</option>
                         <option value="1">Tutorial1</option>
                         <option value="2">Tutorial2</option>
@@ -59,8 +59,15 @@
             </tr>
         </table>
     </div>
-
     <script>
+
+        function selectTutorial(){
+
+            var tutorialList = document.getElementById("tutorialSelect");
+            var selectedTutorial = tutorialList.options[tutorialList.selectedIndex].value;
+            if (selectedTutorial != -1)
+                showSelectedTutorial(+selectedTutorial);
+        }
 
         // Add the timer for waiting the compilation
         const waitingPeriod = 120; // sec
@@ -101,14 +108,11 @@
         };
 
 
-        function showSelectedTutorial() {
+        function showSelectedTutorial(selectedTutorial) {
 
             removeAllFiles();
             hashesFromDisk = [];
             hashesFromIDE = [];
-
-            var tutorialList = document.getElementById("tutorialSelect");
-            var selectedTutorial = tutorialList.options[tutorialList.selectedIndex].value;
 
             // The list of tutorials
             var tutorialPath = "tutorials/html/tutorial";
@@ -117,8 +121,9 @@
             document.getElementById('tutorialFrame').src = tutorialPath + link[selectedTutorial] + tutorialExtension;
 
             // init the selected tutorial, load files in IDE
-            activeTutorial = tutorialList.selectedIndex;
-            switch (tutorialList.selectedIndex) {
+            activeTutorial = selectedTutorial;
+            switch (selectedTutorial) {
+                case 0: appendTestTutorial0(); break;
                 case 3: appendTestTutorial3(); break;
                 case 4: appendTestTutorial4(); break;
                 case 5: appendTestTutorial5(); break;
@@ -128,6 +133,7 @@
                 case 9: appendTestTutorial9(); break;
                 case 10: appendTestTutorial10(); break;
                 case 11: appendTestTutorial11(); break;
+                default: console.log("Error: tutorial does not exist!");
             }
             document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
         }
@@ -353,6 +359,15 @@
 
         // needed only for pre-compiled tutorials, to don't send data to server
         var activeTutorial = 0;
+
+        function appendTestTutorial0() {
+
+            setTimeout(function () {
+                appendDir("/controller00");
+                appendFile("controller00/MainController.emam", readFileFromDisk("tutorials/controllers/controller00/MainController.emam"));
+                appendFile("controller00/ExampleController.emam", readFileFromDisk("tutorials/controllers/controller00/ExampleController.emam"));
+            }, 500);
+        }
 
         function appendTestTutorial3() {
 
