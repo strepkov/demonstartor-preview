@@ -23,14 +23,14 @@ component MainController{
         in Q(-200m:200m) backLeftSensor,
         in Q(-200m:200m) backRightSensor,
 
-        in Q time,
+        in Q(0s:oos) time,
         in Q(0m/s:25m/s) velocity,
 
         in Q(-200m:200m) xPosition,
         in Q(-200m:200m) yPosition,
 
         out Q(-2m/s^2:2m/s^2) acceleration,
-        out Q(-180:180) steering,
+        out Q(-180°:180°) steering,
         out B status;
 
     instance SteeringController steeringController;
@@ -71,7 +71,7 @@ component SteeringController {
         in Q(-200m:200m) frontRightSide,
         in Q(-200m:200m) backLeftSide,
         in Q(-200m:200m) backRightSide,
-        out Q(-180:180) steering;
+        out Q(-180°:180°) steering;
 
     implementation Math{
 
@@ -80,14 +80,14 @@ component SteeringController {
         B comp1 = (((frontLeft-frontRight) > threshold) && ((frontLeftSide-backLeftSide) > threshold)) && ((backRightSide-frontRightSide) > threshold);
         B comp2 = (((frontRight-frontLeft) > threshold) && ((backLeftSide-frontLeftSide) > threshold)) && ((frontRightSide-backRightSide) > threshold);
         
-        steering = 0;
+        steering = 0°;
         
         if (comp2)
-            steering = 3;
+            steering = 3°
         end
 
         if (comp1)
-            steering = -3;
+            steering = -3°;
         end
     }
 }
@@ -126,7 +126,7 @@ component VelocityController<Q maxVel = 5 m/s> {
 
 	implementation Math{
         
-        if (brake && (velocity > 0))
+        if (brake && (velocity > 0 m/s))
         	acceleration = -0.5 m/s^2;
         else
         	if (velocity > maxVel)
@@ -143,7 +143,7 @@ We have added the brake input, which is controlled by the ObstacleController. If
 ```
 package controller10;
 
-component ObstacleController<Q distance = 30>{
+component ObstacleController<Q distance = 30m>{
     port
         in Q(-200m:200m) frontLeftSensor,
         in Q(-200m:200m) frontRightSensor,
@@ -152,15 +152,15 @@ component ObstacleController<Q distance = 30>{
     implementation Math{
         
         Q threshold = 0.5 m;
-        brake = 0;
+        brake = false;
 
-        if ((frontRightSensor - frontLeftSensor) > 0)
+        if ((frontRightSensor - frontLeftSensor) > 0m)
             if (((frontRightSensor - frontLeftSensor) < threshold) && (frontLeftSensor < distance))
-                brake = 1;
+                brake = true;
             end
         else
             if (((frontLeftSensor - frontRightSensor) < threshold) && (frontLeftSensor < distance))
-                brake = 1;
+                brake = true;
             end
         end
     }
