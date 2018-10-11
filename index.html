@@ -56,6 +56,7 @@
                 </th>
                 <th><button onclick="showTutorial()"><b>Step 2:</b> Show tutorial/simulator</button></th>
                 <th><button id="start" onclick="readAllFiles()"><b>Step 3:</b> Read, pack and send files</button></th>
+                <th><button onclick="compare()"><b>Step 4:</b> Compare Trajectories</button></th>
             </tr>
         </table>
     </div>
@@ -108,6 +109,22 @@
         };
 
 
+        // reading the trajectories data
+        var jsonSimulationData;
+        function readJSONFile(file) {
+            var rawFile = new XMLHttpRequest();
+            rawFile.open("GET", file, false);
+            rawFile.onreadystatechange = function () {
+                if (rawFile.readyState === 4) {
+                    if (rawFile.status === 200 || rawFile.status == 0) {
+                        var allText = rawFile.responseText;
+                        jsonSimulationData = JSON.parse(allText);
+                    }
+                }
+            }
+            rawFile.send(null);
+        }
+
         function showSelectedTutorial(selectedTutorial) {
 
             removeAllFiles();
@@ -119,6 +136,10 @@
             var tutorialExtension = ".md.html";
             var link = ["00", "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11"];
             document.getElementById('tutorialFrame').src = tutorialPath + link[selectedTutorial] + tutorialExtension;
+
+            var trajectoryPath = "tutorials/trajectories/telemetry-log-tt";
+            trajectoryPath += link[selectedTutorial] + ".json";
+            readJSONFile(trajectoryPath);
 
             // init the selected tutorial, load files in IDE
             activeTutorial = selectedTutorial;
@@ -138,6 +159,17 @@
                 default: console.error("Error: tutorial does not exist!");
             }
             document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
+        }
+
+        function readTrajectoryData(){
+            setTimeout(function(){
+                document.getElementById("trajectoryComparator").contentWindow.readDataFromFile(jsonSimulationData);
+            },500);
+        }
+
+        function compare(){
+            var result = document.getElementById("trajectoryComparator").contentWindow.compareTrajectories();
+            console.log("Pass : ", result);
         }
 
         function showTutorial() {
@@ -827,6 +859,7 @@
         function reloadTrajectoryPage() {
             console.log("reload!");
             document.getElementById('trajectoryComparator').contentWindow.location.reload();
+            readTrajectoryData();
         }
 
     </script>
