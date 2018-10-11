@@ -116,16 +116,16 @@ component SteeringController {
         B comp1 = (((frontLeft-frontRight) > threshold) && ((frontLeftSide-backLeftSide) > threshold)) && ((backRightSide-frontRightSide) > threshold);
         B comp2 = (((frontRight-frontLeft) > threshold) && ((backLeftSide-frontLeftSide) > threshold)) && ((frontRightSide-backRightSide) > threshold);
         
-        steering = 0;
+        steering = 0°;
         
         if (comp2)
-            steering = 3;
+            steering = 3°;
         end
 
         if (comp1)
-            steering = -3;
+            steering = -3°;
         end
     }
 }
 ```
-Here we are using 6 sensors to measure the distance. We have three possible output for this module: 0, 3 and -3. Depends on the result of the expressions(comp1 and comp2) we have different output. There is some possibilities to get better the controller. For instance, slow down the car before a turn, to increase the car maneuverability.
+Here we are using 6 sensors to measure the distance. We have three possible output for this module: 0°, 3° and -3°. Depends on the result of the expressions(comp1 and comp2) we have different output. There is some possibilities to get better the controller. For instance, slow down the car before a turn, to increase the car maneuverability.
