@@ -125,6 +125,7 @@
             switch (selectedTutorial) {
                 case 0: appendTestTutorial0(); break;
                 case 1: appendTestTutorial1(); break;
+                case 2: appendTestTutorial2(); break;
                 case 3: appendTestTutorial3(); break;
                 case 4: appendTestTutorial4(); break;
                 case 5: appendTestTutorial5(); break;
@@ -376,6 +377,15 @@
                 appendDir("/controller01");
                 appendFile("controller01/MainController.emam", readFileFromDisk("tutorials/controllers/controller01/MainController.emam"));
                 appendFile("controller01/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller01/VelocityController.emam"));
+            }, 500);
+        }
+
+        function appendTestTutorial2() {
+
+            setTimeout(function () {
+                appendDir("/controller02");
+                appendFile("controller02/MainController.emam", readFileFromDisk("tutorials/controllers/controller02/MainController.emam"));
+                appendFile("controller02/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller02/VelocityController.emam"));
             }, 500);
         }
 

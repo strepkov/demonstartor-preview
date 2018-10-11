@@ -1,6 +1,6 @@
 # Solution(01)
 
-## Accelerate the given time and brake.
+## Accelerate the given time and stop simulation.
 
 To solve that tutorial you have to use the MainController like you did in the tutorial00. The only difference here that we should pass simulation time instead of velocity of the car.
 
