@@ -124,6 +124,7 @@
             activeTutorial = selectedTutorial;
             switch (selectedTutorial) {
                 case 0: appendTestTutorial0(); break;
+                case 1: appendTestTutorial1(); break;
                 case 3: appendTestTutorial3(); break;
                 case 4: appendTestTutorial4(); break;
                 case 5: appendTestTutorial5(); break;
@@ -133,7 +134,7 @@
                 case 9: appendTestTutorial9(); break;
                 case 10: appendTestTutorial10(); break;
                 case 11: appendTestTutorial11(); break;
-                default: console.log("Error: tutorial does not exist!");
+                default: console.error("Error: tutorial does not exist!");
             }
             document.getElementById("indexSimulator").contentWindow.loadTutorial(activeTutorial);
         }
@@ -366,6 +367,15 @@
                 appendDir("/controller00");
                 appendFile("controller00/MainController.emam", readFileFromDisk("tutorials/controllers/controller00/MainController.emam"));
                 appendFile("controller00/ExampleController.emam", readFileFromDisk("tutorials/controllers/controller00/ExampleController.emam"));
+            }, 500);
+        }
+
+        function appendTestTutorial1() {
+
+            setTimeout(function () {
+                appendDir("/controller01");
+                appendFile("controller01/MainController.emam", readFileFromDisk("tutorials/controllers/controller01/MainController.emam"));
+                appendFile("controller01/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller01/VelocityController.emam"));
             }, 500);
         }
 
