@@ -17,6 +17,7 @@ component ParkingController {
         
         // fix the state of moving direction
         static Q forwardState = 0;
+        status = 0;
         
         moveForward = 0;
         steeringAngle = 0;
@@ -38,8 +39,6 @@ component ParkingController {
         // Stop when the car closer then 3m to front car
         if (((frontRightSensor < 3) || (frontLeftSensor < 3)) && forwardState)
             status = 1;
-        else
-            status = 0;
         end
         
         // if car moving forward, does not change the car angle
