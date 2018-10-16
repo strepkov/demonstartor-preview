@@ -16,8 +16,9 @@
 <body>
     <div>
         <div class="column">
-            <iframe onload="cleanOnLoad()" id="ide" src="onlineIDE/api/load.html?mountPoint=[EmbeddedMontiArc]/demonstrator/IDE"
-                height="900" scrolling="no" width="900" align="left"></iframe>
+            <!-- <iframe onload="cleanOnLoad()" id="ide" src="onlineIDE/api/load.html?mountPoint=[EmbeddedMontiArc]/demonstrator/IDE"
+                height="900" scrolling="no" width="900" align="left"></iframe> -->
+            <iframe id="ide-frame" src="ide?root=/controllers&mode=load" height="900" scrolling="no" width="900" align="left"></iframe>
         </div>
         <div id="rightSide1" class="column">
             <div class="row">
@@ -62,6 +63,79 @@
     </div>
     <script>
 
+        async function getAPI(id) {
+            return new Promise(resolve => {
+                const iframe = document.getElementById(id);
+                let loaded = false;
+                function onLoad() {
+                    if (loaded) {
+                        const timer = window.setInterval(() => {
+                            const ide = iframe.contentWindow;
+                            if (ide.hasOwnProperty("api")) {
+                                window.clearInterval(timer);
+                                resolve(ide.api);
+                                iframe.removeEventListener("load", onLoad);
+                            }
+                        }, 500);
+                    } else {
+                        loaded = true;
+                    }
+                }
+                iframe.addEventListener("load", onLoad);
+            });
+        }
+
+        async function testIDE(){
+            ide = await getAPI("ide-frame");
+            console.log(ide); //IDE is ready for operations.
+            deleteAll();
+        }
+        
+        // means the filesystem of ide is ready to operate
+        var ide;
+        testIDE().catch(error => console.error(error.message));
+
+
+        // functions for the new ide
+        function addFileToIDE(path){
+
+            var fileContent = readFileFromDisk("tutorials/controllers/" + path);
+            ide.filesystem.createFile("/controllers/" + path, 
+                {content:fileContent}).then(res => {
+                            hashesFromDisk[res.uri] = fileContent.hashCode();
+                            console.log("Added file : ", res.uri, ", hash : ", hashesFromDisk[res.uri]);
+                        });
+        }
+
+        function readFileFromIDE(path){
+            if ((path != undefined) && (path !=""))
+                ide.filesystem.resolveContent(path).then(result => addContent(path, result.content));
+            else
+                console.error(arguments.callee.name, ": path error!");
+        }
+
+            function addContent(path, content){
+                fileNames.push(path);
+                filesData.push(content);
+                hashesFromIDE[path] = content.hashCode();
+            }
+
+        function deleteFolderFromIDE(path){
+            if ((path != undefined) && (path !=""))
+                ide.filesystem.delete(path).then(res => console.log("Folder has been removed!"));
+            else 
+                console.error(arguments.callee.name, ": path error!");
+        }
+        
+        // TODO: delete all folders in the root folder
+        function deleteAll(){
+            ide.filesystem.doGetChildren("/controllers/").then(res => {
+                    if (res[0] != undefined)
+                        deleteFolderFromIDE(res[0].uri)
+                });
+        }
+        // end
+
         function selectTutorial(){
 
             var tutorialList = document.getElementById("tutorialSelect");
@@ -89,12 +163,6 @@
                     doc.getElementById("notready").innerHTML = "Almost done...";
                 }
             }, 1000);
-        }
-
-        function cleanOnLoad() {
-            setTimeout(function () {
-                if (document.getElementById("ide").contentWindow.api) removeAllFiles();
-            }, 2000);
         }
 
         String.prototype.hashCode = function () {
@@ -127,7 +195,8 @@
 
         function showSelectedTutorial(selectedTutorial) {
 
-            removeAllFiles();
+            // removeAllFiles();
+            deleteAll();
             hashesFromDisk = [];
             hashesFromIDE = [];
 
@@ -239,138 +308,138 @@
         }
 
         //recursive files removing
-        function removeAllFiles() {
+        // function removeAllFiles() {
 
-            folders = [];
-            var dirRoot = '/';
-            var apiFs = document.getElementById("ide").contentWindow.api.fs;
+        //     folders = [];
+        //     var dirRoot = '/';
+        //     var apiFs = document.getElementById("ide").contentWindow.api.fs;
 
-            function recursiveReadDir(file) {
-                apiFs.readdir(file.fullPath, function (err, internal) {
-                    for (var i = 0; i <= internal.length; i++) {
-                        if (internal[i] != undefined) {
-                            if (internal[i].mime == "folder") {
-                                recursiveReadDir(internal[i]);
-                                folders.push(internal[i]);
-                            }
-                            else {
-                                if ((internal[i].name).includes(".emam") || (internal[i].name).includes(".stream")) {
-                                    removeFile(internal[i]);
-                                }
-                            }
-                        }
-                    }
-                });
-            }
+        //     function recursiveReadDir(file) {
+        //         apiFs.readdir(file.fullPath, function (err, internal) {
+        //             for (var i = 0; i <= internal.length; i++) {
+        //                 if (internal[i] != undefined) {
+        //                     if (internal[i].mime == "folder") {
+        //                         recursiveReadDir(internal[i]);
+        //                         folders.push(internal[i]);
+        //                     }
+        //                     else {
+        //                         if ((internal[i].name).includes(".emam") || (internal[i].name).includes(".stream")) {
+        //                             removeFile(internal[i]);
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         });
+        //     }
 
-            apiFs.readdir(dirRoot, function (err, dir) {
-                if (err) throw err;
-                dir.forEach(function (item) {
-                    // Find the folder which is a root directory for a model
-                    if (item.mime == "folder" && !(item.name).includes(".")) {
-                        recursiveReadDir(item);
-                        folders.push(item);
-                    }
-                });
-                setTimeout(async function () {
-                    if (folders.length > 0) {
-                        for (var i = folders.length; i >= 0; i--) {
-                            if (folders[i] != undefined) {
-                                await removeDir(folders[i]);
-                                //delete the element from folders' array
-                                if (i > -1) {
-                                    folders.splice(i, 1);
-                                }
-                            }
-                        }
-                    }
-                }, 1000);
-            });
-        }
+        //     apiFs.readdir(dirRoot, function (err, dir) {
+        //         if (err) throw err;
+        //         dir.forEach(function (item) {
+        //             // Find the folder which is a root directory for a model
+        //             if (item.mime == "folder" && !(item.name).includes(".")) {
+        //                 recursiveReadDir(item);
+        //                 folders.push(item);
+        //             }
+        //         });
+        //         setTimeout(async function () {
+        //             if (folders.length > 0) {
+        //                 for (var i = folders.length; i >= 0; i--) {
+        //                     if (folders[i] != undefined) {
+        //                         await removeDir(folders[i]);
+        //                         //delete the element from folders' array
+        //                         if (i > -1) {
+        //                             folders.splice(i, 1);
+        //                         }
+        //                     }
+        //                 }
+        //             }
+        //         }, 1000);
+        //     });
+        // }
 
         // functions for working with VFS
-        function clearAllFiles() {
+        // function clearAllFiles() {
 
-            var dirRoot = '/';
-            var files = [];
-            var apiFs = document.getElementById("ide").contentWindow.api.fs;
+        //     var dirRoot = '/';
+        //     var files = [];
+        //     var apiFs = document.getElementById("ide").contentWindow.api.fs;
 
-            apiFs.readdir(dirRoot, function (err, dir) {
+        //     apiFs.readdir(dirRoot, function (err, dir) {
 
-                if (err) throw err;
+        //         if (err) throw err;
 
-                const start = async () => {
-                    await Promise.all(dir.map(async item => {
-                        // The folder(item) has to be a root directory for a model
-                        if (item.mime == "folder" && !(item.name).includes(".")) {
+        //         const start = async () => {
+        //             await Promise.all(dir.map(async item => {
+        //                 // The folder(item) has to be a root directory for a model
+        //                 if (item.mime == "folder" && !(item.name).includes(".")) {
 
-                            await readDirAsync(item, files);
-                            removeDir(item);
-                        }
-                    }))
-                }
+        //                     await readDirAsync(item, files);
+        //                     removeDir(item);
+        //                 }
+        //             }))
+        //         }
 
-                start();
-            });
-        }
+        //         start();
+        //     });
+        // }
 
-        function readDirAsync(dir, filesArray) {
-            return new Promise(r => {
-                var apiFs = document.getElementById("ide").contentWindow.api.fs;
-                apiFs.readdir(dir.fullPath, function (err, dirInternal) {
-                    if (err) throw err;
-                    // filesArray.push(dirInternal);
-                    const removeFiles = async () => {
-                        await Promise.all(dirInternal.map(async file => {
-                            await removeFile(file);
-                        }));
-                    }
-                    removeFiles();
-                    r();
-                })
-            });
-        }
+        // function readDirAsync(dir, filesArray) {
+        //     return new Promise(r => {
+        //         var apiFs = document.getElementById("ide").contentWindow.api.fs;
+        //         apiFs.readdir(dir.fullPath, function (err, dirInternal) {
+        //             if (err) throw err;
+        //             // filesArray.push(dirInternal);
+        //             const removeFiles = async () => {
+        //                 await Promise.all(dirInternal.map(async file => {
+        //                     await removeFile(file);
+        //                 }));
+        //             }
+        //             removeFiles();
+        //             r();
+        //         })
+        //     });
+        // }
 
-        function removeFile(file) {
-            return new Promise(r => {
-                document.getElementById("ide").contentWindow.api.fs.rmfile(file.fullPath, err => {
-                    if (err) throw err;
-                });
-                console.log(file.fullPath, " deleted!");
-                r();
-            });
-        }
+        // function removeFile(file) {
+        //     return new Promise(r => {
+        //         document.getElementById("ide").contentWindow.api.fs.rmfile(file.fullPath, err => {
+        //             if (err) throw err;
+        //         });
+        //         console.log(file.fullPath, " deleted!");
+        //         r();
+        //     });
+        // }
 
-        function removeDir(dir) {
-            return new Promise(r => {
-                document.getElementById("ide").contentWindow.api.fs.rmdir(dir.fullPath, e => {
-                    if (e) return console.error(e);
-                    console.log("The directory " + dir.fullPath + " is deleted");
-                    r();
-                });
-            });
-        }
+        // function removeDir(dir) {
+        //     return new Promise(r => {
+        //         document.getElementById("ide").contentWindow.api.fs.rmdir(dir.fullPath, e => {
+        //             if (e) return console.error(e);
+        //             console.log("The directory " + dir.fullPath + " is deleted");
+        //             r();
+        //         });
+        //     });
+        // }
 
-        function appendFile(fileName, fileContent) {
-            return new Promise(r => {
-                document.getElementById("ide").contentWindow.api.fs.appendFile(fileName, fileContent, e => {
-                    if (e) throw e;
-                });
-                console.log("Added file : " + fileName);
-                hashesFromDisk[fileName] = fileContent.hashCode();
-                r();
-            });
-        }
+        // function appendFile(fileName, fileContent) {
+        //     return new Promise(r => {
+        //         document.getElementById("ide").contentWindow.api.fs.appendFile(fileName, fileContent, e => {
+        //             if (e) throw e;
+        //         });
+        //         console.log("Added file : " + fileName);
+        //         hashesFromDisk[fileName] = fileContent.hashCode();
+        //         r();
+        //     });
+        // }
 
-        function appendDir(dirName) {
-            return new Promise(r => {
-                document.getElementById("ide").contentWindow.api.fs.mkdir(dirName, e => {
-                    if (e) throw e;
-                });
-                console.log("Added dir : " + dirName);
-                r();
-            });
-        }
+        // function appendDir(dirName) {
+        //     return new Promise(r => {
+        //         document.getElementById("ide").contentWindow.api.fs.mkdir(dirName, e => {
+        //             if (e) throw e;
+        //         });
+        //         console.log("Added dir : " + dirName);
+        //         r();
+        //     });
+        // }
         // end
 
         function readFileFromDisk(file) {
@@ -395,174 +464,117 @@
         var activeTutorial = 0;
 
         function appendTestTutorial0() {
-
-            setTimeout(function () {
-                appendDir("/controller00");
-                appendFile("controller00/MainController.emam", readFileFromDisk("tutorials/controllers/controller00/MainController.emam"));
-                appendFile("controller00/ExampleController.emam", readFileFromDisk("tutorials/controllers/controller00/ExampleController.emam"));
-            }, 500);
+                addFileToIDE("controller00/MainController.emam");
+                addFileToIDE("controller00/ExampleController.emam");
         }
 
         function appendTestTutorial1() {
-
-            setTimeout(function () {
-                appendDir("/controller01");
-                appendFile("controller01/MainController.emam", readFileFromDisk("tutorials/controllers/controller01/MainController.emam"));
-                appendFile("controller01/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller01/VelocityController.emam"));
-            }, 500);
+                addFileToIDE("controller01/MainController.emam");
+                addFileToIDE("controller01/VelocityController.emam");
         }
 
         function appendTestTutorial2() {
-
-            setTimeout(function () {
-                appendDir("/controller02");
-                appendFile("controller02/MainController.emam", readFileFromDisk("tutorials/controllers/controller02/MainController.emam"));
-                appendFile("controller02/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller02/VelocityController.emam"));
-            }, 500);
+                addFileToIDE("controller02/MainController.emam");
+                addFileToIDE("controller02/VelocityController.emam");
         }
 
         function appendTestTutorial3() {
-
-            setTimeout(function () {
-                appendDir("/controller03");
-                appendFile("controller03/MainController.emam", readFileFromDisk("tutorials/controllers/controller03/MainController.emam"));
-                appendFile("controller03/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller03/ParkingController.emam"));
-                appendFile("controller03/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller03/SearchParkingPlaceController.emam"));
-                appendFile("controller03/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller03/VelocityController.emam"));
-            }, 500);
+                addFileToIDE("controller03/MainController.emam");
+                addFileToIDE("controller03/ParkingController.emam");
+                addFileToIDE("controller03/SearchParkingPlaceController.emam");
+                addFileToIDE("controller03/VelocityController.emam");
         }
 
         function appendTestTutorial4() {
-
-            setTimeout(function () {
-                appendDir("/controller04");
-                appendFile("controller04/MainController.emam", readFileFromDisk("tutorials/controllers/controller04/MainController.emam"));
-                appendFile("controller04/ConeRunner.emam", readFileFromDisk("tutorials/controllers/controller04/ConeRunner.emam"));
-                appendFile("controller04/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller04/VelocityController.emam"));
-            }, 500);
+                addFileToIDE("controller04/MainController.emam");
+                addFileToIDE("controller04/ConeRunner.emam");
+                addFileToIDE("controller04/VelocityController.emam");
         }
 
         function appendTestTutorial5() {
-
-            setTimeout(function () {
-                appendDir("/controller05");
-                appendFile("controller05/MainController.emam", readFileFromDisk("tutorials/controllers/controller05/MainController.emam"));
-                appendFile("controller05/PassObjectsController.emam", readFileFromDisk("tutorials/controllers/controller05/PassObjectsController.emam"));
-                appendFile("controller05/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller05/VelocityController.emam"));
-                appendFile("controller05/ActiveController.emam", readFileFromDisk("tutorials/controllers/controller05/ActiveController.emam"));
-                appendFile("controller05/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller05/SearchParkingPlaceController.emam"));
-                appendFile("controller05/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller05/ParkingController.emam"));
-                appendFile("controller05/SteeringProxyController.emam", readFileFromDisk("tutorials/controllers/controller05/SteeringProxyController.emam"));
-            }, 500);
+                addFileToIDE("controller05/MainController.emam");
+                addFileToIDE("controller05/PassObjectsController.emam");
+                addFileToIDE("controller05/VelocityController.emam");
+                addFileToIDE("controller05/ActiveController.emam");
+                addFileToIDE("controller05/SearchParkingPlaceController.emam");
+                addFileToIDE("controller05/ParkingController.emam");
+                addFileToIDE("controller05/SteeringProxyController.emam");
         }
 
-
         function appendTestTutorial6() {
-
-            setTimeout(function () {
-                appendDir("/controller06");
-                appendFile("controller06/MainController.emam", readFileFromDisk("tutorials/controllers/controller06/MainController.emam"));
-                appendFile("controller06/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller06/VelocityController.emam"));
-                appendFile("controller06/DistanceController.emam", readFileFromDisk("tutorials/controllers/controller06/DistanceController.emam"));
-                appendFile("controller06/StatusController.emam", readFileFromDisk("tutorials/controllers/controller06/StatusController.emam"));
-            }, 500);
+                addFileToIDE("controller06/MainController.emam");
+                addFileToIDE("controller06/VelocityController.emam");
+                addFileToIDE("controller06/DistanceController.emam");
+                addFileToIDE("controller06/StatusController.emam");
         }
 
         function appendTestTutorial7() {
-
-            setTimeout(function () {
-                appendDir("/controller07");
-                appendFile("controller07/MainController.emam", readFileFromDisk("tutorials/controllers/controller07/MainController.emam"));
-                appendFile("controller07/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller07/VelocityController.emam"));
-                appendFile("controller07/DistanceController.emam", readFileFromDisk("tutorials/controllers/controller07/DistanceController.emam"));
-                appendFile("controller07/ActiveController.emam", readFileFromDisk("tutorials/controllers/controller07/ActiveController.emam"));
-                appendFile("controller07/OvertakeController.emam", readFileFromDisk("tutorials/controllers/controller07/OvertakeController.emam"));
-                appendFile("controller07/PassObjectController.emam", readFileFromDisk("tutorials/controllers/controller07/PassObjectController.emam"));
-            }, 500);
+                addFileToIDE("controller07/MainController.emam");
+                addFileToIDE("controller07/VelocityController.emam");
+                addFileToIDE("controller07/DistanceController.emam");
+                addFileToIDE("controller07/ActiveController.emam");
+                addFileToIDE("controller07/OvertakeController.emam");
+                addFileToIDE("controller07/PassObjectController.emam");
         }
 
         function appendTestTutorial8() {
-
-            setTimeout(function () {
-                appendDir("/controller08");
-                appendFile("controller08/MainController.emam", readFileFromDisk("tutorials/controllers/controller08/MainController.emam"));
-                appendFile("controller08/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller08/VelocityController.emam"));
-                appendFile("controller08/MeasureGapController.emam", readFileFromDisk("tutorials/controllers/controller08/MeasureGapController.emam"));
-                appendFile("controller08/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller08/ParkingController.emam"));
-                appendFile("controller08/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller08/SearchParkingPlaceController.emam"));
-            }, 500);
+                addFileToIDE("controller08/MainController.emam");
+                addFileToIDE("controller08/VelocityController.emam");
+                addFileToIDE("controller08/MeasureGapController.emam");
+                addFileToIDE("controller08/ParkingController.emam");
+                addFileToIDE("controller08/SearchParkingPlaceController.emam");
         }
 
         function appendTestTutorial9() {
-
-            setTimeout(function () {
-                appendDir("/controller09");
-                appendFile("controller09/MainController.emam", readFileFromDisk("tutorials/controllers/controller09/MainController.emam"));
-                appendFile("controller09/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller09/VelocityController.emam"));
-                appendFile("controller09/StatusController.emam", readFileFromDisk("tutorials/controllers/controller09/StatusController.emam"));
-                appendFile("controller09/SteeringController.emam", readFileFromDisk("tutorials/controllers/controller09/SteeringController.emam"));
-            }, 500);
+                addFileToIDE("controller09/MainController.emam");
+                addFileToIDE("controller09/VelocityController.emam");
+                addFileToIDE("controller09/StatusController.emam");
+                addFileToIDE("controller09/SteeringController.emam");
         }
 
         function appendTestTutorial10() {
-
-            setTimeout(function () {
-                appendDir("/controller10");
-                appendFile("controller10/MainController.emam", readFileFromDisk("tutorials/controllers/controller10/MainController.emam"));
-                appendFile("controller10/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller10/VelocityController.emam"));
-                appendFile("controller10/StatusController.emam", readFileFromDisk("tutorials/controllers/controller10/StatusController.emam"));
-                appendFile("controller10/SteeringController.emam", readFileFromDisk("tutorials/controllers/controller10/SteeringController.emam"));
-                appendFile("controller10/ObstacleController.emam", readFileFromDisk("tutorials/controllers/controller10/ObstacleController.emam"));
-            }, 500);
+                addFileToIDE("controller10/MainController.emam");
+                addFileToIDE("controller10/VelocityController.emam");
+                addFileToIDE("controller10/StatusController.emam");
+                addFileToIDE("controller10/SteeringController.emam");
+                addFileToIDE("controller10/ObstacleController.emam");
         }
 
         function appendTestTutorial11() {
+                addFileToIDE("controller11/MainController.emam");
+                addFileToIDE("controller11/ActiveController.emam");
+                addFileToIDE("controller11/SteeringSwitchController.emam");
+                addFileToIDE("controller11/VelocitySwitchController.emam");
 
-            setTimeout(function () {
-                appendDir("/controller11");
-                appendFile("controller11/MainController.emam", readFileFromDisk("tutorials/controllers/controller11/MainController.emam"));
-                appendFile("controller11/ActiveController.emam", readFileFromDisk("tutorials/controllers/controller11/ActiveController.emam"));
-                appendFile("controller11/SteeringSwitchController.emam", readFileFromDisk("tutorials/controllers/controller11/SteeringSwitchController.emam"));
-                appendFile("controller11/VelocitySwitchController.emam", readFileFromDisk("tutorials/controllers/controller11/VelocitySwitchController.emam"));
+                addFileToIDE("controller11/alignCar/AlignCar.emam");
+                addFileToIDE("controller11/alignCar/VelocityAlignController.emam");
+                addFileToIDE("controller11/alignCar/SteeringAlignController.emam");
 
-                appendDir("/controller11/alignCar");
-                appendFile("controller11/alignCar/AlignCar.emam", readFileFromDisk("tutorials/controllers/controller11/alignCar/AlignCar.emam"));
-                appendFile("controller11/alignCar/VelocityAlignController.emam", readFileFromDisk("tutorials/controllers/controller11/alignCar/VelocityAlignController.emam"));
-                appendFile("controller11/alignCar/SteeringAlignController.emam", readFileFromDisk("tutorials/controllers/controller11/alignCar/SteeringAlignController.emam"));
+                addFileToIDE("controller11/runTrack/RunTrackVelocityController.emam");
+                addFileToIDE("controller11/runTrack/RunTrack.emam");
+                addFileToIDE("controller11/runTrack/RunTrackController.emam");
 
-                appendDir("/controller11/runTrack");
-                appendFile("controller11/runTrack/RunTrackVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/runTrack/RunTrackVelocityController.emam"));
-                appendFile("controller11/runTrack/RunTrack.emam", readFileFromDisk("tutorials/controllers/controller11/runTrack/RunTrack.emam"));
-                appendFile("controller11/runTrack/RunTrackController.emam", readFileFromDisk("tutorials/controllers/controller11/runTrack/RunTrackController.emam"));
+                addFileToIDE("controller11/follow/Follow.emam");
+                addFileToIDE("controller11/follow/FollowController.emam");
+                addFileToIDE("controller11/follow/FollowVelocityController.emam");
 
-                appendDir("/controller11/follow");
-                appendFile("controller11/follow/Follow.emam", readFileFromDisk("tutorials/controllers/controller11/follow/Follow.emam"));
-                appendFile("controller11/follow/FollowController.emam", readFileFromDisk("tutorials/controllers/controller11/follow/FollowController.emam"));
-                appendFile("controller11/follow/FollowVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/follow/FollowVelocityController.emam"));
+                addFileToIDE("controller11/overtake/Overtake.emam");
+                addFileToIDE("controller11/overtake/OvertakeController.emam");
+                addFileToIDE("controller11/overtake/OvertakeVelocityController.emam");
+                addFileToIDE("controller11/overtake/PassCarController.emam");
 
-                appendDir("/controller11/overtake");
-                appendFile("controller11/overtake/Overtake.emam", readFileFromDisk("tutorials/controllers/controller11/overtake/Overtake.emam"));
-                appendFile("controller11/overtake/OvertakeController.emam", readFileFromDisk("tutorials/controllers/controller11/overtake/OvertakeController.emam"));
-                appendFile("controller11/overtake/OvertakeVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/overtake/OvertakeVelocityController.emam"));
-                appendFile("controller11/overtake/PassCarController.emam", readFileFromDisk("tutorials/controllers/controller11/overtake/PassCarController.emam"));
+                addFileToIDE("controller11/obstacle/Obstacle.emam");
+                addFileToIDE("controller11/obstacle/ObstacleController.emam");
+                addFileToIDE("controller11/obstacle/ObstacleVelocityController.emam");
 
-                appendDir("/controller11/obstacle");
-                appendFile("controller11/obstacle/Obstacle.emam", readFileFromDisk("tutorials/controllers/controller11/obstacle/Obstacle.emam"));
-                appendFile("controller11/obstacle/ObstacleController.emam", readFileFromDisk("tutorials/controllers/controller11/obstacle/ObstacleController.emam"));
-                appendFile("controller11/obstacle/ObstacleVelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/obstacle/ObstacleVelocityController.emam"));
+                addFileToIDE("controller11/passCones/PassCones.emam");
+                addFileToIDE("controller11/passCones/PassObjectsController.emam");
+                addFileToIDE("controller11/passCones/VelocityPassController.emam");
 
-                appendDir("/controller11/passCones");
-                appendFile("controller11/passCones/PassCones.emam", readFileFromDisk("tutorials/controllers/controller11/passCones/PassCones.emam"));
-                appendFile("controller11/passCones/PassObjectsController.emam", readFileFromDisk("tutorials/controllers/controller11/passCones/PassObjectsController.emam"));
-                appendFile("controller11/passCones/VelocityPassController.emam", readFileFromDisk("tutorials/controllers/controller11/passCones/VelocityPassController.emam"));
-
-                appendDir("/controller11/parking");
-                appendFile("controller11/parking/Parking.emam", readFileFromDisk("tutorials/controllers/controller11/parking/Parking.emam"));
-                appendFile("controller11/parking/SearchParkingPlaceController.emam", readFileFromDisk("tutorials/controllers/controller11/parking/SearchParkingPlaceController.emam"));
-                appendFile("controller11/parking/ParkingController.emam", readFileFromDisk("tutorials/controllers/controller11/parking/ParkingController.emam"));
-                appendFile("controller11/parking/VelocityController.emam", readFileFromDisk("tutorials/controllers/controller11/parking/VelocityController.emam"));
-
-            }, 1000);
+                addFileToIDE("controller11/parking/Parking.emam");
+                addFileToIDE("controller11/parking/SearchParkingPlaceController.emam");
+                addFileToIDE("controller11/parking/ParkingController.emam");
+                addFileToIDE("controller11/parking/VelocityController.emam");
         }
 
         // Files from tutorial folder
@@ -595,48 +607,46 @@
         var filesData = Array();
         var fileNames = Array();
 
-        function readFileName(name) {
+        // function readFileName(name) {
 
-            document.getElementById("ide").contentWindow.api.fs.readFile(name.fullPath, function (err, data) {
-                if (err) throw err;
-                filesData.push(data);
-                fileNames.push(name.fullPath.slice(1));
-                hashesFromIDE[name.fullPath.slice(1)] = data.hashCode();
-            });
-        }
+        //     document.getElementById("ide").contentWindow.api.fs.readFile(name.fullPath, function (err, data) {
+        //         if (err) throw err;
+        //         filesData.push(data);
+        //         fileNames.push(name.fullPath.slice(1));
+        //         hashesFromIDE[name.fullPath.slice(1)] = data.hashCode();
+        //     });
+        // }
 
-        function listAllFiles() {
+        function readAllFilesIDE() {
 
             disableCompileBtn();
             document.getElementById("indexSimulator").contentWindow.notReadyToGo();
 
             filesData = [];
             fileNames = [];
-            var dirRoot = '/';
+            var dirRoot = '/controllers';
 
-            var apiFs = document.getElementById("ide").contentWindow.api.fs;
-
-            function recursiveReadDir(file) {
-                apiFs.readdir(file.fullPath, function (err, internal) {
-                    internal.forEach(file => {
-                        if (file.mime == "folder") {
-                            recursiveReadDir(file);
-                        }
-                        else {
-                            if ((file.name).includes(".emam") || (file.name).includes(".stream")) {
-                                readFileName(file);
-                            }
+            function recursiveReadDir(path) {
+                    ide.filesystem.doGetChildren(path).then(res => {
+                        if (res != undefined) {
+                            res.forEach(file => {
+                                if (file.isDirectory) {
+                                    recursiveReadDir(file.uri);
+                                }
+                                else {
+                                    if ((file.uri).includes(".emam") || (file.uri).includes(".stream")) {
+                                        readFileFromIDE(file.uri);
+                                    }
+                                }
+                            });
                         }
                     });
-                });
             }
 
-            apiFs.readdir(dirRoot, function (err, dir) {
-                if (err) throw err;
-                dir.forEach(function (item) {
-                    // Find the folder which is a root directory for a model
-                    if (item.mime == "folder" && !(item.name).includes(".")) {
-                        recursiveReadDir(item);
+            ide.filesystem.doGetChildren(dirRoot).then(res => {
+                res.forEach(function (item) {
+                    if (item.isDirectory) {
+                        recursiveReadDir(item.uri);
                     }
                 });
             });
@@ -644,7 +654,7 @@
 
         function readAllFiles() {
 
-            listAllFiles();
+            readAllFilesIDE();
 
             setTimeout(function () {
                 if (isContentWasChanged()) {
@@ -728,15 +738,6 @@
             oReq.send(null);
         }
 
-        // show the content which was read from IDE
-        function showContent() {
-
-            fileNames.forEach(function (item, index) {
-                console.log(item);
-                console.log(filesData[index]);
-            });
-        }
-
         var zipContainer;
         var packCounter = 0;
 
@@ -744,8 +745,8 @@
             return new Promise(r => {
                 const packFiles = async () => {
                     await Promise.all(fileNames.map(async function (item, index) {
-                        await zipContainer.file(item, filesData[index]);
-                        console.log(item, " was packed!");
+                        await zipContainer.file(item.slice(13), filesData[index]);
+                        console.log(item.slice(13), " was packed!");
                         packCounter++;
                     }));
                 }
@@ -794,8 +795,6 @@
             });
             runCountDownTimer();
         }
-
-        // TODO: save file from variable to VFS
 
         var rawFileData = new Array();
 
