@@ -146,20 +146,21 @@
 
         // Add the timer for waiting the compilation
         const waitingPeriod = 120; // sec
+        var messageInterval = 0;
 
         function runCountDownTimer() {
 
             var count = waitingPeriod;
             var doc = document.getElementById("indexSimulator").contentWindow.document;
 
-            var x = setInterval(function () {
+            messageInterval = setInterval(function () {
 
                 doc.getElementById("notready").innerHTML = "Compiling " + count + "s";
                 count--;
 
                 // If the count down is finished, write some text 
                 if (count <= 0) {
-                    clearInterval(x);
+                    clearInterval(messageInterval);
                     doc.getElementById("notready").innerHTML = "Almost done...";
                 }
             }, 1000);
@@ -788,6 +789,8 @@
 
                             console.log(xhr.status);
                             console.log(xhr.statusText);
+                            clearInterval(messageInterval);
+                            document.getElementById("indexSimulator").contentWindow.document.getElementById("notready").innerHTML = "Model error!";
                             enableCompileBtn();
                         }
                     }
