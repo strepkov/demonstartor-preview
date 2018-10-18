@@ -125,7 +125,7 @@
             ctx.stroke();
         }
 
-        function deviation() {
+        function deviation(value) {
 
             var arrayAreas = [];
             var areasSum = 0;
@@ -166,7 +166,7 @@
                     //console.log("Area between points[",i,"] : ",arrayAreas[i]);
                 }
 
-                if ((areasSum / distBetweenPointsSum1) < 0.5) {
+                if ((areasSum / distBetweenPointsSum1) < value) {
                     return true;
                 }
             } else
@@ -190,7 +190,7 @@
                 }
             }
 
-            var deviationVar = deviation();
+            var deviationVar = deviation(5); // 5%
             
             if ((distBetweenPointsSum <= distBetweenPointsSum1 * 1.05) && (distBetweenPointsSum >= distBetweenPointsSum1 * 0.95) && deviationVar) {
                 showResultComp(true);
