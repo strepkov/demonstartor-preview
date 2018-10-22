@@ -59,7 +59,7 @@
                     </select>
                 </th>
                 <th><button onclick="showTutorial()"><b>Step 2:</b> Show tutorial/simulator</button></th>
-                <th><button id="start" onclick="readAllFiles()"><b>Step 3:</b> Read, pack and send files</button></th>
+                <th><button id="start" onclick="readAllFiles()"><b>Step 3:</b> Compile model</button></th>
                 <th><button onclick="compare()"><b>Step 4:</b> Compare Trajectories</button></th>
                 <!-- <th><button onclick="showTraceDrawer()">Draw trace</button></th> -->
             </tr>
@@ -154,7 +154,7 @@
         }
 
         // Add the timer for waiting the compilation
-        const waitingPeriod = 120; // sec
+        const waitingPeriod = 15; // sec
         var messageInterval = 0;
 
         function runCountDownTimer() {
