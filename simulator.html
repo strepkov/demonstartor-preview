@@ -361,7 +361,7 @@
 					if (objectCar == 0)
 						setColor(materialRed, housing[i]);
 					else
-						setColor(materialBlue, housing[i]);
+						setColor(materialBlack, housing[i]);
 				}
 				var darkChromeObjects = [dashboardDisplay, rightMirror, leftMirror, engine, pipes, logo, steel, wheelBackLeft, wheelBackRight, wheelFrontLeft, wheelFrontRight]
 				for (var i = 0; i < darkChromeObjects.length; i++) {
@@ -559,8 +559,8 @@
 
 		// Materials
 		var materialBlue = new THREE.MeshLambertMaterial({ color: 0x001133, envMap: reflectionCube, combine: THREE.MultiplyOperation });
-		var materialBlack = new THREE.MeshLambertMaterial({ color: 0x000000, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.15 });
-		var materialRed = new THREE.MeshLambertMaterial({ color: 0x660000, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.25 });
+		var materialBlack = new THREE.MeshLambertMaterial({ color: 0xffff00, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.15 });
+		var materialRed = new THREE.MeshLambertMaterial({ color: 0xff4c4c, envMap: reflectionCube, combine: THREE.MixOperation, reflectivity: 0.01 });
 
 		var darkChrome = new THREE.MeshLambertMaterial({ color: 0x444444, envMap: reflectionCube });//darkdarkChrome
 		var pureChrome = new THREE.MeshLambertMaterial({ color: 0xffffff, envMap: reflectionCube });
