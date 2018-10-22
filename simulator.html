@@ -234,9 +234,10 @@
 		}
 
 		function deleteConesMove() {
-			scene.remove(objectsOnTrack[5]);
-			scene.remove(objectsOnTrack[6]);
-
+			for (var i = 0; i < objectsOnTrack.length; i++) {
+				if (objectsOnTrack[i].position.z == -122 && (objectsOnTrack[i].position.x == 97.25 || objectsOnTrack[i].position.x == 104.75))
+					scene.remove(objectsOnTrack[i]);
+			}
 			console.log("Cones were deleted!");
 		}
 		// Global Car Variable
