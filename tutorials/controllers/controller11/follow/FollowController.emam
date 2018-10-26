@@ -1,12 +1,43 @@
 package controller11.follow;
 
-component FollowController<Q distance = 10m> {
+import controller11.atomic.*;
+
+component FollowController {
 	port                                    
-		in Q(-200m:200m) frontLeftSensor,
-        in Q(-200m:200m) frontRightSensor,
+		in Q frontLeftSensor,
+        in Q frontRightSensor,
         out B follow,
 		out B run; 
 
+		instance SmallerQ smaller_r1;
+		instance SmallerQ smaller_r2;
+		instance Or or_r;
+		instance ConstantQ(15) distance;
+		instance Not not_r;
+
+		instance DelayQ delay_f1;
+		instance DelayQ delay_f2;
+		instance SmallerQ smaller_f1;
+		instance SmallerQ smaller_f2;
+		instance Or or_f;
+		instance Not not_f;
+		instance And and_f;
+
+		connect frontLeftSensor -> smaller_r1.in1, delay_f1.in1, smaller_f1.in2;
+		connect frontRightSensor -> smaller_r2.in1, delay_f2.in1, smaller_f2.in2;
+		connect distance.out1 -> smaller_r1.in2, smaller_r2.in2;
+		connect smaller_r1.out1 -> or_r.in1;
+		connect smaller_r2.out1 -> or_r.in2;
+		connect or_r.out1 -> not_r.in1, and_f.in1;
+		connect not_r.out1 -> run;
+		connect delay_f1.out1 -> smaller_f1.in1;
+		connect delay_f2.out1 -> smaller_f2.in1;
+		connect smaller_f1.out1 -> or_f.in1;
+		connect smaller_f2.out1 -> or_f.in2;
+		connect or_f.out1 -> and_f.in2;
+		connect and_f.out1 -> follow;	
+
+	/*
 	implementation Math{
 		
 		static Q previousFL = 0;
@@ -27,4 +58,5 @@ component FollowController<Q distance = 10m> {
         previousFL = frontLeftSensor;
         previousFR = frontRightSensor;
 	}
+	*/
 }

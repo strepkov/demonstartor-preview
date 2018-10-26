@@ -5,16 +5,16 @@ import FollowVelocityController;
 
 component Follow {
 	port                                    
-		in Q(-200m:200m) frontLeftSensor,
-        in Q(-200m:200m) frontRightSensor,
-        in Q(0km/h : 250km/h) velocity,
-		out Q(-2m/s^2:2m/s^2) acceleration;
+		in Q frontLeftSensor,
+        in Q frontRightSensor,
+        in Q velocity,
+		out Q acceleration;
 
-    instance FollowController<15m> fc;
+    instance FollowController fc;
     connect frontLeftSensor -> fc.frontLeftSensor;
     connect frontRightSensor -> fc.frontRightSensor;
 
-    instance FollowVelocityController<2m/s> fvc;
+    instance FollowVelocityController fvc;
     connect velocity -> fvc.velocity;
     connect fc.run -> fvc.run;
     connect fc.follow -> fvc.follow;
