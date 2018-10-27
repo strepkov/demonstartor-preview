@@ -6,19 +6,19 @@ import OvertakeVelocityController;
 
 component Overtake {
 	port                                    
-		in Q(-200m:200m) frontLeftSensor,
-        in Q(-200m:200m) frontRightSensor,
-        in Q(-200m:200m) frontRightSideSensor,
-        in Q(-200m:200m) frontLeftSideSensor,
-        in Q(-200m:200m) backLeftSideSensor,
-        in Q(-200m:200m) backRightSideSensor,
-        in Q(0km/h:250km/h) velocity,
+		in Q frontLeftSensor,
+        in Q frontRightSensor,
+        in Q frontRightSideSensor,
+        in Q frontLeftSideSensor,
+        in Q backLeftSideSensor,
+        in Q backRightSideSensor,
+        in Q velocity,
         in B active,
         out B activatePassChecker,
-		out Q(-2m/s^2:2m/s^2) acceleration,
+		out Q acceleration,
 		out Q steering;
 
-    instance OvertakeController<50m> oc;
+    instance OvertakeController oc;
     connect frontLeftSensor -> oc.frontLeftSensor;
     connect frontRightSensor -> oc.frontRightSensor;
     connect frontRightSideSensor -> oc.frontRightSideSensor;
