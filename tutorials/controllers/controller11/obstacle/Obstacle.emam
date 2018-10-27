@@ -5,16 +5,16 @@ import ObstacleVelocityController;
 
 component Obstacle {
     port
-        in Q(-200m:200m) frontLeftSensor,
-        in Q(-200m:200m) frontRightSensor,
-        in Q(0m/s:10m/s) velocity,
-		out Q(-2m/s^2:2m/s^2) acceleration;
+        in Q frontLeftSensor,
+        in Q frontRightSensor,
+        in Q velocity,
+		out Q acceleration;
 
-    instance ObstacleController<30m> obc;
+    instance ObstacleController obc;
     connect frontLeftSensor -> obc.frontLeftSensor;
     connect frontRightSensor -> obc.frontRightSensor;
     
-    instance ObstacleVelocityController<5m/s> obvc;
+    instance ObstacleVelocityController obvc;
     connect velocity -> obvc.velocity;
     connect obc.brake -> obvc.brake;
     connect obvc.acceleration -> acceleration;

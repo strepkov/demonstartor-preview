@@ -5,12 +5,12 @@ import SteeringAlignController;
 
 component AlignCar {
     port
-        in Q(-200m:200m) frontLeftSide,
-        in Q(-200m:200m) frontRightSide,
-        in Q(-200m:200m) backLeftSide,
-        in Q(-200m:200m) backRightSide,
-        out Q(-2m/s^2:2m/s^2) acceleration,
-        out Q(-180:180) steering;
+        in Q frontLeftSide,
+        in Q frontRightSide,
+        in Q backLeftSide,
+        in Q backRightSide,
+        out Q acceleration,
+        out Q steering;
 
     instance SteeringAlignController sac;
     connect frontLeftSide -> sac.frontLeftSide;
