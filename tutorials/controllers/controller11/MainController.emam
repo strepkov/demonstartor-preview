@@ -1,6 +1,5 @@
 package controller11;
 
-import ActiveController;
 import VelocitySwitchController;
 import SteeringSwitchController;
 
@@ -11,6 +10,7 @@ import controller11.obstacle.Obstacle;
 import controller11.parking.Parking;
 import controller11.passCones.PassCones;
 import controller11.alignCar.AlignCar;
+import controller11.active.ActiveController;
 
 component MainController{
     ports 
