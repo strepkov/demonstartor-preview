@@ -5,15 +5,15 @@ import RunTrackVelocityController;
 
 component RunTrack {
     port
-        in  Q(-200m:200m) frontLeft,
-        in  Q(-200m:200m) frontRight,
-        in  Q(-200m:200m) frontLeftSide,
-        in  Q(-200m:200m) frontRightSide,
-        in  Q(-200m:200m) backLeftSide,
-        in  Q(-200m:200m) backRightSide,
-        in  Q(0m/s:10m/s) velocity,
-        out Q(-180:180) steering,
-		out Q(-2m/s^2:2m/s^2) acceleration;
+        in  Q frontLeft,
+        in  Q frontRight,
+        in  Q frontLeftSide,
+        in  Q frontRightSide,
+        in  Q backLeftSide,
+        in  Q backRightSide,
+        in  Q velocity,
+        out Q steering,
+		out Q acceleration;
 
     instance RunTrackController rtc;
     connect frontLeft -> rtc.frontLeft;
