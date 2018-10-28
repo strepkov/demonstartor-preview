@@ -5,15 +5,15 @@ import VelocityPassController;
 
 component PassCones {
 	port
-	    in Q(-200m:200m) frontLeftSensor,
-        in Q(-200m:200m) frontRightSensor,
-		in Q(-200m:200m) frontLeftSideSensor,
-        in Q(-200m:200m) frontRightSideSensor,
-        in Q(-200m:200m) backLeftSideSensor,
-        in Q(-200m:200m) backRightSideSensor,
-		in Q(0km/h : 250km/h) velocity,
+	    in Q frontLeftSensor,
+        in Q frontRightSensor,
+		in Q frontLeftSideSensor,
+        in Q frontRightSideSensor,
+        in Q backLeftSideSensor,
+        in Q backRightSideSensor,
+		in Q velocity,
 		in B active,
-		out Q(-2m/s^2:2m/s^2) acceleration,
+		out Q acceleration,
         out Q steering;
 
     instance PassObjectsController poc;
